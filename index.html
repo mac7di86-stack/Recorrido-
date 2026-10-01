@@ -3,61 +3,122 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f3d3e">
+<meta name="theme-color" content="#0b2f33">
 <meta name="robots" content="noindex,nofollow">
 <title>Recorrido</title>
 <style>
 :root{
-  --bg:#f4f1ea; --card:#ffffff; --ink:#1b2a2b; --muted:#5c6b6c; --brand:#0f3d3e; --brand2:#1f6f6b;
-  --ok:#1e7b43; --warn:#b26a00; --bad:#b3261e; --line:#d9d4c7; --soft:#e8f1ef;
+  --ink:#f6fbfa; --ink2:rgba(246,251,250,.78); --glass:rgba(255,255,255,.13); --glass2:rgba(255,255,255,.22);
+  --edge:rgba(255,255,255,.34); --amber:#ffc65c; --amber2:#ff9f43; --mint:#7ee8b4; --mint2:#35c98a; --rose:#ff8a80; --sky:#7cc4ff;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.35}
-#app{max-width:560px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
-h1{font-size:1.5rem;margin:.2rem 0 .4rem}
-h2{font-size:1.15rem;margin:1.2rem 0 .5rem}
-p{margin:.4rem 0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
-.role{display:inline-block;background:var(--brand);color:#fff;border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:600}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.muted{color:var(--muted);font-size:.9rem}
-.big{width:100%;border:0;border-radius:18px;padding:22px 16px;font-size:1.3rem;font-weight:700;color:#fff;background:var(--brand);cursor:pointer;min-height:68px}
-.big:active{transform:scale(.98)}
-.big.green{background:var(--ok)} .big.red{background:var(--bad)} .big.light{background:var(--soft);color:var(--brand)}
-.btn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;font-size:1rem;font-weight:600;color:var(--ink);cursor:pointer;min-height:56px}
-.btn:active{background:var(--soft)}
-.btn.sm{padding:8px 12px;min-height:40px;font-size:.9rem}
+html,body{margin:0;min-height:100%;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.35;background:#0b2f33}
+body{background:linear-gradient(160deg,#0a2a33 0%,#0d3f4a 45%,#143a63 100%) fixed;min-height:100vh;overflow-x:hidden}
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:60vmax;height:60vmax;left:-20vmax;top:-18vmax;background:#1fa39a}
+.blobs i:nth-child(2){width:50vmax;height:50vmax;right:-18vmax;top:25vh;background:#3b6fd8;animation-delay:-8s}
+.blobs i:nth-child(3){width:42vmax;height:42vmax;left:10vw;bottom:-22vmax;background:#e6a23c;opacity:.38;animation-delay:-14s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vmax,4vmax) scale(1.12)}}
+#app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 14px max(28px,env(safe-area-inset-bottom))}
+#app.wide{max-width:920px}
+h1{font-size:1.55rem;margin:.1rem 0 .3rem;letter-spacing:-.01em}
+h2{font-size:1.1rem;margin:0 0 .5rem}
+p{margin:.35rem 0}
+a{color:var(--sky)}
+.muted{color:var(--ink2);font-size:.9rem}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:26px;padding:16px;margin:12px 0;
+  -webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);
+  box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.08);animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.glass.flat{animation:none}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 2px 6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 13px;font-size:.85rem;font-weight:700;background:var(--glass2);border:1px solid var(--edge);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mint);flex:none}
+.dot.warn{background:var(--amber)} .dot.bad{background:var(--rose)} .dot.pulse{animation:pulse 1.5s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(126,232,180,.65)}100%{box-shadow:0 0 0 12px rgba(126,232,180,0)}}
+.big{position:relative;overflow:hidden;width:100%;border:1px solid rgba(255,255,255,.55);border-radius:26px;padding:20px 16px;min-height:76px;font:inherit;font-size:1.28rem;font-weight:800;letter-spacing:-.01em;cursor:pointer;color:#1d1300;
+  background:linear-gradient(180deg,#ffe08e,var(--amber2));box-shadow:0 10px 26px rgba(255,159,67,.35),inset 0 1px 0 rgba(255,255,255,.75);transition:transform .15s,filter .15s}
+.big:active{transform:scale(.97)} .big[disabled]{filter:grayscale(.6) brightness(.8);cursor:wait}
+.big.mint{color:#03301b;background:linear-gradient(180deg,#b6f7d6,var(--mint2));box-shadow:0 10px 26px rgba(53,201,138,.35),inset 0 1px 0 rgba(255,255,255,.75)}
+.big.sky{color:#031d33;background:linear-gradient(180deg,#cfe9ff,var(--sky));box-shadow:0 10px 26px rgba(124,196,255,.3),inset 0 1px 0 rgba(255,255,255,.75)}
+.big.rose{color:#3a0703;background:linear-gradient(180deg,#ffd0cb,var(--rose))}
+.big small{display:block;font-size:.8rem;font-weight:600;opacity:.75;margin-top:2px}
+.btn{font:inherit;font-weight:700;font-size:.98rem;color:var(--ink);cursor:pointer;min-height:54px;padding:12px;border-radius:20px;border:1px solid var(--edge);background:var(--glass2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);transition:transform .12s,background .15s}
+.btn:active{transform:scale(.96);background:rgba(255,255,255,.34)}
+.btn.sm{min-height:40px;padding:8px 12px;font-size:.88rem;border-radius:14px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.status{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--soft);font-weight:600}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--ok);flex:none}
-.dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)} .dot.pulse{animation:p 1.4s infinite}
-@keyframes p{0%{box-shadow:0 0 0 0 rgba(30,123,67,.5)}100%{box-shadow:0 0 0 12px rgba(30,123,67,0)}}
-.check{font-size:3rem;text-align:center;margin:.2rem 0}
-.timer{font-size:2.6rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:.2rem 0}
-.log{margin:0;padding:0;list-style:none;font-size:.95rem}
-.log li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.gap{height:10px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);padding:14px;border-radius:16px;border:1px solid var(--edge);background:rgba(0,0,0,.22);outline:none}
+input::placeholder,textarea::placeholder{color:rgba(246,251,250,.55)}
+input:focus,textarea:focus{border-color:var(--amber)}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.65);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+/* Qué está pasando */
+.where{display:grid;gap:10px}
+.where .row{display:flex;gap:12px;align-items:flex-start}
+.where .ic{flex:none;width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--glass2);border:1px solid var(--edge);font-size:1.05rem}
+.where .lb{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);font-weight:700}
+.where .tx{font-size:1.08rem;font-weight:700}
+.where .row.todo .tx{color:var(--amber)}
+.hero-time{font-size:2.5rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+/* Stepper */
+.stepper{position:relative;margin:6px 4px 2px;padding:0 0 6px}
+.rail{position:absolute;left:12.5%;right:12.5%;top:22px;height:6px;border-radius:6px;background:rgba(255,255,255,.18)}
+.rail b{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:linear-gradient(90deg,var(--mint2),var(--amber));transition:width 1.4s cubic-bezier(.3,.8,.3,1)}
+.car{position:absolute;top:-17px;font-size:1.6rem;transform:translateX(-50%);transition:left 1.4s cubic-bezier(.3,.8,.3,1);filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.car.bump{animation:bump .6s}
+@keyframes bump{40%{transform:translateX(-50%) translateY(-8px) scale(1.2)}}
+.nodes{position:relative;display:grid;grid-template-columns:repeat(4,1fr);text-align:center}
+.node .c{width:34px;height:34px;margin:6px auto 6px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.95rem;border:2px solid var(--edge);background:rgba(11,47,51,.75);color:var(--ink2);transition:all .5s}
+.node.done .c{background:var(--mint2);border-color:#fff;color:#03301b;animation:pop .5s}
+.node.cur .c{background:var(--amber);border-color:#fff;color:#2a1700;box-shadow:0 0 0 0 rgba(255,198,92,.7);animation:pulseA 1.6s infinite}
+.node.next .c{border-color:var(--amber);color:var(--amber)}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes pulseA{0%{box-shadow:0 0 0 0 rgba(255,198,92,.7)}100%{box-shadow:0 0 0 14px rgba(255,198,92,0)}}
+.node .n{font-size:.78rem;font-weight:800;line-height:1.1}
+.node .t{font-size:.72rem;color:var(--ink2);margin-top:2px;line-height:1.15;min-height:2.3em}
+.node.pend .n{opacity:.7}
+/* Mapa */
+.mapwrap{position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;border-radius:22px;border:1px solid var(--edge);background:linear-gradient(135deg,#1c4c58,#1a3d63);box-shadow:inset 0 0 40px rgba(0,0,0,.25)}
+.mapin{position:absolute;left:0;top:0;transform-origin:0 0}
+.mapin img{filter:saturate(.8) brightness(.92)}
+.mapph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:18px;color:var(--ink2);font-size:.92rem}
+.attr{position:absolute;right:6px;bottom:3px;font-size:10px;background:rgba(0,0,0,.35);padding:0 5px;border-radius:4px}
+/* varios */
+.check{width:84px;height:84px;margin:4px auto 6px;display:block}
+.check circle{fill:none;stroke:var(--mint);stroke-width:5;stroke-dasharray:252;stroke-dashoffset:252;animation:dr .7s .05s forwards}
+.check path{fill:none;stroke:var(--mint);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:dr .5s .55s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+.banner{border-radius:18px;padding:12px 14px;margin:10px 0;font-size:.95rem;border:1px solid var(--edge);background:rgba(255,198,92,.18)}
+.banner.bad{background:rgba(255,138,128,.2)}
+.banner.ok{background:rgba(126,232,180,.18)}
+.log{margin:0;padding:0;list-style:none;font-size:.93rem}
+.log li{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.14);display:flex;justify-content:space-between;gap:8px}
 .log li:last-child{border:0}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--brand);color:#fff;padding:12px 18px;border-radius:999px;font-weight:600;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%;text-align:center}
-.toast.show{opacity:1}
-.banner{border-radius:14px;padding:12px 14px;margin:10px 0;font-size:.95rem}
-.banner.warn{background:#fff3dc;color:#6b4300;border:1px solid #f0d49a}
-.banner.bad{background:#fde7e5;color:#7a1710;border:1px solid #f1b7b2}
-input,textarea{width:100%;font:inherit;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}
-table{width:100%;border-collapse:collapse;font-size:.85rem}
-th,td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{color:var(--muted);font-weight:600}
 .kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.95rem}
-.kv b{font-variant-numeric:tabular-nums;text-align:right}
-a{color:var(--brand2)}
-.qrbox{background:#fff;padding:8px;border-radius:12px;display:inline-block;line-height:0}
-.qrbox svg{width:230px;height:230px}
-#app.wide{max-width:900px}
+.kv b{text-align:right;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th,td{padding:6px;border-bottom:1px solid rgba(255,255,255,.16);text-align:left;vertical-align:top}
+th{color:var(--ink2);font-weight:700}
+.toast{width:max-content;position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:rgba(10,30,36,.85);border:1px solid var(--edge);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#fff;padding:12px 18px;border-radius:999px;font-weight:700;z-index:20;opacity:0;transition:all .25s;pointer-events:none;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.flash{position:fixed;inset:0;z-index:15;pointer-events:none;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.55),transparent 60%);opacity:0;animation:flash .9s}
+@keyframes flash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.confetti{position:fixed;top:-12px;width:10px;height:14px;z-index:16;pointer-events:none;border-radius:3px;animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+.qrbox{background:#fff;padding:10px;border-radius:18px;display:inline-block;line-height:0}
+.qrbox svg{width:240px;height:240px}
+.who{display:grid;grid-template-columns:auto 1fr auto;gap:8px 10px;align-items:center;font-size:.95rem}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+@media print{body{background:#fff!important}.blobs,.noprint{display:none!important}.glass{background:#fff;color:#000;border-color:#000;box-shadow:none}}
 </style>
 </head>
 <body>
+<div class="blobs"><i></i><i></i><i></i></div>
 <div id="app"></div>
 <div id="toast" class="toast"></div>
-<script>/* Generador QR mínimo (modo byte, nivel L o M, versiones 1-10). Sin dependencias. */
+<script>
 (function (root) {
   var ECC = { L: 1, M: 0 };
   var ECC_PER_BLOCK = {
@@ -291,36 +352,53 @@ a{color:var(--brand2)}
   root.QR = { make: make, svg: svg };
   if (typeof module !== 'undefined') module.exports = root.QR;
 })(typeof window !== 'undefined' ? window : globalThis);
+
 </script>
 <script>
 /* ============ Configuración ============ */
 var SUPABASE_URL = 'https://ogvrwwxwpdhtdqwtbuuv.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ndnJ3d3h3cGRodGRxd3RidXV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NzcxNDUsImV4cCI6MjEwNTM1MzE0NX0.TkMyNdEuJ7GOzMZ7bV7COSRZ-pp5UsvOF8IBQqSrwYg';
 var TZ = 'America/Mexico_City';
-var GPS_MIN_INTERVAL_MS = 5000;   // máximo un punto cada 5 s
-var FLUSH_INTERVAL_MS = 15000;    // envío de lotes cada 15 s
-var GPS_LOST_AFTER_MS = 30000;    // sin fix > 30 s = señal perdida
+var GPS_MIN_INTERVAL_MS = 5000, FLUSH_INTERVAL_MS = 15000, GPS_LOST_AFTER_MS = 30000;
+var ETA_EVERY_MS = 60000, NEAR_M = 120;
+var STAGES = ['a_gaby','en_gaby','a_mama','en_mama','a_destino','en_destino','fin'];
+var $app = document.getElementById('app');
 
 /* ============ Utilidades ============ */
-var $app = document.getElementById('app');
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function fmtTime(ts){ if(!ts) return '—'; return new Date(ts).toLocaleTimeString('es-MX',{timeZone:TZ,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}); }
+function fmtTime(ts){ if(!ts) return '—'; var d=new Date(ts); if(isNaN(d)) return '—'; return d.toLocaleTimeString('es-MX',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hour12:false}); }
+function fmtTimeS(ts){ if(!ts) return '—'; return new Date(ts).toLocaleTimeString('es-MX',{timeZone:TZ,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}); }
 function fmtDT(ts){ if(!ts) return '—'; return new Date(ts).toLocaleString('es-MX',{timeZone:TZ,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}); }
-function fmtDur(ms){ if(ms==null||isNaN(ms)) return '—'; var s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60; return (h?h+' h ':'')+(h||m?m+' min ':'')+r+' s'; }
+function fmtDay(){ return new Date().toLocaleDateString('es-MX',{timeZone:TZ,weekday:'long',day:'numeric',month:'long'}); }
+function fmtDur(ms){ if(ms==null||isNaN(ms)) return '—'; var s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60; return (h?h+' h ':'')+(h||m?m+' min ':'')+(h?'':r+' s'); }
 function clock(ms){ var s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60; return (h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(r).padStart(2,'0'); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; clearTimeout(toast._t); toast._t=setTimeout(function(){ t.className='toast'; },2200); }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; clearTimeout(toast._t); toast._t=setTimeout(function(){ t.className='toast'; },2600); }
 function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
-function baseUrl(){ return location.origin + location.pathname; }
-function link(role, code){ return baseUrl() + '#/' + role + '/' + code; }
+function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function baseUrl(){ return location.origin + location.pathname.replace(/index\.html$/,''); }
+function hav(a,b){ var R=6371000,d2r=Math.PI/180,dLat=(b.lat-a.lat)*d2r,dLng=(b.lng-a.lng)*d2r,x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*d2r)*Math.cos(b.lat*d2r)*Math.sin(dLng/2)*Math.sin(dLng/2); return 2*R*Math.asin(Math.sqrt(x)); }
+function fmtKm(m){ return m==null?'—':(m<1000?Math.round(m)+' m':(m/1000).toFixed(1)+' km'); }
+function deviceMeta(){ return {ua:navigator.userAgent, lang:navigator.language, w:screen.width, h:screen.height, online:navigator.onLine}; }
+function fx(kind){
+  try{
+    var f=document.createElement('div'); f.className='flash'; document.body.appendChild(f); setTimeout(function(){ f.remove(); },1000);
+    if(kind==='fin'){ var cols=['#ffc65c','#7ee8b4','#7cc4ff','#ff8a80','#fff'];
+      for(var i=0;i<46;i++){ var c=document.createElement('i'); c.className='confetti'; c.style.left=(Math.random()*100)+'vw'; c.style.background=cols[i%cols.length]; c.style.animationDelay=(Math.random()*.7)+'s'; c.style.animationDuration=(1.8+Math.random()*1.6)+'s'; document.body.appendChild(c); setTimeout((function(n){ return function(){ n.remove(); }; })(c),4200); } }
+    if(navigator.vibrate) navigator.vibrate(kind==='fin'?[120,60,120,60,240]:60);
+  }catch(e){}
+}
+document.addEventListener('pointerdown',function(e){
+  var b=e.target.closest&&e.target.closest('.big'); if(!b||b.disabled) return;
+  var r=b.getBoundingClientRect(), s=Math.max(r.width,r.height)/4, i=document.createElement('span'); i.className='ripple';
+  i.style.width=i.style.height=s+'px'; i.style.left=(e.clientX-r.left-s/2)+'px'; i.style.top=(e.clientY-r.top-s/2)+'px'; b.appendChild(i); setTimeout(function(){ i.remove(); },650);
+});
 
 /* ============ API + cola sin conexión ============ */
 function rpcRaw(fn, args){
   return fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
-    method:'POST',
-    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
-    body: JSON.stringify(args)
+    method:'POST', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}, body: JSON.stringify(args||{})
   }).then(function(r){
     return r.text().then(function(t){
       var j; try{ j = t ? JSON.parse(t) : null; }catch(e){ j = null; }
@@ -328,6 +406,13 @@ function rpcRaw(fn, args){
       return j;
     });
   });
+}
+function isRetryable(err){ return !(err && err.status && err.status<500 && err.status!==408 && err.status!==429); }
+var Net = { ok:true, set:function(v){ if(this.ok!==v){ this.ok=v; paintNet(); } } };
+function paintNet(){
+  var d=document.getElementById('netdot'), x=document.getElementById('nettxt'); if(!d) return;
+  var pend=Q.items().length;
+  d.className='dot'+(Net.ok?'':' warn'); x.textContent=Net.ok?(pend?'Enviando…':'Conectado'):'Sin conexión · se guarda y se envía solo';
 }
 var Q = {
   key:'rec_queue', flushing:false,
@@ -337,577 +422,681 @@ var Q = {
     var self=this; if(self.flushing) return; self.flushing=true;
     function step(){
       var a=self.items();
-      if(!a.length){ self.flushing=false; Net.set(true); return; }
-      var it=a[0];
-      rpcRaw(it.fn,it.args).then(function(){ a=self.items(); a.shift(); lsSet(self.key,a); step(); },
-        function(err){
-          if(err && err.status && err.status<500 && err.status!==408 && err.status!==429){ a=self.items(); a.shift(); lsSet(self.key,a); step(); }
-          else { self.flushing=false; Net.set(false); }
-        });
+      if(!a.length){ self.flushing=false; Net.set(true); paintNet(); return; }
+      rpcRaw(a[0].fn,a[0].args).then(function(){ a=self.items(); a.shift(); lsSet(self.key,a); step(); },
+        function(err){ if(!isRetryable(err)){ a=self.items(); a.shift(); lsSet(self.key,a); step(); } else { self.flushing=false; Net.set(false); setTimeout(function(){ self.flush(); },4000); } });
     }
     step();
   }
 };
-var Net = { ok:true, set:function(v){ if(this.ok!==v){ this.ok=v; var el=document.getElementById('netdot'); if(el){ el.className='dot'+(v?'':' warn'); } var tx=document.getElementById('nettxt'); if(tx) tx.textContent=v?'Conectado':'Sin conexión: se guarda y se envía después'; } } };
 window.addEventListener('online', function(){ Q.flush(); });
+window.addEventListener('offline', function(){ Net.set(false); });
 setInterval(function(){ if(Q.items().length) Q.flush(); }, 10000);
 
-/* ============ Estado del viaje ============ */
-var ctx = { code:null, role:null, trip:null, poll:null, tick:null };
-function loadTrip(){
-  return rpcRaw('rec_get_trip',{p_code:ctx.code}).then(function(t){ ctx.trip=t; Net.set(true); return t; });
-}
-function doneHas(role,type){ var d=(ctx.trip&&ctx.trip.done)||[]; return d.indexOf(role+':'+type)>=0 || lsGet('rec_done_'+ctx.code+'_'+role+'_'+type,false); }
-function logEvent(role,type,note,extra){
-  var pos = Geo.last;
-  var args = {
-    p_code:ctx.code, p_client_id:uid(), p_role:role, p_type:type, p_note:note||null,
-    p_lat: pos?pos.lat:null, p_lng: pos?pos.lng:null, p_acc: pos?pos.acc:null,
-    p_ts:new Date().toISOString(), p_meta: extra||null
-  };
-  Q.add('rec_event',args);
-  return args.p_ts;
-}
-function logOnce(role,type,note,extra){ // registra una vez por navegador/viaje
-  var k='rec_done_'+ctx.code+'_'+role+'_'+type;
-  if(lsGet(k,false)) return;
-  lsSet(k,true); logEvent(role,type,note,extra);
-}
-function deviceMeta(){ return {ua:navigator.userAgent, lang:navigator.language, w:screen.width, h:screen.height, online:navigator.onLine}; }
+/* ============ Estado ============ */
+var ctx = { code:null, role:null, trip:null, poll:null, tick:null, explicit:false, sig:{}, prevIdx:null, mounted:false };
+function clearTimers(){ clearInterval(ctx.poll); clearInterval(ctx.tick); ctx.poll=ctx.tick=null; }
+function sIdx(s){ var i=STAGES.indexOf(s); return i; } /* -1 si no ha salido */
+function place(t,key){ var p=(t.places||[]).filter(function(x){ return x.key===key; })[0]; return p||null; }
+function pname(t,key){ var p=place(t,key); return p?p.name:key; }
+function validEv(t,type){ return (t.events||[]).filter(function(e){ var a=e.meta&&e.meta.aviso; return e.type===type&&(!a||a==='salto_de_etapa'); })[0]||null; }
+function evTs(t,type){ var e=validEv(t,type); return e?e.ts:null; }
+function doneHas(t,role,type){ return ((t&&t.done)||[]).indexOf(role+':'+type)>=0; }
+var LBL={mama:'Gloria',gaby:'Gaby',chofer:'Barrón'};
+var SHORT={dif:'DIF La Griega',gaby:'Santa Cruz',mama:'La Pradera',destino:'Corregidora'};
 
-/* ============ Geolocalización ============ */
+/* ============ Geolocalización (teléfono de Barrón) ============ */
 var Geo = {
-  watchId:null, last:null, lastSaved:0, lastFix:0, buffer:[], state:'inactivo', lostLogged:false, wd:null, fl:null,
+  watchId:null, last:null, lastSaved:0, lastFix:0, buffer:[], state:'inactivo', lostLogged:false, wd:null, fl:null, hist:[], onFix:null,
   start:function(){
     var self=this;
-    if(!navigator.geolocation){ self.state='no_soportado'; return false; }
+    if(!navigator.geolocation){ self.state='no_soportado'; self.ui(); return false; }
     if(self.watchId!=null) return true;
     self.buffer = lsGet('rec_pts_'+ctx.code, []);
-    self.lastFix = Date.now(); self.state='buscando';
+    self.lastFix = Date.now(); self.state='buscando'; self.ui();
     self.watchId = navigator.geolocation.watchPosition(function(p){
       var now=Date.now(); self.lastFix=now;
-      var c=p.coords; self.last={lat:c.latitude,lng:c.longitude,acc:c.accuracy,spd:c.speed,hdg:c.heading};
-      if(self.state!=='ok'){ if(self.lostLogged){ logEvent('chofer','gps_recuperado'); self.lostLogged=false; } self.state='ok'; self.ui(); }
+      var c=p.coords; self.last={lat:c.latitude,lng:c.longitude,acc:c.accuracy,spd:c.speed,hdg:c.heading,t:now};
+      self.hist.push(self.last); if(self.hist.length>40) self.hist.shift();
+      if(self.state!=='ok'){ if(self.lostLogged){ sendEvent('chofer','gps_recuperado'); self.lostLogged=false; } self.state='ok'; self.ui(); }
+      if(self.onFix) try{ self.onFix(self.last); }catch(e){}
       if(now-self.lastSaved<GPS_MIN_INTERVAL_MS) return;
       self.lastSaved=now;
       self.buffer.push({lat:c.latitude,lng:c.longitude,acc:c.accuracy,spd:c.speed,hdg:c.heading,ts:new Date(p.timestamp||now).toISOString()});
       lsSet('rec_pts_'+ctx.code,self.buffer);
     }, function(e){
-      if(e.code===1){ if(self.state!=='denegado'){ self.state='denegado'; logEvent('chofer','gps_permiso_denegado'); self.ui(); } }
-      else { if(self.state==='ok'){ self.state='perdida'; } self.ui(); }
+      if(e.code===1){ if(self.state!=='denegado'){ self.state='denegado'; sendEvent('chofer','gps_permiso_denegado'); self.ui(); } }
+      else { if(self.state==='ok') self.state='perdida'; self.ui(); }
     }, {enableHighAccuracy:true,maximumAge:0,timeout:30000});
     self.wd = setInterval(function(){
-      if(self.state==='ok' && Date.now()-self.lastFix>GPS_LOST_AFTER_MS){ self.state='perdida'; if(!self.lostLogged){ self.lostLogged=true; logEvent('chofer','gps_perdido'); } self.ui(); }
+      if(self.state==='ok' && Date.now()-self.lastFix>GPS_LOST_AFTER_MS){ self.state='perdida'; if(!self.lostLogged){ self.lostLogged=true; sendEvent('chofer','gps_perdido'); } self.ui(); }
     },5000);
     self.fl = setInterval(function(){ self.flush(); }, FLUSH_INTERVAL_MS);
     return true;
   },
   flush:function(){
     if(!this.buffer.length) return;
-    var batch=this.buffer.splice(0,100);
-    lsSet('rec_pts_'+ctx.code,this.buffer);
+    var batch=this.buffer.splice(0,100); lsSet('rec_pts_'+ctx.code,this.buffer);
     Q.add('rec_points',{p_code:ctx.code,p_points:batch});
   },
   stop:function(){
     if(this.watchId!=null){ navigator.geolocation.clearWatch(this.watchId); this.watchId=null; }
     clearInterval(this.wd); clearInterval(this.fl);
     while(this.buffer.length) this.flush();
-    this.state='inactivo';
+    this.state='inactivo'; this.ui();
   },
+  pos:function(){ return (this.state==='ok'&&this.last)?this.last:null; },
   ui:function(){
     var el=document.getElementById('gpsbox'); if(!el) return;
     var s=this.state, txt='', cls='dot';
-    if(s==='ok'){ txt='Ubicación activa'+(this.last?' (±'+Math.round(this.last.acc)+' m)':''); cls='dot pulse'; }
+    if(s==='ok'){ txt='Ubicación activa (±'+Math.round(this.last.acc)+' m)'; cls='dot pulse'; }
     else if(s==='buscando'){ txt='Buscando ubicación…'; cls='dot warn'; }
-    else if(s==='perdida'){ txt='Ubicación perdida: se retoma sola'; cls='dot warn'; }
+    else if(s==='perdida'){ txt='Ubicación perdida · se retoma sola'; cls='dot warn'; }
     else if(s==='denegado'){ txt='Ubicación bloqueada'; cls='dot bad'; }
     else if(s==='no_soportado'){ txt='Este teléfono no da ubicación'; cls='dot bad'; }
     else { txt='Ubicación apagada'; cls='dot warn'; }
     el.innerHTML='<span class="'+cls+'"></span><span>'+esc(txt)+'</span>';
     var ban=document.getElementById('gpsban');
-    if(ban) ban.innerHTML = s==='denegado' ? '<div class="banner bad">Se bloqueó el permiso de ubicación. Actívalo en los ajustes del navegador para este sitio y recarga. El viaje sigue registrándose sin mapa.</div>' : '';
+    if(ban) ban.innerHTML = (s==='denegado'||s==='no_soportado') ? '<div class="banner bad">No hay ubicación. El recorrido se sigue registrando con las horas, pero sin mapa ni hora estimada. Para activarla: ajustes del navegador → permisos del sitio → Ubicación → Permitir, y abre otra vez el enlace.</div>' : '';
   }
 };
-
-/* ============ Pantalla encendida y visibilidad ============ */
 var Wake = { lock:null,
   on:function(){ var self=this; try{ if(navigator.wakeLock){ navigator.wakeLock.request('screen').then(function(l){ self.lock=l; }).catch(function(){}); } }catch(e){} },
-  off:function(){ try{ if(this.lock){ this.lock.release(); this.lock=null; } }catch(e){} }
-};
+  off:function(){ try{ if(this.lock){ this.lock.release(); this.lock=null; } }catch(e){} } };
 document.addEventListener('visibilitychange', function(){
   if(!ctx.code || ctx.role!=='chofer' || !Geo.watchId) return;
-  logEvent('chofer', document.hidden ? 'pantalla_oculta' : 'pantalla_visible');
-  if(!document.hidden){ Wake.on(); }
+  sendEvent('chofer', document.hidden ? 'pantalla_oculta' : 'pantalla_visible');
+  if(!document.hidden) Wake.on();
 });
 
-/* ============ Vistas comunes ============ */
-function shell(role, inner){
-  var label = {mama:'Gloria',gaby:'Gaby',chofer:'Barrón'}[role] || role;
-  $app.innerHTML = '<div class="top"><span class="role">'+esc(label)+'</span><span class="muted" style="display:flex;align-items:center;gap:6px"><span id="netdot" class="dot'+(Net.ok?'':' warn')+'"></span><span id="nettxt">'+(Net.ok?'Conectado':'Sin conexión: se guarda y se envía después')+'</span></span></div>'+inner+(ctx.shared?'<p class="muted" style="text-align:center;margin-top:18px"><a href="#" onclick="return changeRole()">No soy '+esc(label)+'</a></p>':'');
+/* ============ Registro de eventos ============ */
+function sendEvent(role,type,note,meta){
+  var pos=Geo.pos();
+  var args={ p_code:ctx.code, p_client_id:uid(), p_role:role, p_type:type, p_note:note||null,
+    p_lat:pos?pos.lat:null, p_lng:pos?pos.lng:null, p_acc:pos?pos.acc:null, p_ts:new Date().toISOString(), p_meta:meta||null };
+  return rpcRaw('rec_event',args).then(function(r){ Net.set(true); r=r||{}; r.ts=r.ts||args.p_ts; return r; },
+    function(err){
+      if(!isRetryable(err)) return { error:'rechazado', detalle:err.message, ts:args.p_ts };
+      Q.add('rec_event',args); Net.set(false); return { ok:true, encolado:true, ts:args.p_ts };
+    });
 }
-function errorView(title,msg){
-  clearTimers();
-  $app.innerHTML='<div class="card"><div class="check">⚠️</div><h1 style="text-align:center">'+esc(title)+'</h1><p style="text-align:center">'+esc(msg)+'</p></div>';
-}
-function clearTimers(){ clearInterval(ctx.poll); clearInterval(ctx.tick); ctx.poll=null; ctx.tick=null; }
-function statusLine(){
-  var t=ctx.trip; if(!t) return '';
-  var txt, cls='dot';
-  if(t.status==='creado'){ txt='Viaje listo, todavía no sale'; cls='dot warn'; }
-  else if(t.status==='en_curso'){ txt='Viaje en camino desde las '+fmtTime(t.started_at); cls='dot pulse'; }
-  else if(t.status==='llegado'){ txt='Llegó a las '+fmtTime(t.arrived_at); }
-  else { txt='Viaje cancelado'; cls='dot bad'; }
-  return '<div class="status"><span class="'+cls+'"></span><span>'+esc(txt)+'</span></div>';
-}
-function whatsappLink(role, next){
-  var msg = (next==='gaby'?'Hola Gaby, te paso el viaje':'Hola, te paso el viaje')+(ctx.trip&&ctx.trip.label?' ('+ctx.trip.label+')':'')+'. Ábrelo aquí y toca el botón: '+link(next==='gaby'?'g':'c',ctx.code);
-  return 'https://wa.me/?text='+encodeURIComponent(msg);
-}
-function shareBtn(next, text){
-  if(ctx.shared){ return '<div class="card"><p style="text-align:center">'+(next==='gaby'?'Gaby':'El chofer')+' lo verá solo en cuanto abra el mismo enlace. No tienes que mandar nada más.</p></div>'; }
-  var url=link(next==='gaby'?'g':'c',ctx.code);
-  return '<a class="big" style="display:block;text-align:center;text-decoration:none" href="'+esc(whatsappLink(ctx.role,next))+'" target="_blank" rel="noopener">'+esc(text)+'</a>'+
-    '<p class="muted" style="text-align:center"><a href="#" onclick="return copyLink(\''+url+'\')">o copiar el enlace</a></p>';
-}
-function copyLink(u){
-  if(navigator.clipboard){ navigator.clipboard.writeText(u).then(function(){ toast('Enlace copiado'); },function(){ prompt('Copia este enlace:',u); }); }
-  else prompt('Copia este enlace:',u);
-  return false;
-}
-function startPolling(render){
-  clearTimers();
-  ctx.poll=setInterval(function(){ loadTrip().then(render,function(){ Net.set(false); }); },6000);
-}
-
-/* ============ MAMÁ ============ */
-function viewMama(){
-  var t=ctx.trip, confirmed=doneHas('mama','mama_confirma');
-  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>'+statusLine();
-  if(!confirmed){
-    body+='<div class="card"><p>Para empezar, toca el botón.</p></div><button class="big green" onclick="mamaConfirm()">Todo listo, confirmo</button>';
-  } else {
-    body+='<div class="card"><div class="check">✅</div><p style="text-align:center;font-weight:700">Quedó registrado</p></div>';
-    if(!doneHas('gaby','gaby_confirma')) body+='<p class="muted">Siguiente paso: avisarle a Gaby.</p>'+shareBtn('gaby','Avisar a Gaby por WhatsApp');
-    else body+='<div class="card"><p style="text-align:center">Gaby ya lo recibió. No tienes que hacer nada más.</p></div>';
-  }
-  shell('mama',body); Net.set(Net.ok);
-}
-function mamaConfirm(){ logOnce('mama','mama_confirma'); lsSet('rec_done_'+ctx.code+'_mama_mama_confirma',true); viewMama(); toast('Registrado'); }
-
-/* ============ GABY ============ */
-function viewGaby(){
-  var t=ctx.trip, confirmed=doneHas('gaby','gaby_confirma');
-  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>'+statusLine();
-  if(!confirmed){
-    body+='<div class="card"><p>Doña Gloria ya '+(doneHas('mama','mama_confirma')?'confirmó el viaje.':'abrió el enlace.')+' Toca el botón cuando lo recibas.</p></div><button class="big green" onclick="gabyConfirm()">Recibí, confirmo</button>';
-  } else {
-    body+='<div class="card"><div class="check">✅</div><p style="text-align:center;font-weight:700">Quedó registrado</p></div>';
-    if(!doneHas('chofer','chofer_abre') && !doneHas('chofer','inicio')) body+='<p class="muted">Siguiente paso: pasarle el viaje al chofer.</p>'+shareBtn('chofer','Enviar al chofer por WhatsApp');
-    else if(t.status!=='llegado') body+='<div class="card"><p style="text-align:center">El chofer ya tiene el viaje.</p></div>';
-    if(t.status==='en_curso'||t.status==='llegado') body+='<h2>Recorrido</h2>'+eventList(t);
-    body+='<h2>¿Pasó algo?</h2><textarea id="gnote" rows="2" placeholder="Escribe aquí (opcional)"></textarea><div style="height:8px"></div><button class="btn" style="width:100%" onclick="gabyNote()">Guardar nota</button>';
-  }
-  shell('gaby',body);
-}
-function gabyConfirm(){ logOnce('gaby','gaby_confirma'); viewGaby(); toast('Registrado'); }
-function gabyNote(){ var v=(document.getElementById('gnote').value||'').trim(); if(!v){ return; } logEvent('gaby','nota',v); document.getElementById('gnote').value=''; toast('Nota guardada'); }
-var EV_NAMES={mama_confirma:'Mamá confirmó',gaby_confirma:'Gaby confirmó',chofer_abre:'Chofer abrió el viaje',inicio:'Salió',parada:'Se detuvo',reanudo:'Siguió',trafico:'Tráfico o retraso',sube:'Subió alguien',baja:'Bajó alguien',incidente:'Otro',llegada:'Llegó',nota:'Nota',abre:'Abrió el enlace',gps_perdido:'Se perdió la ubicación',gps_recuperado:'Volvió la ubicación',gps_permiso_denegado:'Ubicación bloqueada',pantalla_oculta:'Pantalla apagada o en segundo plano',pantalla_visible:'Pantalla de vuelta',viaje_creado:'Viaje creado'};
-function eventList(t,limit){
-  var ev=(t.events||[]).filter(function(e){ return ['abre','pantalla_oculta','pantalla_visible','gps_perdido','gps_recuperado'].indexOf(e.type)<0; });
-  if(limit) ev=ev.slice(-limit);
-  if(!ev.length) return '<p class="muted">Todavía no hay eventos.</p>';
-  return '<ul class="log">'+ev.slice().reverse().map(function(e){ return '<li><span>'+esc(EV_NAMES[e.type]||e.type)+(e.note?' — '+esc(e.note):'')+'</span><span class="muted">'+fmtTime(e.ts)+'</span></li>'; }).join('')+'</ul>';
-}
-
-/* ============ CHOFER ============ */
-function choferState(){ var t=ctx.trip; return t.status; }
-function viewChofer(){
-  var t=ctx.trip, st=choferState();
-  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>';
-  if(st==='creado'){
-    body+=statusLine()+'<p class="muted">Gloria: '+(doneHas('mama','mama_confirma')?'✅ confirmó':'⏳ pendiente')+' · Gaby: '+(doneHas('gaby','gaby_confirma')?'✅ confirmó':'⏳ pendiente')+'</p>';
-    body+='<div class="card"><p>Pon el teléfono en un lugar fijo del carro y deja la pantalla encendida.</p><p class="muted">Al aceptar, el celular empieza a compartir la ubicación solo. Te va a pedir permiso: toca «Permitir».</p></div>';
-    body+='<button class="big green" onclick="choferStart()">Aceptar y compartir ubicación</button>';
-  } else if(st==='en_curso'){
-    var startMs=new Date(t.started_at).getTime();
-    body+='<div class="timer" id="clock">'+clock(Date.now()-startMs)+'</div>';
-    body+='<div class="status" id="gpsbox"></div><div id="gpsban"></div>';
-    body+='<h2>Registrar</h2><div class="grid">'+
-      '<button class="btn" onclick="choferEv(\'parada\')">🛑 Me detuve</button>'+
-      '<button class="btn" onclick="choferEv(\'reanudo\')">▶️ Seguí</button>'+
-      '<button class="btn" onclick="choferEv(\'trafico\')">🚗 Tráfico / retraso</button>'+
-      '<button class="btn" onclick="choferEv(\'incidente\',true)">✏️ Otro</button>'+
-      '<button class="btn" onclick="choferEv(\'sube\')">⬆️ Subió alguien</button>'+
-      '<button class="btn" onclick="choferEv(\'baja\')">⬇️ Bajó alguien</button></div>';
-    body+='<div style="height:14px"></div><button class="big red" onclick="choferArrive()">Llegué</button>';
-    body+='<h2>Últimos registros</h2>'+eventList(t,5);
-  } else if(st==='llegado'){
-    var dur=new Date(t.arrived_at)-new Date(t.started_at);
-    body+='<div class="card"><div class="check">🏁</div><p style="text-align:center;font-weight:700">Viaje terminado</p><div class="kv"><span>Salida</span><b>'+fmtTime(t.started_at)+'</b><span>Llegada</span><b>'+fmtTime(t.arrived_at)+'</b><span>Duración</span><b>'+fmtDur(dur)+'</b></div></div><p class="muted" style="text-align:center">Gracias. Ya puedes cerrar esta pantalla.</p>';
-  } else { body+='<div class="card"><p>Este viaje fue cancelado.</p></div>'; }
-  shell('chofer',body);
-  if(st==='en_curso'){
-    Geo.ui();
-    clearInterval(ctx.tick);
-    ctx.tick=setInterval(function(){ var c=document.getElementById('clock'); if(c&&ctx.trip&&ctx.trip.started_at) c.textContent=clock(Date.now()-new Date(ctx.trip.started_at).getTime()); },1000);
+/* Aplica el evento en pantalla de inmediato (también sin conexión) */
+var EV2STAGE={inicio:'a_gaby',llegada_gaby:'en_gaby',salida_gaby:'a_mama',llegada_mama:'en_mama',salida_mama:'a_destino',llegada_destino:'en_destino',fin:'fin'};
+function applyLocal(role,type,ts,res){
+  var t=ctx.trip; if(!t) return;
+  t.events=(t.events||[]).concat([{role:role,type:type,note:null,meta:(res&&res.aviso)?{aviso:res.aviso}:null,ts:ts}]);
+  t.done=(t.done||[]).concat([role+':'+type]);
+  var tg=EV2STAGE[type];
+  if(tg && !(res&&res.aviso&&res.aviso!=='salto_de_etapa') && sIdx(tg)>sIdx(t.stage)){
+    t.stage=tg; if(type==='inicio'){ t.status='en_curso'; t.started_at=ts; } if(type==='fin'){ t.status='finalizado'; t.arrived_at=ts; }
   }
 }
-function choferStart(){
-  var ts=logEvent('chofer','inicio',null,deviceMeta());
-  ctx.trip.status='en_curso'; ctx.trip.started_at=ts;
-  Geo.start(); Wake.on(); viewChofer(); toast('Recorrido iniciado');
+function register(role,type,opts){
+  opts=opts||{};
+  return sendEvent(role,type,opts.note,opts.meta).then(function(res){
+    if(res.error){ toast('No se pudo guardar. Intenta otra vez.'); return res; }
+    if(res.duplicado){ toast('Ya estaba registrado a las '+fmtTime(res.ts)); lsSet('rec_seen_'+ctx.code+'_'+role+'_'+type,res.ts); }
+    else { applyLocal(role,type,res.ts,res); if(res.aviso) toast(avisoTxt(res.aviso)); }
+    return res;
+  });
+}
+function avisoTxt(a){ return {sin_inicio:'Quedó anotado, pero el recorrido aún no se inicia.',recorrido_ya_cerrado:'El recorrido ya estaba cerrado; quedó anotado aparte.',ya_iniciado:'Ya estaba iniciado.',fuera_de_orden:'Quedó anotado, pero esa etapa ya había pasado.',salto_de_etapa:'Quedó anotado (se saltó una etapa).'}[a]||'Anotado'; }
+
+/* ============ ETA dinámico (lo calcula el teléfono de Barrón) ============ */
+var TARGET_BY_STAGE={0:'gaby',2:'mama',4:'destino'};
+function currentTarget(t){ if(!t||t.status!=='en_curso') return null; return TARGET_BY_STAGE[sIdx(t.stage)]||null; }
+var Eta={
+  timer:null, flagged:{}, nearSent:{}, busy:false,
+  start:function(){ var self=this; Geo.onFix=function(p){ self.onFix(p); }; if(!this.timer){ this.timer=setInterval(function(){ self.tick(); },ETA_EVERY_MS); } this.tick(); },
+  stop:function(){ clearInterval(this.timer); this.timer=null; Geo.onFix=null; },
+  onFix:function(p){
+    var t=ctx.trip, tg=currentTarget(t); if(!tg) return;
+    var pl=place(t,tg); if(!pl||pl.lat==null) return;
+    var k=t.stage+tg; if(this.nearSent[k]) return;
+    if(hav(p,pl)<NEAR_M){ this.nearSent[k]=1; sendEvent('chofer','cerca',null,{to:tg,dist_m:Math.round(hav(p,pl))}); toast('Ya casi llegas a '+SHORT[tg]); }
+  },
+  speed:function(){ var h=Geo.hist, d=0, s=0; for(var i=1;i<h.length;i++){ var dt=(h[i].t-h[i-1].t)/1000; if(dt<=0||dt>60) continue; var dd=hav(h[i-1],h[i]); if(dd/dt<0.8) continue; d+=dd; s+=dt; } return s>=20?d/s:null; },
+  tick:function(){
+    var t=ctx.trip, tg=currentTarget(t); if(!tg||this.busy) return;
+    var pl=place(t,tg), pos=Geo.pos(), self=this, key=t.stage+tg;
+    if(!pl||pl.lat==null||!pos){
+      var motivo=(!pl||pl.lat==null)?'sin_coordenadas_destino':'sin_gps';
+      if(self.flagged[key]!==motivo){ self.flagged[key]=motivo; sendEvent('chofer','eta_no_disponible',null,{to:tg,motivo:motivo}); }
+      return;
+    }
+    self.flagged[key]=null; self.busy=true;
+    var straight=hav(pos,pl);
+    var ctl=window.AbortController?new AbortController():null, to=setTimeout(function(){ if(ctl) ctl.abort(); },7000);
+    fetch('https://router.project-osrm.org/route/v1/driving/'+pos.lng+','+pos.lat+';'+pl.lng+','+pl.lat+'?overview=false',{signal:ctl?ctl.signal:undefined})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ clearTimeout(to); var r0=j&&j.routes&&j.routes[0]; if(!r0) throw new Error('sin_ruta'); return {dur:r0.duration,dist:r0.distance,src:'osrm'}; })
+      .catch(function(){ clearTimeout(to); var v=self.speed(), vv=v||8; vv=Math.min(Math.max(vv,4),25); return {dur:straight*1.3/vv,dist:straight*1.3,src:v?'recta_vel_observada':'recta_vel_supuesta_30kmh'}; })
+      .then(function(r){
+        self.busy=false;
+        var ts=new Date(Date.now()+r.dur*1000).toISOString();
+        sendEvent('chofer','eta',null,{to:tg,eta_ts:ts,dur_s:Math.round(r.dur),dist_m:Math.round(r.dist),src:r.src,recta_m:Math.round(straight)});
+        t.eta={type:'eta',meta:{to:tg,eta_ts:ts,dur_s:Math.round(r.dur),dist_m:Math.round(r.dist),src:r.src},ts:new Date().toISOString()};
+        refresh();
+      });
+  }
+};
+
+/* ============ Textos: ¿Dónde estoy? ¿Qué pasa? ¿Qué hago? ============ */
+function etaInfo(t){
+  var tg=currentTarget(t); if(!tg) return null;
+  var e=t.eta;
+  if(e&&e.type==='eta'&&e.meta&&e.meta.to===tg){ var at=new Date(e.meta.eta_ts).getTime(), age=Date.now()-new Date(e.ts).getTime(); return {kind:'eta',to:tg,at:at,age:age,src:e.meta.src,dist:e.meta.dist_m}; }
+  if(e&&e.type==='eta_no_disponible'&&e.meta&&e.meta.to===tg) return {kind:'no',to:tg,motivo:e.meta.motivo};
+  return {kind:'espera',to:tg};
+}
+function etaLine(t){
+  var i=etaInfo(t); if(!i) return '';
+  var nm=SHORT[i.to];
+  if(i.kind==='eta'){
+    var min=Math.max(0,Math.round((i.at-Date.now())/60000));
+    var viejo=i.age>4*60000?' · dato de hace '+Math.round(i.age/60000)+' min':'';
+    return 'Llega a '+nm+' a las <b>'+fmtTime(i.at)+'</b> (<span data-eta="'+i.at+'">'+(min<=0?'ya casi':'~'+min+' min')+'</span>)'+viejo;
+  }
+  if(i.kind==='no') return i.motivo==='sin_gps'?'Sin hora estimada: el teléfono de Barrón no tiene ubicación.':'Sin hora estimada: aún no se conoce la ubicación de '+nm+'.';
+  return 'Calculando la hora estimada…';
+}
+function narrative(t,role){
+  var st=t.status, s=sIdx(t.stage), w, q, d;
+  var since=function(type){ var ts=evTs(t,type); return ts?'<span data-since="'+new Date(ts).getTime()+'"></span>':''; };
+  if(st==='cancelado'){ return {w:'Este recorrido fue cancelado.',q:'No hay nada en marcha.',d:'No tienes que hacer nada.'}; }
+  if(st==='programado'){
+    w='Recorrido de hoy listo en '+SHORT.dif+'.'; q='Todavía no sale.';
+    d={mama:doneHas(t,'mama','mama_confirma')?'Ya avisaste. Solo espera.':'Toca «Estoy lista» cuando lo estés.',
+       gaby:doneHas(t,'gaby','gaby_confirma')?'Ya confirmaste. Solo espera.':'Toca «Recibí, confirmo».',
+       chofer:'Cuando salgas de DIF, toca INICIAR RECORRIDO.',admin:'Esperando que Barrón inicie el recorrido.'}[role];
+    return {w:w,q:q,d:d};
+  }
+  if(st==='interrumpido') return {w:'El recorrido se interrumpió.',q:'Miguel lo cerró o se perdió la señal.',d:'Los datos que sí llegaron quedaron guardados.'};
+  if(st==='finalizado'){ return {w:'Recorrido terminado.',q:'Llegaron a las '+fmtTime(evTs(t,'llegada_destino')||t.arrived_at)+'.',d:role==='mama'?'¡Listo, Doña Gloria! Ya llegó.':'Gracias. Ya puedes cerrar esta pantalla.'}; }
+  var W=['En camino a Santa Cruz por Gaby.','Con Gaby, en Santa Cruz.','En camino a La Pradera por Doña Gloria.','Con Doña Gloria, en La Pradera.','Rumbo a Corregidora (Fray Sebastián de Gallegos).','Ya en el destino.'];
+  w=W[Math.max(0,Math.min(5,s))];
+  if(s%2===0&&s<=4) q=etaLine(t); else q='Llevan <b>'+since(['','llegada_gaby','','llegada_mama','','llegada_destino'][s])+'</b> aquí.';
+  if(role==='chofer'){ var p=driverPlan(t); d=p?p.hint:''; }
+  else if(role==='admin') d='Observas en vivo. Las alarmas avisan cuando se acerque.';
+  else if(role==='mama') d=['Prepárate: Barrón ya va por Gaby.','Ya está con Gaby. Casi sale por ti.','Prepárate: Barrón va por ti.','Ya llegó por ti. Sube con calma.','Vas en camino al destino. Nada más.','Llegaron. Ya puedes bajar con calma.'][s];
+  else d=['Prepárate: Barrón ya va por ti.','Sube con Barrón cuando llegue.','Todo en orden. Si pasa algo, déjalo en la nota.','Todo en orden. Si pasa algo, déjalo en la nota.','Todo en orden. Si pasa algo, déjalo en la nota.','Llegaron al destino.'][s];
+  return {w:w,q:q,d:d};
+}
+function heroHtml(t,role){
+  var n=narrative(t,role), name=LBL[role]||'';
+  return '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><h1>Recorrido de hoy</h1></div><div class="muted" style="margin:-2px 0 12px">'+esc(fmtDay().charAt(0).toUpperCase()+fmtDay().slice(1))+'</div>'+
+   '<div class="where"><div class="row"><div class="ic">📍</div><div><div class="lb">¿Dónde estamos?</div><div class="tx">'+n.w+'</div></div></div>'+
+   '<div class="row"><div class="ic">⏱</div><div><div class="lb">¿Qué está pasando?</div><div class="tx" style="font-weight:600">'+n.q+'</div></div></div>'+
+   '<div class="row todo"><div class="ic">👉</div><div><div class="lb">¿Qué te toca, '+esc(name)+'?</div><div class="tx">'+n.d+'</div></div></div></div>';
+}
+
+/* ============ Stepper ============ */
+var NODES=[['dif','DIF','1'],['gaby','Gaby','2'],['mama','Gloria','3'],['destino','Destino','4']];
+function stepperBuild(){
+  return '<div class="stepper"><div class="rail"><b id="railb" style="width:0"></b></div><div class="car" id="car" style="left:12.5%">🚗</div><div class="nodes">'+
+    NODES.map(function(n,i){ return '<div class="node pend" id="nd'+i+'"><div class="c">'+n[2]+'</div><div class="n">'+n[1]+'</div><div class="t" id="nt'+i+'"></div></div>'; }).join('')+'</div></div>';
+}
+function nodeStates(t){
+  var s=(t.status==='programado')?-1:sIdx(t.stage); if(t.status==='cancelado') s=-1;
+  var arr=['pend','pend','pend','pend'];
+  if(s<0) arr[0]='cur';
+  else {
+    arr[0]='done';
+    arr[1]= s===0?'next': s===1?'cur':'done';
+    arr[2]= s<=1?'pend': s===2?'next': s===3?'cur':'done';
+    arr[3]= s<=3?'pend': s===4?'next': s===5?'cur':'done';
+    if(s<=0) arr[2]='pend';
+  }
+  return {s:s,a:arr};
+}
+function carPos(t,s){
+  if(s<0) return 0; if(s===1) return 1; if(s===3) return 2; if(s>=5) return 3;
+  var from=s===0?'dif':s===2?'gaby':'mama', to=s===0?'gaby':s===2?'mama':'destino', a=place(t,from), b=place(t,to), v=t.last_point, frac=0.5;
+  if(a&&b&&a.lat!=null&&b.lat!=null&&v){ var tot=hav(a,b), left=hav(v,b); if(tot>50) frac=Math.min(.95,Math.max(.05,1-left/tot)); }
+  return (s===0?0:s===2?1:2)+frac;
+}
+function stepperUpdate(t){
+  var ns=nodeStates(t), pos=carPos(t,ns.s), car=document.getElementById('car'); if(!car) return;
+  var newLeft='calc(12.5% + '+(pos/3*75)+'%)';
+  if(car.style.left!==newLeft){ car.style.left=newLeft; car.classList.remove('bump'); void car.offsetWidth; car.classList.add('bump'); }
+  document.getElementById('railb').style.width=(pos/3*100)+'%';
+  var arr=function(type){ return fmtTime(evTs(t,type)); };
+  var times=[ t.started_at?('salió '+fmtTime(t.started_at)):'por salir',
+    ns.s>=1?('llegó '+arr('llegada_gaby')+(ns.s>=2?'<br>salió '+arr('salida_gaby'):'')):(ns.s===0?etaShort(t,'gaby'):''),
+    ns.s>=3?('llegó '+arr('llegada_mama')+(ns.s>=4?'<br>salió '+arr('salida_mama'):'')):(ns.s===2?etaShort(t,'mama'):''),
+    ns.s>=5?('llegó '+arr('llegada_destino')):(ns.s===4?etaShort(t,'destino'):'') ];
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('nd'+i), old=el.className, nw='node '+ns.a[i]; if(old!==nw){ el.className=nw; }
+    document.getElementById('nt'+i).innerHTML=times[i];
+  }
+}
+function etaShort(t,key){ var i=etaInfo(t); if(i&&i.to===key&&i.kind==='eta') return 'llega ~'+fmtTime(i.at); if(i&&i.to===key) return 'en camino'; return ''; }
+
+/* ============ Mapa (mosaicos OSM + capa SVG) ============ */
+var MAPW=600, MAPH=400;
+function merc(lat,lng,z){ var n=256*Math.pow(2,z), x=(lng+180)/360*n, sl=Math.sin(lat*Math.PI/180), y=(0.5-Math.log((1+sl)/(1-sl))/(4*Math.PI))*n; return {x:x,y:y}; }
+function mapHtml(t,veh,trail,opts){
+  opts=opts||{};
+  var ns=nodeStates(t), pts=[];
+  var pl=(t.places||[]).filter(function(p){ return p.lat!=null; });
+  pl.forEach(function(p){ pts.push({lat:p.lat,lng:p.lng}); });
+  if(veh) pts.push({lat:veh.lat,lng:veh.lng});
+  if(!pts.length) return '<div class="mapwrap"><div class="mapph"><div>🗺️<br>El mapa aparece en cuanto Barrón comparte su ubicación o se conocen los lugares.</div></div></div>';
+  var minLat=90,maxLat=-90,minLng=180,maxLng=-180;
+  pts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
+  var z=16,pad=56; for(;z>3;z--){ var a=merc(maxLat,minLng,z), b=merc(minLat,maxLng,z); if((b.x-a.x)<=MAPW-2*pad&&(b.y-a.y)<=MAPH-2*pad) break; }
+  var c=merc((minLat+maxLat)/2,(minLng+maxLng)/2,z), ox=c.x-MAPW/2, oy=c.y-MAPH/2;
+  var X=function(p){ return merc(p.lat,p.lng,z).x-ox; }, Y=function(p){ return merc(p.lat,p.lng,z).y-oy; };
+  var tiles='', nT=Math.pow(2,z);
+  for(var tx=Math.floor(ox/256);tx<=Math.floor((ox+MAPW)/256);tx++) for(var ty=Math.floor(oy/256);ty<=Math.floor((oy+MAPH)/256);ty++){
+    if(ty<0||ty>=nT) continue; var wx=((tx%nT)+nT)%nT;
+    tiles+='<img alt="" draggable="false" src="https://tile.openstreetmap.org/'+z+'/'+wx+'/'+ty+'.png" style="position:absolute;left:'+(tx*256-ox).toFixed(1)+'px;top:'+(ty*256-oy).toFixed(1)+'px;width:256px;height:256px" onerror="this.style.display=\'none\'">';
+  }
+  var svg='<svg width="'+MAPW+'" height="'+MAPH+'" style="position:absolute;left:0;top:0">';
+  if(trail&&trail.length>1){ var d=trail.map(function(q,i){ return (i?'L':'M')+X({lat:q[0],lng:q[1]}).toFixed(1)+','+Y({lat:q[0],lng:q[1]}).toFixed(1); }).join('');
+    svg+='<path d="'+d+'" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="'+d+'" fill="none" stroke="#35c98a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'; }
+  var nextKey=({0:'gaby',2:'mama',4:'destino'})[ns.s], nextP=nextKey?place(t,nextKey):null;
+  if(veh&&nextP&&nextP.lat!=null) svg+='<line x1="'+X(veh)+'" y1="'+Y(veh)+'" x2="'+X(nextP)+'" y2="'+Y(nextP)+'" stroke="#ffc65c" stroke-width="4" stroke-dasharray="3 9" stroke-linecap="round"/>';
+  var order=['dif','gaby','mama','destino'];
+  (t.places||[]).forEach(function(p){
+    if(p.lat==null) return; var i=order.indexOf(p.key), st=ns.a[i], col=st==='done'?'#35c98a':(st==='cur'||st==='next')?'#ffc65c':'#fff';
+    svg+='<g transform="translate('+X(p).toFixed(1)+','+Y(p).toFixed(1)+')"><circle r="15" fill="'+col+'" stroke="#0b2f33" stroke-width="3"/><text y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#0b2f33">'+(i+1)+'</text></g>';
+  });
+  if(veh){ var vx=X(veh).toFixed(1), vy=Y(veh).toFixed(1); svg+='<circle cx="'+vx+'" cy="'+vy+'" r="16" fill="#7cc4ff" opacity=".3"><animate attributeName="r" values="10;24;10" dur="2s" repeatCount="indefinite"/></circle><circle cx="'+vx+'" cy="'+vy+'" r="9" fill="#2f8cff" stroke="#fff" stroke-width="3"/>'; }
+  svg+='</svg>';
+  var chip='';
+  if(veh&&nextP&&nextP.lat!=null) chip='<div style="position:absolute;left:8px;top:8px" class="chip">➜ '+esc(SHORT[nextKey])+' · '+fmtKm(hav(veh,nextP))+'</div>';
+  return '<div class="mapwrap"><div class="mapin" style="width:'+MAPW+'px;height:'+MAPH+'px">'+tiles+svg+'</div>'+chip+'<div class="attr">© OpenStreetMap</div></div>'+
+    '<p class="muted" style="margin:8px 2px 0">🔵 Barrón ahorita · 🟡 Siguiente punto · 🟢 Ya pasó · línea punteada: lo que falta</p>';
+}
+function fitMaps(){ var ws=document.querySelectorAll('.mapwrap'); for(var i=0;i<ws.length;i++){ var w=ws[i], inn=w.querySelector('.mapin'); if(!inn) continue; var k=w.clientWidth/MAPW; if(k>0) inn.style.transform='scale('+k+')'; } }
+window.addEventListener('resize',fitMaps);
+
+/* ============ Participación y registros ============ */
+var EV_NAMES={mama_confirma:'Gloria avisó que está lista',gaby_confirma:'Gaby confirmó',chofer_abre:'Barrón abrió el recorrido',inicio:'Salió de DIF La Griega',llegada_gaby:'Llegó con Gaby',salida_gaby:'Salió de Santa Cruz',llegada_mama:'Llegó con Doña Gloria',salida_mama:'Salió de La Pradera',llegada_destino:'Llegó al destino',fin:'Recorrido terminado',parada:'Se detuvo',reanudo:'Siguió',trafico:'Tráfico o retraso',incidente:'Otro',nota:'Nota',viaje_creado:'Recorrido creado',cerca:'Va llegando',cierre_manual:'Cerrado a mano',gps_perdido:'Se perdió la ubicación',gps_recuperado:'Volvió la ubicación',gps_permiso_denegado:'Ubicación bloqueada',eta:'Hora estimada',eta_no_disponible:'Sin hora estimada',pantalla_oculta:'Pantalla apagada',pantalla_visible:'Pantalla de vuelta',abre:'Abrió el enlace'};
+var HIDE=['abre','pantalla_oculta','pantalla_visible','eta','eta_no_disponible','gps_perdido','gps_recuperado','cerca'];
+function whoHtml(t){
+  var row=function(nm,type,role){ var ts=evTs(t,type); return '<span>'+nm+'</span>'+(ts?'<b style="color:var(--mint)">✅ '+fmtTime(ts)+'</b>':'<span class="muted">⏳ pendiente</span>'); };
+  var ch=evTs(t,'chofer_abre');
+  return '<h2 style="margin-bottom:8px">Cadena de hoy</h2><div class="kv">'+row('Gloria · estoy lista','mama_confirma')+row('Gaby · recibí','gaby_confirma')+
+   '<span>Barrón · abrió</span>'+(ch?'<b style="color:var(--mint)">✅ '+fmtTime(ch)+'</b>':'<span class="muted">⏳ pendiente</span>')+'</div>';
+}
+function logHtml(t,n){
+  var ev=(t.events||[]).filter(function(e){ return HIDE.indexOf(e.type)<0; }).slice(-(n||6)).reverse();
+  if(!ev.length) return '';
+  return '<h2 style="margin-bottom:6px">Lo que ha pasado</h2><ul class="log">'+ev.map(function(e){ return '<li><span>'+esc(EV_NAMES[e.type]||e.type)+(e.note&&e.type!=='viaje_creado'?' — '+esc(e.note):'')+(e.meta&&e.meta.aviso?' <span class="muted">('+esc(e.meta.aviso.replace(/_/g,' '))+')</span>':'')+'</span><span class="muted">'+fmtTime(e.ts)+'</span></li>'; }).join('')+'</ul>';
+}
+function summaryHtml(t){
+  var T=function(k){ return evTs(t,k); }, ms=function(a,b){ return a&&b?fmtDur(new Date(b)-new Date(a)):'—'; };
+  var end=T('llegada_destino')||t.arrived_at;
+  return '<svg class="check" viewBox="0 0 90 90"><circle cx="45" cy="45" r="40"/><path d="M27 46 l13 13 l25 -28"/></svg><h2 style="text-align:center">Recorrido terminado</h2><div class="kv">'+
+   '<span>Salió de DIF</span><b>'+fmtTime(t.started_at)+'</b><span>Con Gaby (llegó · salió)</span><b>'+fmtTime(T('llegada_gaby'))+' · '+fmtTime(T('salida_gaby'))+'</b>'+
+   '<span>Con Doña Gloria (llegó · salió)</span><b>'+fmtTime(T('llegada_mama'))+' · '+fmtTime(T('salida_mama'))+'</b><span>Llegó al destino</span><b>'+fmtTime(end)+'</b>'+
+   '<span>Duración total</span><b>'+ms(t.started_at,T('fin')||end)+'</b></div>';
+}
+
+/* ============ Qué sigue para Barrón ============ */
+function driverPlan(t){
+  var s=sIdx(t.stage);
+  if(t.status==='programado') return {ev:'inicio',label:'INICIAR RECORRIDO',sub:'Sales de DIF La Griega',hint:'Cuando salgas de DIF La Griega, toca INICIAR RECORRIDO.',cls:''};
+  if(t.status!=='en_curso') return null;
+  var P=[
+   {ev:'llegada_gaby',label:'Llegué con Gaby',sub:'Santa Cruz',hint:'Cuando llegues con Gaby, toca «Llegué con Gaby».',cls:'mint'},
+   {ev:'salida_gaby',label:'Salimos de Santa Cruz',sub:'Gaby ya va a bordo',hint:'Cuando salgan de Santa Cruz, toca «Salimos de Santa Cruz».',cls:'sky'},
+   {ev:'llegada_mama',label:'Llegué con Mamá',sub:'La Pradera',hint:'Cuando llegues con Doña Gloria, toca «Llegué con Mamá».',cls:'mint'},
+   {ev:'salida_mama',label:'Salimos de La Pradera',sub:'Doña Gloria ya va a bordo',hint:'Cuando salgan de La Pradera, toca «Salimos de La Pradera».',cls:'sky'},
+   {ev:'llegada_destino',label:'Llegamos al destino',sub:'Corregidora · Fray Sebastián de Gallegos',hint:'Cuando lleguen al destino, toca «Llegamos al destino».',cls:'mint'},
+   {ev:'fin',label:'Terminar recorrido',sub:'Se deja de medir',hint:'Cuando ya se bajó todo mundo, toca «Terminar recorrido».',cls:'rose'}];
+  return P[Math.max(0,Math.min(5,s))];
+}
+
+/* ============ Acciones por rol ============ */
+function confirmedBlock(t,type,txt){
+  var ts=evTs(t,type)||lsGet('rec_seen_'+ctx.code+'_'+ctx.role+'_'+type,null);
+  return '<div class="glass flat" style="text-align:center"><svg class="check" viewBox="0 0 90 90"><circle cx="45" cy="45" r="40"/><path d="M27 46 l13 13 l25 -28"/></svg><div style="font-weight:800;font-size:1.15rem">'+txt+'</div><div class="muted">Quedó registrado'+(ts?' a las '+fmtTime(ts):'')+'</div></div>';
+}
+function actHtml(t,role){
+  var st=t.status;
+  if(role==='admin') return adminAct(t);
+  if(st==='cancelado') return '';
+  if(st==='finalizado') return '<div class="glass flat">'+summaryHtml(t)+'</div>';
+  if(st==='interrumpido') return '<div class="glass flat"><div class="banner bad">Este recorrido se cerró antes de llegar. Lo que alcanzó a guardarse quedó registrado.</div></div>';
+  if(role==='mama'){
+    if(!doneHas(t,'mama','mama_confirma')&&!validEv(t,'mama_confirma')) return '<button class="big mint" id="b-main" onclick="mamaConfirm(this)">Estoy lista<small>Toca aquí y ya quedó</small></button>';
+    return confirmedBlock(t,'mama_confirma','Gracias, Doña Gloria');
+  }
+  if(role==='gaby'){
+    var ok=doneHas(t,'gaby','gaby_confirma')||validEv(t,'gaby_confirma');
+    var h=ok?confirmedBlock(t,'gaby_confirma','Gracias, Gaby'):'<button class="big mint" id="b-main" onclick="gabyConfirm(this)">Recibí, confirmo<small>Toca aquí y ya quedó</small></button>';
+    h+='<div class="glass flat"><h2>¿Pasó algo? (opcional)</h2><textarea id="gnote" rows="2" placeholder="Escribe aquí una nota"></textarea><div class="gap"></div><button class="btn" style="width:100%" onclick="gabyNote()">Guardar nota</button></div>';
+    return h;
+  }
+  /* chofer */
+  var p=driverPlan(t), h2='';
+  if(st==='programado'){
+    h2+='<div id="gpsban"></div><button class="big" id="b-main" onclick="choferPress(this)">'+p.label+'<small>'+p.sub+' · empieza a medir y a guardar la ubicación</small></button>';
+    h2+='<div class="glass flat" style="margin-top:12px"><div class="chip" id="gpsbox"><span class="dot warn"></span><span>Ubicación apagada</span></div><p class="muted" style="margin:8px 2px 0">Pon el teléfono fijo en el carro y deja la pantalla encendida. Te va a pedir permiso de ubicación: toca «Permitir».</p></div>';
+    return h2;
+  }
+  var startMs=new Date(t.started_at).getTime();
+  h2+='<div id="gpsban"></div><button class="big '+p.cls+'" id="b-main" onclick="choferPress(this)">'+p.label+'<small>'+p.sub+'</small></button>';
+  h2+='<div class="glass flat"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div class="muted">Llevamos</div><div class="hero-time" id="clock">'+clock(Date.now()-startMs)+'</div></div><div class="chip" id="gpsbox"><span class="dot warn"></span><span>…</span></div></div>'+
+    '<h2 style="margin:14px 0 8px">Anotar algo del camino</h2><div class="grid"><button class="btn" onclick="choferEv(\'parada\')">🛑 Me detuve</button><button class="btn" onclick="choferEv(\'reanudo\')">▶️ Seguí</button><button class="btn" onclick="choferEv(\'trafico\')">🚗 Tráfico o retraso</button><button class="btn" onclick="choferEv(\'incidente\',true)">✏️ Otro</button></div></div>';
+  return h2;
+}
+function waitFix(ms,cb){
+  var t0=Date.now(); (function w(){ if(Geo.pos()||Geo.state==='denegado'||Geo.state==='no_soportado'||Date.now()-t0>ms) return cb(); setTimeout(w,200); })();
+}
+function choferPress(btn){
+  var t=ctx.trip, p=driverPlan(t); if(!p||btn.disabled) return;
+  if(p.ev==='fin'&&!confirm('¿Ya se bajó todo mundo y terminas el recorrido?')) return;
+  btn.disabled=true;
+  var go=function(){
+    register('chofer',p.ev,{meta:p.ev==='inicio'?deviceMeta():null}).then(function(res){
+      if(p.ev==='fin'){ Geo.flush(); Geo.stop(); Wake.off(); Eta.stop(); }
+      else { Geo.start(); Eta.start(); }
+      ctx.sig.act=null; refresh(true);
+    });
+  };
+  if(p.ev==='inicio'){ Geo.start(); Wake.on(); waitFix(5000,go); } else go();
 }
 function choferEv(type,askNote){
   var note=null;
   if(askNote){ note=prompt('¿Qué pasó?',''); if(note===null) return; note=note.trim()||null; }
-  logEvent('chofer',type,note);
-  ctx.trip.events=(ctx.trip.events||[]).concat([{role:'chofer',type:type,note:note,ts:new Date().toISOString()}]);
-  viewChofer(); toast('Registrado '+fmtTime(Date.now()));
+  sendEvent('chofer',type,note).then(function(r){ if(r.error) return toast('No se pudo guardar'); ctx.trip.events=(ctx.trip.events||[]).concat([{role:'chofer',type:type,note:note,meta:null,ts:r.ts}]); toast('Anotado '+fmtTime(r.ts)); refresh(); });
 }
-function choferArrive(){
-  if(!confirm('¿Ya llegaste?')) return;
-  var ts=logEvent('chofer','llegada');
-  Geo.flush(); Geo.stop(); Wake.off();
-  ctx.trip.status='llegado'; ctx.trip.arrived_at=ts; clearTimers(); viewChofer(); toast('Llegada registrada');
+function mamaConfirm(btn){ btn.disabled=true; register('mama','mama_confirma').then(function(r){ if(!r.error) fx(); ctx.sig.act=null; refresh(true); }); }
+function gabyConfirm(btn){ btn.disabled=true; register('gaby','gaby_confirma').then(function(r){ if(!r.error) fx(); ctx.sig.act=null; refresh(true); }); }
+function gabyNote(){
+  var el=document.getElementById('gnote'), v=(el.value||'').trim(); if(!v) return;
+  sendEvent('gaby','nota',v).then(function(r){ if(r.error) return toast('No se pudo guardar'); ctx.trip.events=(ctx.trip.events||[]).concat([{role:'gaby',type:'nota',note:v,meta:null,ts:r.ts}]); el.value=''; toast('Nota guardada'); refresh(); });
 }
 
-/* ============ Enlace único ============ */
-function roleKey(code){ return 'rec_role_'+code; }
-function changeRole(){ try{ localStorage.removeItem(roleKey(ctx.code)); }catch(e){} clearTimers(); startShared(ctx.code); return false; }
-function pickRole(role){ lsSet(roleKey(ctx.code),role); startRole(role,ctx.code,true); }
-function startShared(code){
-  code=(code||'').toLowerCase().trim(); ctx.code=code; ctx.role=null; ctx.shared=true; clearTimers();
-  if(!/^[a-z0-9]{4,16}$/.test(code)){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace otra vez.'); return; }
-  var saved=lsGet(roleKey(code),null);
-  if(saved==='mama'||saved==='gaby'||saved==='chofer'){ startRole(saved,code,true); return; }
-  $app.innerHTML='<div class="card" style="text-align:center;padding:26px 20px"><div style="font-size:2.4rem">👋</div><h1 style="margin:.4rem 0 .6rem">Hola</h1>'+
-    '<p style="font-size:1.08rem;line-height:1.5;margin:0 0 .7rem">Soy <b>Miguel</b>, hijo de Doña Gloria.</p>'+
-    '<p style="line-height:1.5;margin:0 0 .7rem">Estoy empezando a construir aplicaciones con inteligencia artificial. Esto es solamente una prueba para ver si funciona este proyecto.</p>'+
-    '<p class="muted" style="margin:0">Gracias por ayudarme. No tienes que instalar nada.</p></div>'+
-    '<p style="text-align:center;font-weight:700;font-size:1.1rem;margin:18px 0 10px">¿Quién eres?</p>'+
-    '<button class="big green" onclick="pickRole(\'mama\')">Soy Gloria</button><div style="height:10px"></div>'+
-    '<button class="big" onclick="pickRole(\'gaby\')">Soy Gaby</button><div style="height:10px"></div>'+
-    '<button class="big" onclick="pickRole(\'chofer\')">Soy Barrón</button>';
+/* ============ Pantalla del recorrido ============ */
+function mount(){
+  var role=ctx.role;
+  var host=ctx.host||$app; if(!ctx.host) $app.className='';
+  host.innerHTML='<div class="top"><span class="chip">'+esc(LBL[role])+'</span><span class="chip"><span id="netdot" class="dot"></span><span id="nettxt">Conectado</span></span></div>'+
+   '<div class="glass" id="s-hero"></div><div id="s-act"></div><div class="glass flat" id="s-step">'+stepperBuild()+'</div><div class="glass flat" id="s-map"></div><div class="glass flat" id="s-who"></div><div class="glass flat" id="s-log"></div>'+
+   (role==='admin'?'':'<p class="muted" style="text-align:center;margin-top:16px"><a href="#" onclick="return changeRole()">No soy '+esc(LBL[role])+'</a></p>');
+  ctx.mounted=true; ctx.sig={}; paintNet();
 }
-
-/* ============ Arranque de cada rol ============ */
-function startRole(role, code, shared){
-  ctx.shared=!!shared;
-  ctx.code=(code||'').toLowerCase().trim(); ctx.role=role; ctx.trip=null; clearTimers();
-  $app.innerHTML='<div class="card"><p style="text-align:center">Abriendo…</p></div>';
-  if(!/^[a-z0-9]{4,16}$/.test(ctx.code)){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace o el QR otra vez.'); return; }
-  loadTrip().then(function(t){
-    if(t.error){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace o el QR otra vez.'); return; }
-    if(t.expired){ errorView('Este código ya venció','Pide un código nuevo para este viaje.'); return; }
-    logOnce(role,'abre',null,deviceMeta());
-    if(role==='chofer'){ logOnce('chofer','chofer_abre'); }
-    var render = role==='mama'?viewMama:role==='gaby'?viewGaby:viewChofer;
-    render();
-    if(role==='chofer' && t.status==='en_curso'){ Geo.start(); Wake.on(); }
-    startPolling(function(){ if(!document.activeElement || document.activeElement.tagName!=='TEXTAREA') render(); });
-  }, function(){
-    errorView('Sin internet','No se pudo abrir el viaje. Revisa tu conexión y vuelve a escanear.');
+function refresh(force){
+  var t=ctx.trip, role=ctx.role; if(!t||!ctx.mounted) return;
+  document.getElementById('s-hero').innerHTML=heroHtml(t,role);
+  stepperUpdate(t);
+  var veh=(role==='chofer'&&Geo.pos())?Geo.pos():t.last_point;
+  var ms=JSON.stringify([veh&&Math.round(veh.lat*20000),veh&&Math.round(veh.lng*20000),(t.places||[]).map(function(p){ return p.lat; }),t.stage,t.status]);
+  if(force||ctx.sig.map!==ms){ ctx.sig.map=ms; document.getElementById('s-map').innerHTML=mapHtml(t,veh,t.trail); fitMaps(); }
+  var as=JSON.stringify([t.status,t.stage,doneHas(t,'mama','mama_confirma'),doneHas(t,'gaby','gaby_confirma'),!!validEv(t,'mama_confirma'),!!validEv(t,'gaby_confirma')]);
+  var foc=document.activeElement&&document.activeElement.id==='gnote';
+  if((force||ctx.sig.act!==as)&&!(foc&&!force)){ var keep=document.getElementById('gnote')?document.getElementById('gnote').value:''; ctx.sig.act=as; document.getElementById('s-act').innerHTML=actHtml(t,role); if(keep&&document.getElementById('gnote')) document.getElementById('gnote').value=keep; Geo.ui(); }
+  document.getElementById('s-who').innerHTML=whoHtml(t);
+  var lg=logHtml(t,6); var le=document.getElementById('s-log'); le.innerHTML=lg; le.style.display=lg?'':'none';
+  /* cambios de etapa: animación y aviso */
+  var idx=t.status==='finalizado'?7:(t.status==='programado'?-1:sIdx(t.stage));
+  if(ctx.prevIdx!=null&&idx!==ctx.prevIdx&&idx>ctx.prevIdx){ fx(t.status==='finalizado'?'fin':'etapa'); var n=narrative(t,role); toast(n.w.replace(/<[^>]+>/g,'')); }
+  if(role==='admin'&&ctx.prevIdx!=null&&idx>ctx.prevIdx&&Alarm.isOn()) Alarm.beep(2);
+  ctx.prevIdx=idx;
+  if(role==='admin'){ var am=ctx.alarmMsg; adminAlarms(t); if(am!==ctx.alarmMsg){ ctx.sig.act=null; document.getElementById('s-act').innerHTML=actHtml(t,role); } }
+  tick1();
+}
+function tick1(){
+  var now=Date.now(), a=document.querySelectorAll('[data-since]'), i;
+  for(i=0;i<a.length;i++) a[i].textContent=clock(now-(+a[i].getAttribute('data-since')));
+  var b=document.querySelectorAll('[data-eta]');
+  for(i=0;i<b.length;i++){ var m=Math.round((+b[i].getAttribute('data-eta')-now)/60000); b[i].textContent=m<=0?'ya casi':'~'+m+' min'; }
+  var c=document.getElementById('clock'); if(c&&ctx.trip&&ctx.trip.started_at) c.textContent=clock(now-new Date(ctx.trip.started_at).getTime());
+}
+function todayMX(){ return new Date().toLocaleDateString('en-CA',{timeZone:TZ}); }
+function loadTrip(){
+  return rpcRaw('rec_get_trip',{p_code:ctx.code}).then(function(t){
+    Net.set(true);
+    if(Q.items().length&&ctx.trip&&t&&!t.error) return ctx.trip; /* hay cosas sin enviar: no pisar lo que ve la persona */
+    if(t&&!t.error){ ctx.trip=t; lsSet('rec_cache',{code:ctx.code,trip:t,at:Date.now()}); }
+    return t;
   });
 }
+function startPolling(){
+  clearInterval(ctx.poll); clearInterval(ctx.tick);
+  ctx.poll=setInterval(function(){
+    loadTrip().then(function(t){
+      if(!t||t.error){ return; }
+      if(ctx.role!=='admin'&&!ctx.explicit&&t.day&&t.day!==todayMX()&&t.status!=='en_curso'){ home(); return; }
+      refresh();
+    },function(){ Net.set(false); });
+  },5000);
+  ctx.tick=setInterval(tick1,1000);
+}
+function errorView(icon,title,msg,retry){
+  clearTimers(); Eta.stop(); ctx.mounted=false;
+  $app.innerHTML='<div class="glass" style="text-align:center"><div style="font-size:2.6rem">'+icon+'</div><h1>'+esc(title)+'</h1><p>'+esc(msg)+'</p>'+(retry?'<div class="gap"></div><button class="big" onclick="home('+(ctx.explicit?"'"+esc(ctx.code)+"'":'')+')">Intentar otra vez</button>':'')+'</div>';
+}
+function changeRole(){ lsDel('rec_role'); Geo.stop(); Eta.stop(); home(ctx.explicit?ctx.code:null); return false; }
+function pickRole(role){ lsSet('rec_role',role); openTrip(role,ctx.explicit?ctx.code:null); }
+function picker(){
+  clearTimers(); ctx.mounted=false; $app.className='';
+  $app.innerHTML='<div class="glass" style="text-align:center;padding:26px 20px"><div style="font-size:2.4rem">👋</div><h1 style="margin:.3rem 0 .6rem">Hola</h1>'+
+   '<p style="font-size:1.08rem;line-height:1.5">Soy <b>Miguel</b>, hijo de Doña Gloria.</p>'+
+   '<p style="line-height:1.5">Estoy empezando a construir aplicaciones con inteligencia artificial. Esto es solamente una prueba para ver si funciona este proyecto.</p>'+
+   '<p class="muted">Gracias por ayudarme. No tienes que instalar nada.</p></div>'+
+   '<p style="text-align:center;font-weight:800;font-size:1.15rem;margin:18px 0 10px">¿Quién eres?</p>'+
+   '<button class="big mint" onclick="pickRole(\'mama\')">Soy Gloria</button><div class="gap"></div>'+
+   '<button class="big" onclick="pickRole(\'gaby\')">Soy Gaby</button><div class="gap"></div>'+
+   '<button class="big sky" onclick="pickRole(\'chofer\')">Soy Barrón</button>';
+}
+function home(code){
+  clearTimers(); Eta.stop(); ctx.explicit=!!code; ctx.code=code||null; ctx.mounted=false; ctx.prevIdx=null; ctx.trip=null;
+  var role=lsGet('rec_role',null);
+  if(role!=='mama'&&role!=='gaby'&&role!=='chofer'){ picker(); return; }
+  openTrip(role,code);
+}
+function openTrip(role,code){
+  ctx.role=role; ctx.explicit=!!code; clearTimers(); Eta.stop();
+  $app.innerHTML='<div class="glass"><p style="text-align:center">Abriendo el recorrido de hoy…</p></div>';
+  var get=code?rpcRaw('rec_get_trip',{p_code:code}):rpcRaw('rec_today',{});
+  get.then(function(t){
+    if(!t||t.error){ ctx.code=code; errorView('🧭','Este recorrido no existe','El código no corresponde a ningún recorrido. Escanea otra vez el QR.'); return; }
+    ctx.code=t.code; ctx.trip=t; lsSet('rec_cache',{code:t.code,trip:t,at:Date.now()});
+    start(t);
+  },function(){
+    var c=lsGet('rec_cache',null);
+    if(c&&c.trip&&c.trip.day===todayMX()&&(!code||c.code===code)){ ctx.code=c.code; ctx.trip=c.trip; Net.set(false); start(c.trip); return; }
+    errorView('📡','Sin internet','No se pudo abrir el recorrido. Revisa tu conexión.',true);
+  });
+}
+function start(t){
+  if(t.expired){ errorView('⌛','Este recorrido ya venció','Ya pasó su fecha. Escanea el QR otra vez para abrir el recorrido de hoy.'); return; }
+  if(t.status==='cancelado'){ errorView('🚫','Recorrido cancelado','Este recorrido fue cancelado. Escanea el QR otra vez más tarde.'); return; }
+  mount(); refresh(true); startPolling();
+  if(ctx.role==='chofer'){
+    if(!doneHas(t,'chofer','chofer_abre')&&!lsGet('rec_abre_'+ctx.code,false)){ lsSet('rec_abre_'+ctx.code,true); sendEvent('chofer','chofer_abre',null,deviceMeta()); }
+    if(t.status==='en_curso'){ Geo.start(); Wake.on(); Eta.start(); ctx.sig.act=null; refresh(true); }
+  }
+}
+window.addEventListener('beforeunload',function(e){ if(ctx.role==='chofer' && ctx.trip && ctx.trip.status==='en_curso'){ e.preventDefault(); e.returnValue=''; } });
 
-/* ============ ADMIN ============ */
-function adminPin(){ return sessionStorage.getItem('rec_pin')||''; }
-function viewAdmin(){
-  clearTimers();
+/* ============ Panel de Miguel ============ */
+LBL.admin='Miguel';
+var Alarm={
+  ac:null, ringTimer:null,
+  enable:function(){ try{ var AC=window.AudioContext||window.webkitAudioContext; if(!this.ac&&AC) this.ac=new AC(); if(this.ac&&this.ac.resume) this.ac.resume(); }catch(e){} this.beep(1); try{ navigator.vibrate&&navigator.vibrate(150); }catch(e){} Wake.on(); },
+  isOn:function(){ return !!this.ac; },
+  beep:function(n){ var ac=this.ac; if(!ac) return; n=n||3; for(var i=0;i<n;i++){ (function(i){ var o=ac.createOscillator(), g=ac.createGain(), t0=ac.currentTime+i*0.45; o.type='sine'; o.frequency.value=i%2?880:1175; g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.5,t0+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.4); o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0+0.42); })(i); } },
+  ring:function(){ var self=this,n=0; clearInterval(this.ringTimer); var go=function(){ self.beep(3); try{ navigator.vibrate&&navigator.vibrate([300,150,300,150,300]); }catch(e){} if(++n>=6) clearInterval(self.ringTimer); }; go(); this.ringTimer=setInterval(go,4000); },
+  stop:function(){ clearInterval(this.ringTimer); this.ringTimer=null; }
+};
+function adminAlarms(t){
+  var i=etaInfo(t); if(!i||i.kind!=='eta'||i.age>5*60000) return;
+  var min=(i.at-Date.now())/60000, key='rec_alarm_'+t.code+'_'+i.to, fired=lsGet(key,[]), hit=null, TH=[5,15,30];
+  for(var k=0;k<TH.length;k++){ if(min<=TH[k]&&fired.indexOf(TH[k])<0){ hit=TH[k]; break; } }
+  if(hit==null) return;
+  TH.forEach(function(th){ if(th>=hit&&fired.indexOf(th)<0) fired.push(th); }); lsSet(key,fired);
+  ctx.alarmMsg='Barrón llega a '+SHORT[i.to]+' en ~'+(hit)+' min'; ctx.alarmAt=Date.now();
+  if(Alarm.isOn()) Alarm.ring(); else { try{ navigator.vibrate&&navigator.vibrate([300,150,300]); }catch(e){} }
+}
+function adminAct(t){
+  var h='';
+  if(ctx.alarmMsg) h+='<div class="glass flat" style="background:rgba(255,198,92,.3);text-align:center"><div style="font-size:1.3rem;font-weight:800">🔔 '+esc(ctx.alarmMsg)+'</div><div class="muted">Aviso de las '+fmtTime(ctx.alarmAt)+'</div><div class="gap"></div><button class="btn" onclick="Alarm.stop();ctx.alarmMsg=null;ctx.sig.act=null;refresh(true)">Entendido</button></div>';
+  if(!Alarm.isOn()) h+='<div class="glass flat"><p style="margin-top:0"><b>Las alarmas están apagadas.</b> Actívalas para que suene y vibre a los 30, 15 y 5 minutos de cada llegada. Deja esta pantalla abierta.</p><button class="big mint" onclick="Alarm.enable();ctx.sig.act=null;refresh(true)">🔔 Activar alarmas</button></div>';
+  else h+='<p class="muted" style="margin:6px 4px">🔔 Alarmas activas (30, 15 y 5 min) · <a href="#" onclick="Alarm.beep(2);return false">probar sonido</a></p>';
+  if(t.status==='en_curso'||t.status==='programado') h+='<div class="glass flat"><h2>Cerrar a mano</h2><p class="muted" style="margin-top:0">Solo si algo se trabó (se descargó el teléfono, se cerró sin querer).</p><div class="grid"><button class="btn" onclick="adminClose(\'finalizado\')">Terminar</button><button class="btn" onclick="adminClose(\'interrumpido\')">Marcar interrumpido</button></div></div>';
+  return h;
+}
+function adminClose(status){
+  if(!confirm('¿Cerrar el recorrido de hoy como «'+status+'»?')) return;
+  rpcRaw('rec_admin_close',{p_pin:adminPin(),p_code:ctx.code,p_status:status,p_note:'Cerrado desde el panel'}).then(function(){ toast('Cerrado'); ctx.sig.act=null; loadTrip().then(function(){ refresh(true); }); },function(e){ toast('Error: '+e.message); });
+}
+function adminPin(){ try{ return sessionStorage.getItem('rec_pin')||''; }catch(e){ return ''; } }
+function adminShell(inner){
+  $app.className='wide';
+  $app.innerHTML='<div class="top noprint"><span class="chip">Miguel · panel</span><span class="chip"><a href="#/admin" style="color:inherit;text-decoration:none">Hoy</a> · <a href="#/admin/lugares" style="color:inherit;text-decoration:none">Lugares</a> · <a href="#/admin/qr" style="color:inherit;text-decoration:none">QR</a> · <a href="#/admin/historial" style="color:inherit;text-decoration:none">Historial</a></span></div>'+inner;
+}
+function viewAdmin(sub){
+  clearTimers(); Eta.stop(); Alarm.stop(); ctx.explicit=false;
   if(!adminPin()){
-    $app.innerHTML='<h1>Piloto de recorrido</h1><div class="card"><p>Ingresa el PIN para crear viajes y ver los datos.</p><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><div style="height:10px"></div><button class="big" onclick="adminLogin()">Entrar</button><div id="aerr" class="muted"></div></div>';
+    $app.className=''; $app.innerHTML='<div class="glass"><h1>Panel de Miguel</h1><p>Ingresa el PIN.</p><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><div class="gap"></div><button class="big" onclick="adminLogin()">Entrar</button><div id="aerr" class="muted" style="margin-top:8px"></div></div>';
     return;
   }
-  $app.innerHTML='<h1>Piloto de recorrido</h1><div class="card"><h2 style="margin-top:0">Nuevo viaje</h2><input id="lbl" placeholder="Nombre del viaje (ej. Casa → Cita médica)"><div style="height:8px"></div><label class="muted">Vigencia del QR (horas antes de salir)</label><input id="hrs" type="number" value="24" min="1"><div style="height:10px"></div><button class="big" onclick="adminCreate()">Crear viaje y QR</button><div id="aerr" class="muted"></div></div><div id="qrarea"></div><h2>Viajes</h2><div id="tripl" class="card">Cargando…</div>';
-  rpcRaw('rec_list_trips',{p_pin:adminPin()}).then(function(list){
-    var h=list.length?'<table><tr><th>Viaje</th><th>Estado</th><th>Salida</th><th></th></tr>'+list.map(function(t){
-      var st=t.expired?'vencido':t.status;
-      return '<tr><td>'+esc(t.label||t.code)+'<div class="muted">'+esc(t.code)+'</div></td><td>'+esc(st)+'</td><td>'+fmtDT(t.started_at||t.created_at)+'</td><td><a href="#/vivo/'+t.code+'">en vivo</a> · <a href="#/datos/'+t.code+'">datos</a> · <a href="#/qr/'+t.code+'">QR</a></td></tr>';
-    }).join('')+'</table>':'<p class="muted">Aún no hay viajes.</p>';
-    document.getElementById('tripl').innerHTML=h;
-  },function(e){ document.getElementById('tripl').innerHTML='<p class="muted">No se pudo cargar ('+esc(e.message)+')</p>'; });
+  if(sub==='lugares') return adminPlaces();
+  if(sub==='qr') return adminQR();
+  if(sub==='historial') return adminHist();
+  adminShell('<div id="mon"></div>');
+  ctx.host=document.getElementById('mon'); ctx.role='admin'; ctx.mounted=false; ctx.prevIdx=null; ctx.alarmMsg=null;
+  rpcRaw('rec_today',{}).then(function(t){
+    ctx.code=t.code; ctx.trip=t; mount(); refresh(true); startPolling(); ctx.pollAdmin=true;
+  },function(){ ctx.host.innerHTML='<div class="glass">Sin conexión.</div>'; });
 }
 function adminLogin(){
   var p=document.getElementById('pin').value.trim();
-  rpcRaw('rec_list_trips',{p_pin:p}).then(function(){ sessionStorage.setItem('rec_pin',p); viewAdmin(); },function(){ document.getElementById('aerr').textContent='PIN incorrecto'; });
+  rpcRaw('rec_list_trips',{p_pin:p}).then(function(){ try{ sessionStorage.setItem('rec_pin',p); }catch(e){} route(); },function(){ document.getElementById('aerr').textContent='PIN incorrecto'; });
 }
-function adminCreate(){
-  var lbl=document.getElementById('lbl').value, hrs=parseInt(document.getElementById('hrs').value,10)||24;
-  rpcRaw('rec_create_trip',{p_pin:adminPin(),p_label:lbl,p_hours:hrs}).then(function(r){ location.hash='#/qr/'+r.code; },function(e){ document.getElementById('aerr').textContent='Error: '+e.message; });
-}
-function viewQR(code){
-  clearTimers();
-  if(!adminPin()){ location.hash='#/admin'; return; }
-  var u=link('v',code);
-  var svg=QR.svg(u,6,'M');
-  $app.innerHTML='<p><a href="#/admin">← Todos los viajes</a></p><h1>QR del viaje</h1><div class="card" style="text-align:center"><div class="qrbox">'+svg+'</div><p style="font-weight:700;margin:.6rem 0 0">Escanea con la cámara del teléfono</p><p class="muted" style="word-break:break-all">'+esc(u)+'</p><div class="grid"><button class="btn" onclick="downloadQR(\''+code+'\')">Descargar QR</button><button class="btn" onclick="window.print()">Imprimir</button></div></div>'+
-   '<div class="card"><h2 style="margin-top:0">Enlaces de cada paso</h2><p class="muted">Manda este mismo enlace (o el QR) a Mamá, Gaby y el chofer. Cada quien elige quién es, le da aceptar y todo avanza solo.</p><p><a class="big" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Viaje: abre este enlace, elige quién eres y toca aceptar: '+u)+'">Compartir por WhatsApp</a></p><p class="muted">Enlaces directos por si hacen falta:</p><p>Mamá: <a href="'+link('m',code)+'">'+link('m',code)+'</a></p><p>Gaby: <a href="'+link('g',code)+'">'+link('g',code)+'</a></p><p>Chofer: <a href="'+link('c',code)+'">'+link('c',code)+'</a></p><p><a href="#/vivo/'+code+'">Ver el viaje en vivo</a> · <a href="#/datos/'+code+'">Análisis</a></p></div>';
-}
-function downloadQR(code){
-  var q=QR.make(link('v',code),'M'), s=12, b=4, n=q.size+b*2, c=document.createElement('canvas'); c.width=c.height=n*s;
-  var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.fillStyle='#000';
-  for(var y=0;y<q.size;y++) for(var x=0;x<q.size;x++) if(q.modules[y][x]) g.fillRect((x+b)*s,(y+b)*s,s,s);
-  var a=document.createElement('a'); a.download='qr-'+code+'.png'; a.href=c.toDataURL('image/png'); a.click();
-}
-
-/* ============ MAPA (mosaicos de OpenStreetMap, sin librerías) ============ */
-var MAPW=600, MAPH=400;
-function mapHtml(r, dest, opts){
-  opts=opts||{};
-  var pts=r.pts.slice(); if(!pts.length&&!dest) return '<p class="muted">Todavía no hay puntos de GPS para dibujar el mapa.</p>';
-  var all=pts.map(function(p){ return {lat:p.lat,lng:p.lng}; }); if(dest) all.push({lat:dest.lat,lng:dest.lng});
-  var merc=function(lat,lng,z){ var n=256*Math.pow(2,z), x=(lng+180)/360*n, sl=Math.sin(lat*Math.PI/180), y=(0.5-Math.log((1+sl)/(1-sl))/(4*Math.PI))*n; return {x:x,y:y}; };
-  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
-  all.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
-  var z=17, pad=50;
-  for(;z>2;z--){ var a=merc(maxLat,minLng,z), b=merc(minLat,maxLng,z); if((b.x-a.x)<=MAPW-2*pad && (b.y-a.y)<=MAPH-2*pad) break; }
-  var c=merc((minLat+maxLat)/2,(minLng+maxLng)/2,z), ox=c.x-MAPW/2, oy=c.y-MAPH/2;
-  var X=function(lat,lng){ var m=merc(lat,lng,z); return m.x-ox; }, Y=function(lat,lng){ var m=merc(lat,lng,z); return m.y-oy; };
-  var tx0=Math.floor(ox/256), tx1=Math.floor((ox+MAPW)/256), ty0=Math.floor(oy/256), ty1=Math.floor((oy+MAPH)/256), nT=Math.pow(2,z), tiles='';
-  for(var tx=tx0;tx<=tx1;tx++) for(var ty=ty0;ty<=ty1;ty++){
-    if(ty<0||ty>=nT) continue; var wx=((tx%nT)+nT)%nT;
-    tiles+='<img alt="" draggable="false" loading="eager" src="https://tile.openstreetmap.org/'+z+'/'+wx+'/'+ty+'.png" style="position:absolute;left:'+(tx*256-ox).toFixed(1)+'px;top:'+(ty*256-oy).toFixed(1)+'px;width:256px;height:256px">';
-  }
-  var svg='<svg width="'+MAPW+'" height="'+MAPH+'" style="position:absolute;left:0;top:0">';
-  if(pts.length>1){ svg+='<path d="'+pts.map(function(q,i){ return (i?'L':'M')+X(q.lat,q.lng).toFixed(1)+','+Y(q.lat,q.lng).toFixed(1); }).join('')+'" fill="none" stroke="#fff" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><path d="'+pts.map(function(q,i){ return (i?'L':'M')+X(q.lat,q.lng).toFixed(1)+','+Y(q.lat,q.lng).toFixed(1); }).join('')+'" fill="none" stroke="#1f6f6b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>'; }
-  (r.ev||[]).filter(function(e){ return e.lat!=null&&['parada','trafico','sube','baja','incidente'].indexOf(e.type)>=0; }).forEach(function(e){
-    svg+='<circle cx="'+X(e.lat,e.lng).toFixed(1)+'" cy="'+Y(e.lat,e.lng).toFixed(1)+'" r="7" fill="#b26a00" stroke="#fff" stroke-width="2"><title>'+esc(EV_NAMES[e.type]||e.type)+'</title></circle>';
-  });
-  if(pts.length){ var f=pts[0]; svg+='<circle cx="'+X(f.lat,f.lng).toFixed(1)+'" cy="'+Y(f.lat,f.lng).toFixed(1)+'" r="8" fill="#1e7b43" stroke="#fff" stroke-width="3"/>'; }
-  if(dest){ var dx=X(dest.lat,dest.lng), dy=Y(dest.lat,dest.lng); svg+='<g transform="translate('+dx.toFixed(1)+','+dy.toFixed(1)+')"><path d="M0,0 C-14,-16 -14,-34 0,-34 C14,-34 14,-16 0,0Z" fill="#b3261e" stroke="#fff" stroke-width="2"/><circle cy="-23" r="5" fill="#fff"/></g>'; }
-  if(pts.length){ var l=pts[pts.length-1], lx=X(l.lat,l.lng).toFixed(1), ly=Y(l.lat,l.lng).toFixed(1); svg+='<circle cx="'+lx+'" cy="'+ly+'" r="16" fill="#1a73e8" opacity=".25"><animate attributeName="r" values="10;22;10" dur="2s" repeatCount="indefinite"/></circle><circle cx="'+lx+'" cy="'+ly+'" r="9" fill="#1a73e8" stroke="#fff" stroke-width="3"/>'; }
-  svg+='</svg>';
-  return '<div class="mapwrap" style="position:relative;width:100%;aspect-ratio:'+MAPW+'/'+MAPH+';overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#e8e4da"><div class="mapin" style="position:absolute;left:0;top:0;width:'+MAPW+'px;height:'+MAPH+'px;transform-origin:0 0">'+tiles+svg+'</div><div style="position:absolute;right:4px;bottom:2px;font-size:10px;background:rgba(255,255,255,.8);padding:0 4px;border-radius:3px">© OpenStreetMap</div></div>'+
-    '<p class="muted">🟢 Salida · 🔵 Dónde va ahorita · 🔴 Destino · 🟠 Eventos registrados</p>';
-}
-function fitMaps(){ var ws=document.querySelectorAll('.mapwrap'); for(var i=0;i<ws.length;i++){ var w=ws[i], inn=w.firstChild, k=w.clientWidth/MAPW; if(k>0) inn.style.transform='scale('+k+')'; } }
-window.addEventListener('resize',fitMaps);
-
-/* ============ EN VIVO (solo Miguel) ============ */
-var ALARM_STEPS=[30,15,5];
-var Alarm={
-  ac:null, ringTimer:null,
-  enable:function(){
-    try{ var AC=window.AudioContext||window.webkitAudioContext; if(!this.ac&&AC) this.ac=new AC(); if(this.ac&&this.ac.resume) this.ac.resume(); }catch(e){}
-    this.beep(1); try{ navigator.vibrate&&navigator.vibrate(150); }catch(e){}
-    Wake.on(); lsSet('rec_alarm_on',true);
-  },
-  isOn:function(){ return !!this.ac && this.ac.state!=='closed'; },
-  beep:function(n){
-    var ac=this.ac; if(!ac) return; n=n||3;
-    for(var i=0;i<n;i++){ (function(i){
-      var o=ac.createOscillator(), g=ac.createGain(), t0=ac.currentTime+i*0.45;
-      o.type='sine'; o.frequency.value=i%2?880:1175; g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.5,t0+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.4);
-      o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0+0.42);
-    })(i); }
-  },
-  ring:function(){
-    var self=this, n=0; clearInterval(this.ringTimer);
-    var go=function(){ self.beep(3); try{ navigator.vibrate&&navigator.vibrate([300,150,300,150,300]); }catch(e){} if(++n>=8) clearInterval(self.ringTimer); };
-    go(); this.ringTimer=setInterval(go,4000);
-  },
-  stop:function(){ clearInterval(this.ringTimer); this.ringTimer=null; }
-};
-function parseDest(txt){
-  txt=(txt||'').trim(); var m;
-  try{ txt=decodeURIComponent(txt); }catch(e){}
+/* --- Lugares --- */
+function parseCoords(txt){
+  txt=(txt||'').trim(); var m; try{ txt=decodeURIComponent(txt); }catch(e){}
   if((m=txt.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/))||(m=txt.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/))||(m=txt.match(/[?&](?:q|ll|query|destination)=(-?\d+\.\d+)[, +]+(-?\d+\.\d+)/))||(m=txt.match(/^\s*(-?\d{1,2}\.\d+)\s*[, ]\s*(-?\d{1,3}\.\d+)\s*$/))) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
   return null;
 }
-function saveDest(code,lat,lng,name){
-  return rpcRaw('rec_set_dest',{p_pin:adminPin(),p_code:code,p_lat:lat,p_lng:lng,p_name:name||null}).then(function(){ ctx.editDest=false; ctx.formShown=false; toast('Destino guardado'); return ctx.drawVivo(); },function(e){ toast('Error: '+e.message); });
+function adminPlaces(){
+  adminShell('<div class="glass flat"><h1>Lugares del recorrido</h1><p class="muted">Con las coordenadas de cada punto la app calcula la hora estimada. Si no las pones, se aprenden solas de la ubicación real de Barrón al llegar (la primera vez que pase). Nunca se inventan.</p></div><div id="plc"></div>');
+  rpcRaw('rec_today',{}).then(function(t){ drawPlaces(t.places||[]); });
 }
-function destFromText(code){
-  var v=document.getElementById('destTxt').value, p=parseDest(v), nm=(document.getElementById('destName').value||'').trim();
-  if(!p){ document.getElementById('destErr').textContent=/goo\.gl|maps\.app/i.test(v)?'Ese es un link corto y no trae las coordenadas. Ábrelo, copia el link largo de la barra o usa «Usar mi ubicación actual».':'No pude leer coordenadas. Pega un link largo de Google Maps o algo como 20.5888, -100.3899.'; return; }
-  saveDest(code,p.lat,p.lng,nm);
+function drawPlaces(pl){
+  document.getElementById('plc').innerHTML=pl.map(function(p){
+    return '<div class="glass flat"><h2>'+({dif:'1 · ',gaby:'2 · ',mama:'3 · ',destino:'4 · '}[p.key])+esc(p.name)+'</h2>'+
+     '<div class="kv"><span>Coordenadas</span><b>'+(p.lat!=null?p.lat.toFixed(5)+', '+p.lng.toFixed(5):'sin conocer')+'</b><span>Origen</span><b>'+esc(p.source||'—')+'</b></div>'+
+     '<div class="gap"></div><input id="in-'+p.key+'" placeholder="Link largo de Google Maps, coordenadas (20.58, -100.38) o una dirección para buscar">'+
+     '<div class="gap"></div><div class="grid"><button class="btn" onclick="placeFromText(\''+p.key+'\')">Guardar link / coordenadas</button><button class="btn" onclick="placeFromHere(\''+p.key+'\')">📍 Usar mi ubicación</button></div>'+
+     '<div class="gap"></div><button class="btn" style="width:100%" onclick="placeSearch(\''+p.key+'\')">🔎 Buscar dirección</button><div id="res-'+p.key+'" class="muted" style="margin-top:8px"></div></div>';
+  }).join('');
+  window._places=pl;
 }
-function destFromHere(code){
-  var nm=(document.getElementById('destName').value||'').trim();
-  if(!navigator.geolocation){ document.getElementById('destErr').textContent='Este navegador no da ubicación.'; return; }
-  document.getElementById('destErr').textContent='Obteniendo ubicación…';
-  navigator.geolocation.getCurrentPosition(function(p){ saveDest(code,p.coords.latitude,p.coords.longitude,nm); },function(){ document.getElementById('destErr').textContent='No se pudo obtener tu ubicación. Revisa el permiso.'; },{enableHighAccuracy:true,timeout:15000});
+function savePlace(key,lat,lng,from){
+  var cur=(window._places||[]).filter(function(p){ return p.key===key; })[0];
+  rpcRaw('rec_set_place',{p_pin:adminPin(),p_key:key,p_lat:lat,p_lng:lng,p_name:cur?cur.name:null}).then(function(){ toast('Guardado'); rpcRaw('rec_today',{}).then(function(t){ drawPlaces(t.places||[]); }); },function(e){ toast('Error: '+e.message); });
 }
-function destEdit(on){ ctx.editDest=on; ctx.formShown=false; ctx.drawVivo(); }
-function destClear(code){ saveDest(code,null,null,null); }
-/* Calcula el tiempo que falta. Distancia en línea recta × 1.3 (aprox. de calles) entre la velocidad reciente. */
-function etaCalc(d,r){
-  var t=d.trip; if(t.dest_lat==null||!r.pts.length) return null;
-  var pts=r.pts, last=pts[pts.length-1], D={lat:t.dest_lat,lng:t.dest_lng};
-  var straight=hav(last,D), road=straight*1.3;
-  var seg=function(from){ var m=0,dist=0; for(var i=1;i<pts.length;i++){ if(pts[i].t<from) continue; var dt=(pts[i].t-pts[i-1].t)/1000; if(dt<=0||dt>60) continue; var dd=hav(pts[i-1],pts[i]), v=dd/dt; if(v<0.8||v>70) continue; m+=dt; dist+=dd; } return {sec:m,dist:dist}; };
-  var rec=seg(last.t-5*60000), all=seg(0), v, basis;
-  if(rec.sec>=60){ v=rec.dist/rec.sec; basis='últimos 5 min'; }
-  else if(all.sec>=60){ v=all.dist/all.sec; basis='todo el recorrido'; }
-  else { v=8; basis='estimación inicial 30 km/h'; }
-  v=Math.min(Math.max(v,4),30);
-  var ageMs=Date.now()-last.t;
-  var stopped=(pts.length>1&&(function(){ var p=pts[pts.length-2],dt=(last.t-p.t)/1000; return dt>0&&dt<=60&&hav(p,last)/dt<0.8; })());
-  return {straight:straight,road:road,v:v,basis:basis,min:road/v/60,age:ageMs,stopped:stopped,near:straight<250};
+function placeFromText(key){
+  var v=document.getElementById('in-'+key).value, c=parseCoords(v), r=document.getElementById('res-'+key);
+  if(!c){ r.textContent=/goo\.gl|maps\.app/i.test(v)?'Ese es un link corto y no trae coordenadas. Ábrelo y copia el link largo, o usa «Usar mi ubicación».':'No pude leer coordenadas. Pega un link largo de Google Maps o algo como 20.5888, -100.3899.'; return; }
+  savePlace(key,c.lat,c.lng);
 }
-function checkAlarms(code,eta){
-  if(!eta||eta.age>5*60000) return null;
-  var key='rec_alarmfired_'+code, fired=lsGet(key,[]), hit=null;
-  for(var i=ALARM_STEPS.length-1;i>=0;i--){ var th=ALARM_STEPS[i]; if((eta.min<=th||(th===5&&eta.near))&&fired.indexOf(th)<0){ hit=th; break; } }
-  if(hit==null) return null;
-  ALARM_STEPS.forEach(function(th){ if(th>=hit&&fired.indexOf(th)<0) fired.push(th); }); lsSet(key,fired);
-  return hit;
+function placeFromHere(key){
+  var r=document.getElementById('res-'+key); if(!navigator.geolocation){ r.textContent='Este navegador no da ubicación.'; return; }
+  r.textContent='Obteniendo ubicación…';
+  navigator.geolocation.getCurrentPosition(function(p){ savePlace(key,p.coords.latitude,p.coords.longitude); },function(){ r.textContent='No se pudo obtener tu ubicación. Revisa el permiso.'; },{enableHighAccuracy:true,timeout:15000});
 }
-function viewVivo(code){
-  clearTimers(); Alarm.stop();
-  if(!adminPin()){ location.hash='#/admin'; return; }
-  ctx.code=code; ctx.role=null; ctx.shared=false; ctx.editDest=false; ctx.lastD=null;
-  $app.className='wide'; $app.innerHTML='<div class="card">Cargando…</div>';
-  ctx.drawVivo=function(){
-    return rpcRaw('rec_data',{p_pin:adminPin(),p_code:code}).then(function(d){
-      if(d.error){ clearTimers(); $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">No existe ese viaje.</div>'; return; }
-      ctx.lastD=d;
-      var t=d.trip, r=analyze(d), ev=d.events, now=Date.now();
-      var eta=(t.status==='en_curso')?etaCalc(d,r):null;
-      var hit=checkAlarms(code,eta);
-      if(hit!=null){ ctx.alarmMsg=hit<=5&&eta.near?'Ya casi llega':'Faltan aprox. '+hit+' minutos'; ctx.alarmAt=now; if(Alarm.isOn()) Alarm.ring(); else { try{ navigator.vibrate&&navigator.vibrate([300,150,300]); }catch(e){} } }
-      if(ctx.formShown){ var ae=document.activeElement, tx=document.getElementById('destTxt'), nm=document.getElementById('destName'); if((ae&&(ae===tx||ae===nm))||(tx&&tx.value)||(nm&&nm.value)) return; }
-      var first=function(type,role){ var e=ev.filter(function(x){ return x.type===type&&(!role||x.role===role); })[0]; return e?new Date(e.client_ts||e.server_ts).getTime():null; };
-      var person=function(name,role,okType){
-        var ok=first(okType,role), seen=first('abre',role)||(role==='chofer'?first('chofer_abre'):null);
-        var st=ok?'<b style="color:#1e7b43">✅ Aceptó '+fmtTime(ok)+'</b>':seen?'<b style="color:#b26a00">👀 Abrió '+fmtTime(seen)+', falta que acepte</b>':'<b class="muted">⏳ Aún no abre el enlace</b>';
-        return '<span>'+name+'</span>'+st;
-      };
-      var h='';
-      if(ctx.alarmMsg){ h+='<div class="card" style="background:#fff3cd;border-color:#e0b100;text-align:center"><div style="font-size:1.4rem;font-weight:800">🔔 '+esc(ctx.alarmMsg)+'</div><p class="muted" style="margin:.3rem 0">Aviso de las '+fmtTime(ctx.alarmAt)+'</p><button class="btn" onclick="Alarm.stop();ctx.alarmMsg=null;ctx.drawVivo()">Entendido</button></div>'; }
-      h+='<p><a href="#/admin">← Todos los viajes</a> · <a href="#/datos/'+esc(code)+'">Análisis completo</a></p><h1>'+esc(t.label||t.code)+'</h1>';
-      if(!Alarm.isOn()) h+='<div class="card" style="border-color:#b3261e"><p style="margin-top:0"><b>Las alarmas están apagadas.</b> Toca el botón para que suene y vibre cuando se acerquen. Deja esta pantalla abierta y el volumen arriba.</p><button class="big green" onclick="Alarm.enable();ctx.drawVivo()">🔔 Activar alarmas</button></div>';
-      else h+='<p class="muted" style="margin:0 0 8px">🔔 Alarmas activas (30, 15 y 5 min) · <a href="#" onclick="Alarm.beep(2);return false">probar sonido</a></p>';
-      var estado={creado:'Esperando que salga',en_curso:'🚗 En camino',llegado:'🏁 Llegó',cancelado:'Cancelado'}[t.status]||t.status;
-      h+='<div class="card"><div class="kv"><span>Estado</span><b>'+esc(estado)+'</b>';
-      if(t.started_at) h+='<span>Salió</span><b>'+fmtTime(t.started_at)+'</b>';
-      if(t.status==='en_curso') h+='<span>Lleva</span><b>'+clock(now-new Date(t.started_at).getTime())+'</b>';
-      if(t.arrived_at) h+='<span>Llegó</span><b>'+fmtTime(t.arrived_at)+'</b><span>Duración</span><b>'+fmtDur(new Date(t.arrived_at)-new Date(t.started_at))+'</b>';
-      h+='</div></div>';
-      // Destino y tiempo estimado
-      h+='<div class="card"><h2 style="margin-top:0">Destino y llegada</h2>';
-      ctx.formShown=(t.dest_lat==null||!!ctx.editDest);
-      if(ctx.formShown){
-        h+='<p class="muted">Pon el destino para que la app calcule cuánto falta y avise.</p>'+destForm(code);
-      } else {
-        h+='<div class="kv"><span>Destino</span><b>'+esc(t.dest_name||(t.dest_lat.toFixed(4)+', '+t.dest_lng.toFixed(4)))+'</b>';
-        if(eta&&t.status==='en_curso'){
-          var arr=new Date(now+eta.min*60000);
-          h+='<span>Falta aprox.</span><b style="font-size:1.2rem">'+(eta.near?'ya casi llega':Math.max(1,Math.round(eta.min))+' min')+'</b><span>Llegada estimada</span><b>'+fmtTime(arr)+'</b><span>Distancia en línea recta</span><b>'+(eta.straight/1000).toFixed(1)+' km</b><span>Velocidad usada</span><b>'+(eta.v*3.6).toFixed(0)+' km/h</b>';
-        }
-        h+='</div>';
-        if(eta&&t.status==='en_curso') h+='<p class="muted">Cálculo aproximado: distancia en línea recta ×1.3 entre la velocidad de '+esc(eta.basis)+'.'+(eta.stopped?' Ahorita va detenido.':'')+(eta.age>90000?' <b style="color:#b3261e">Último punto hace '+fmtDur(eta.age)+', el dato puede estar desfasado.</b>':'')+'</p>';
-        else if(t.status==='creado') h+='<p class="muted">El cálculo empieza cuando el chofer inicie el recorrido.</p>';
-        h+='<p><a href="#" onclick="destEdit(true);return false">Cambiar destino</a> · <a href="#" onclick="destClear(\''+esc(code)+'\');return false">Quitar</a></p>';
-      }
-      h+='</div>';
-      h+='<div class="card"><h2 style="margin-top:0">Quién ya aceptó</h2><div class="kv">'+person('Mamá','mama','mama_confirma')+person('Gaby','gaby','gaby_confirma')+person('Chofer','chofer','inicio')+'</div></div>';
-      var last=d.points.length?d.points[d.points.length-1]:null;
-      h+='<div class="card"><h2 style="margin-top:0">Ubicación</h2>';
-      if(last){ var ago=now-new Date(last.ts).getTime();
-        h+='<p>Último punto hace <b>'+fmtDur(ago)+'</b>'+(ago>60000&&t.status==='en_curso'?' <span style="color:#b3261e">(sin señal reciente)</span>':'')+' · <a target="_blank" rel="noopener" href="https://www.google.com/maps?q='+last.lat+','+last.lng+'">abrir en Google Maps</a></p>'+mapHtml(r,(t.dest_lat!=null?{lat:t.dest_lat,lng:t.dest_lng}:null)); }
-      else h+=(t.dest_lat!=null?mapHtml(r,{lat:t.dest_lat,lng:t.dest_lng}):'<p class="muted">Todavía no hay puntos de GPS.</p>');
-      h+='</div>';
-      h+='<div class="card"><h2 style="margin-top:0">Últimos eventos</h2><ul class="log">'+ev.filter(function(e){ return ['abre','pantalla_oculta','pantalla_visible'].indexOf(e.type)<0; }).slice(-12).reverse().map(function(e){ return '<li><span>'+esc(e.role)+': '+esc(EV_NAMES[e.type]||e.type)+(e.note?' — '+esc(e.note):'')+'</span><span class="muted">'+fmtTime(e.client_ts||e.server_ts)+'</span></li>'; }).join('')+'</ul></div>';
-      h+='<p class="muted" style="text-align:center">Se actualiza solo cada 5 segundos</p>';
-      $app.innerHTML=h; fitMaps();
-    },function(e){ if(!$app.querySelector('h1')) $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">Error: '+esc(e.message)+'</div>'; });
-  };
-  ctx.drawVivo(); ctx.poll=setInterval(ctx.drawVivo,5000);
+function placeSearch(key){
+  var q=(document.getElementById('in-'+key).value||'').trim(), r=document.getElementById('res-'+key); if(!q){ r.textContent='Escribe una dirección arriba.'; return; }
+  r.textContent='Buscando…';
+  fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=mx&q='+encodeURIComponent(q)).then(function(x){ return x.json(); }).then(function(j){
+    if(!j.length){ r.textContent='No encontré nada. Prueba con otra dirección o pega el link de Google Maps.'; return; }
+    window._res=j; r.innerHTML=j.map(function(x,i){ return '<div style="margin:6px 0"><button class="btn sm" onclick="savePlace(\''+key+'\','+parseFloat(x.lat)+','+parseFloat(x.lon)+')">Usar este</button> '+esc(x.display_name)+'</div>'; }).join('');
+  },function(){ r.textContent='No se pudo buscar (sin internet o bloqueado).'; });
 }
-function destForm(code){
-  return '<input id="destName" placeholder="Nombre del lugar (ej. Hospital)"><div style="height:8px"></div><input id="destTxt" placeholder="Link largo de Google Maps o coordenadas"><div style="height:8px"></div><button class="btn" style="width:100%" onclick="destFromText(\''+esc(code)+'\')">Guardar destino</button><div style="height:8px"></div><button class="btn" style="width:100%" onclick="destFromHere(\''+esc(code)+'\')">📍 Usar mi ubicación actual como destino</button><p id="destErr" class="muted"></p>'+(ctx.editDest?'<p><a href="#" onclick="destEdit(false);return false">Cancelar</a></p>':'');
+/* --- QR --- */
+function qrPng(url){ var q=QR.make(url,'M'), s=14, b=4, n=q.size+b*2, c=document.createElement('canvas'); c.width=c.height=n*s; var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.fillStyle='#000'; for(var y=0;y<q.size;y++) for(var x=0;x<q.size;x++) if(q.modules[y][x]) g.fillRect((x+b)*s,(y+b)*s,s,s); return c.toDataURL('image/png'); }
+function adminQR(){
+  var u=baseUrl();
+  adminShell('<div class="glass flat" style="text-align:center"><h1>QR del recorrido</h1><div class="qrbox">'+QR.svg(u,6,'M')+'</div><p style="font-weight:800;margin:.6rem 0 0">Un solo QR para todos los días</p><p class="muted" style="word-break:break-all">'+esc(u)+'</p><p class="muted">Abre directo el recorrido de hoy. Mañana el mismo QR abre el recorrido de mañana.</p><div class="grid noprint"><button class="btn" onclick="dlQR()">Descargar PNG</button><button class="btn" onclick="window.print()">Imprimir</button></div></div>');
+}
+function dlQR(){ var a=document.createElement('a'); a.download='qr-recorrido.png'; a.href=qrPng(baseUrl()); a.click(); }
+/* --- Historial --- */
+function adminHist(){
+  adminShell('<div class="glass flat"><h1>Historial</h1><div id="hist">Cargando…</div></div>');
+  rpcRaw('rec_list_trips',{p_pin:adminPin()}).then(function(list){
+    document.getElementById('hist').innerHTML=list.length?'<table><tr><th>Día</th><th>Estado</th><th>Etapa</th><th>Salida</th><th></th></tr>'+list.map(function(t){ return '<tr><td>'+esc(t.day||fmtDT(t.created_at))+'<div class="muted">'+esc(t.kind)+' · '+esc(t.code)+'</div></td><td>'+esc(t.expired?'vencido':t.status)+'</td><td>'+esc(t.stage||'—')+'</td><td>'+fmtDT(t.started_at)+'</td><td><a href="#/datos/'+t.code+'">análisis</a></td></tr>'; }).join('')+'</table>':'<p class="muted">Aún no hay recorridos.</p>';
+  },function(e){ document.getElementById('hist').textContent='Error: '+e.message; });
 }
 
-/* ============ DATOS ============ */
-function hav(a,b){ var R=6371000,d2r=Math.PI/180,dLat=(b.lat-a.lat)*d2r,dLng=(b.lng-a.lng)*d2r,x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*d2r)*Math.cos(b.lat*d2r)*Math.sin(dLng/2)*Math.sin(dLng/2); return 2*R*Math.asin(Math.sqrt(x)); }
+/* ============ Análisis ============ */
 function analyze(d){
-  var t=d.trip, ev=d.events, pts=d.points.filter(function(p){ return p.acc==null||p.acc<=100; }).map(function(p){ return {lat:p.lat,lng:p.lng,t:new Date(p.ts).getTime()}; });
-  var tsOf=function(type,role){ var e=ev.filter(function(x){ return x.type===type&&(!role||x.role===role); })[0]; return e?new Date(e.client_ts||e.server_ts).getTime():null; };
-  var r={};
-  r.start=t.started_at?new Date(t.started_at).getTime():null; r.end=t.arrived_at?new Date(t.arrived_at).getTime():null;
-  r.duration=(r.start&&r.end)?r.end-r.start:null;
-  r.chain={abreMama:tsOf('abre','mama'),mama:tsOf('mama_confirma'),abreGaby:tsOf('abre','gaby'),gaby:tsOf('gaby_confirma'),abreChofer:tsOf('chofer_abre'),inicio:r.start,llegada:r.end};
-  var dist=0,moving=0,stopped=0,gaps=0,gapMs=0,vmax=0;
-  for(var i=1;i<pts.length;i++){
-    var dt=(pts[i].t-pts[i-1].t)/1000; if(dt<=0) continue;
-    var dd=hav(pts[i-1],pts[i]);
-    if(dt>60){ gaps++; gapMs+=dt*1000; continue; }
-    var v=dd/dt; if(v>70) continue; // descarta saltos imposibles (>250 km/h)
-    if(v<0.8){ stopped+=dt*1000; } else { moving+=dt*1000; dist+=dd; if(v>vmax) vmax=v; }
-    if(v<0.8) dist+=0;
-  }
-  r.dist=dist; r.moving=moving; r.stopped=stopped; r.gaps=gaps; r.gapMs=gapMs; r.points=d.points.length;
-  r.avgAll=(r.duration&&dist)?dist/(r.duration/1000):null; r.avgMoving=moving?dist/(moving/1000):null; r.vmax=vmax;
-  r.pts=pts; r.ev=ev;
-  return r;
-}
-function routeSvg(r){
-  var pts=r.pts; if(pts.length<2) return '<p class="muted">Sin puntos suficientes para dibujar la ruta.</p>';
-  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
-  pts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
-  var midLat=(minLat+maxLat)/2, kx=Math.cos(midLat*Math.PI/180), W=520, H=380, pad=24;
-  var spanX=Math.max((maxLng-minLng)*kx,1e-5), spanY=Math.max(maxLat-minLat,1e-5), sc=Math.min((W-2*pad)/spanX,(H-2*pad)/spanY);
-  var ox=(W-spanX*sc)/2, oy=(H-spanY*sc)/2;
-  var X=function(lng){ return ox+(lng-minLng)*kx*sc; }, Y=function(lat){ return H-(oy+(lat-minLat)*sc); };
-  var path=pts.map(function(p,i){ return (i?'L':'M')+X(p.lng).toFixed(1)+','+Y(p.lat).toFixed(1); }).join('');
-  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;background:#f7f5ef;border-radius:12px;border:1px solid var(--line)"><path d="'+path+'" fill="none" stroke="#1f6f6b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
-  out+='<circle cx="'+X(pts[0].lng)+'" cy="'+Y(pts[0].lat)+'" r="7" fill="#1e7b43"/><circle cx="'+X(pts[pts.length-1].lng)+'" cy="'+Y(pts[pts.length-1].lat)+'" r="7" fill="#b3261e"/>';
-  r.ev.filter(function(e){ return e.lat!=null&&['parada','trafico','sube','baja','incidente'].indexOf(e.type)>=0; }).forEach(function(e){
-    out+='<circle cx="'+X(e.lng)+'" cy="'+Y(e.lat)+'" r="5" fill="#b26a00" stroke="#fff" stroke-width="1.5"><title>'+esc(EV_NAMES[e.type]||e.type)+'</title></circle>';
+  var ev=d.events, t=d.trip;
+  var ts=function(e){ return new Date(e.client_ts||e.server_ts).getTime(); };
+  var okEv=function(e){ return !(e.meta&&e.meta.aviso)||e.meta.aviso==='salto_de_etapa'; };
+  var first=function(type){ var e=ev.filter(function(x){ return x.type===type&&okEv(x); })[0]; return e?ts(e):null; };
+  var T={inicio:first('inicio'),lg:first('llegada_gaby'),sg:first('salida_gaby'),lm:first('llegada_mama'),sm:first('salida_mama'),ld:first('llegada_destino'),fin:first('fin')};
+  var legs=[['DIF → Gaby','gaby',T.inicio,T.lg],['Gaby → Mamá','mama',T.sg,T.lm],['Mamá → Destino','destino',T.sm,T.ld]].map(function(L){
+    var etas=ev.filter(function(e){ return e.type==='eta'&&e.meta&&e.meta.to===L[1]&&L[2]&&ts(e)>=L[2]&&(!L[3]||ts(e)<=L[3]); });
+    var no=ev.filter(function(e){ return e.type==='eta_no_disponible'&&e.meta&&e.meta.to===L[1]&&L[2]&&ts(e)>=L[2]&&(!L[3]||ts(e)<=L[3]); });
+    var f=etas[0], l=etas[etas.length-1];
+    return {name:L[0],key:L[1],start:L[2],end:L[3],real:(L[2]&&L[3])?L[3]-L[2]:null,nEta:etas.length,nNo:no.length,
+      etaFirstAt:f?new Date(f.meta.eta_ts).getTime():null,etaFirstDur:f?f.meta.dur_s*1000:null,etaFirstSrc:f?f.meta.src:null,
+      etaLastAt:l?new Date(l.meta.eta_ts).getTime():null,etaLastTs:l?ts(l):null,
+      errFirst:(f&&L[3])?L[3]-new Date(f.meta.eta_ts).getTime():null, errLast:(l&&L[3])?L[3]-new Date(l.meta.eta_ts).getTime():null};
   });
-  return out+'</svg><p class="muted">Verde: salida · Rojo: llegada · Naranja: eventos registrados</p>';
+  var pts=d.points.filter(function(p){ return p.acc==null||p.acc<=100; }).map(function(p){ return {lat:p.lat,lng:p.lng,t:new Date(p.ts).getTime()}; });
+  var dist=0,moving=0,stopped=0,gaps=0,gapMs=0;
+  for(var i=1;i<pts.length;i++){ var dt=(pts[i].t-pts[i-1].t)/1000; if(dt<=0) continue; if(dt>60){ gaps++; gapMs+=dt*1000; continue; } var dd=hav(pts[i-1],pts[i]), v=dd/dt; if(v>70) continue; if(v<0.8) stopped+=dt*1000; else { moving+=dt*1000; dist+=dd; } }
+  var missing=[];
+  (d.places||[]).forEach(function(p){ if(p.lat==null) missing.push('Sin coordenadas de '+p.name); });
+  if(!d.points.length) missing.push('Sin puntos de GPS en este recorrido');
+  legs.forEach(function(L){ if(L.start&&L.nEta===0) missing.push('Sin hora estimada en el tramo '+L.name+(L.nNo?' ('+L.nNo+' aviso(s) de «no disponible»)':'')); });
+  return {T:T,legs:legs,waitG:(T.lg&&T.sg)?T.sg-T.lg:null,waitM:(T.lm&&T.sm)?T.sm-T.lm:null,aboard:(T.sm&&T.ld)?T.ld-T.sm:null,total:(T.inicio&&(T.fin||T.ld))?(T.fin||T.ld)-T.inicio:null,
+    mamaAtDest:T.ld,dist:dist,moving:moving,stopped:stopped,gaps:gaps,gapMs:gapMs,npts:d.points.length,pts:pts,missing:missing,
+    avisos:ev.filter(function(e){ return e.meta&&e.meta.aviso; }).map(function(e){ return {type:e.type,aviso:e.meta.aviso,ts:ts(e)}; })};
 }
+function signedDur(ms){ if(ms==null) return '—'; return (ms>=0?'+':'−')+fmtDur(Math.abs(ms)); }
 function viewDatos(code){
-  clearTimers();
+  clearTimers(); Eta.stop();
   if(!adminPin()){ location.hash='#/admin'; return; }
-  $app.className='wide'; $app.innerHTML='<div class="card">Cargando datos…</div>';
+  adminShell('<div class="glass flat">Cargando análisis…</div>');
   rpcRaw('rec_data',{p_pin:adminPin(),p_code:code}).then(function(d){
-    if(d.error){ $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">No existe ese viaje.</div>'; return; }
-    var r=analyze(d), t=d.trip;
-    var kmh=function(v){ return v==null?'—':(v*3.6).toFixed(1)+' km/h'; };
-    var step=function(n,a,b){ return '<span>'+n+'</span><b>'+(a&&b?fmtDur(b-a):'—')+'</b>'; };
-    var h='<p><a href="#/admin">← Todos los viajes</a></p><h1>'+esc(t.label||t.code)+'</h1><p class="muted">Estado: '+esc(t.status)+' · código '+esc(t.code)+'</p>';
-    h+='<div class="card"><h2 style="margin-top:0">Resumen</h2><div class="kv"><span>Salida real</span><b>'+fmtDT(t.started_at)+'</b><span>Llegada real</span><b>'+fmtDT(t.arrived_at)+'</b><span>Duración total</span><b>'+fmtDur(r.duration)+'</b><span>Distancia recorrida</span><b>'+(r.dist?(r.dist/1000).toFixed(2)+' km':'—')+'</b><span>Velocidad promedio (total)</span><b>'+kmh(r.avgAll)+'</b><span>Velocidad promedio (en movimiento)</span><b>'+kmh(r.avgMoving)+'</b><span>Velocidad máxima</span><b>'+kmh(r.vmax)+'</b><span>Tiempo en movimiento</span><b>'+fmtDur(r.moving)+'</b><span>Tiempo detenido</span><b>'+fmtDur(r.stopped)+'</b><span>Puntos de ubicación</span><b>'+r.points+'</b><span>Huecos de señal (&gt;60 s)</span><b>'+r.gaps+(r.gaps?' ('+fmtDur(r.gapMs)+')':'')+'</b></div></div>';
-    h+='<div class="card"><h2 style="margin-top:0">Cadena de entrega</h2><div class="kv">'+step('Mamá abre → Mamá confirma',r.chain.abreMama,r.chain.mama)+step('Mamá confirma → Gaby confirma',r.chain.mama,r.chain.gaby)+step('Gaby confirma → Chofer abre',r.chain.gaby,r.chain.abreChofer)+step('Chofer abre → Salida',r.chain.abreChofer,r.chain.inicio)+step('Mamá abre → Salida (todo)',r.chain.abreMama,r.chain.inicio)+'</div></div>';
-    h+='<div class="card"><h2 style="margin-top:0">Ruta</h2>'+mapHtml(r,(t.dest_lat!=null?{lat:t.dest_lat,lng:t.dest_lng}:null))+'</div>';
-    h+='<div class="card"><h2 style="margin-top:0">Eventos</h2><table><tr><th>Hora</th><th>Quién</th><th>Qué</th><th>Detalle</th></tr>'+d.events.map(function(e){ return '<tr><td>'+fmtTime(e.client_ts||e.server_ts)+'</td><td>'+esc(e.role)+'</td><td>'+esc(EV_NAMES[e.type]||e.type)+'</td><td>'+esc(e.note||'')+(e.lat!=null?' <span class="muted">('+e.lat.toFixed(4)+', '+e.lng.toFixed(4)+')</span>':'')+'</td></tr>'; }).join('')+'</table></div>';
+    if(d.error){ adminShell('<div class="glass flat">No existe ese recorrido.</div>'); return; }
+    var r=analyze(d), t=d.trip; window._lastData=d;
+    var kmh=(r.moving&&r.dist)?((r.dist/(r.moving/1000))*3.6).toFixed(1)+' km/h':'—';
+    var h='<div class="glass flat"><h1>'+esc(t.label||t.code)+'</h1><p class="muted">Estado: '+esc(t.status)+' · día '+esc(t.day||'—')+' · código '+esc(t.code)+'</p></div>';
+    h+='<div class="glass flat"><h2>Tiempos reales</h2><div class="kv"><span>Salida de DIF</span><b>'+fmtTimeS(r.T.inicio)+'</b><span>Llegada con Gaby · salida</span><b>'+fmtTimeS(r.T.lg)+' · '+fmtTimeS(r.T.sg)+'</b><span>Espera con Gaby</span><b>'+fmtDur(r.waitG)+'</b><span>Llegada con Mamá · salida</span><b>'+fmtTimeS(r.T.lm)+' · '+fmtTimeS(r.T.sm)+'</b><span>Espera con Mamá</span><b>'+fmtDur(r.waitM)+'</b><span>Mamá llegó al destino a las</span><b>'+fmtTimeS(r.mamaAtDest)+'</b><span>Mamá a bordo (salida → destino)</span><b>'+fmtDur(r.aboard)+'</b><span>Duración total</span><b>'+fmtDur(r.total)+'</b></div></div>';
+    h+='<div class="glass flat"><h2>Estimado vs real por tramo</h2><table><tr><th>Tramo</th><th>Real</th><th>Estimado al salir</th><th>Error 1ª</th><th>Error última</th><th>#est.</th></tr>'+r.legs.map(function(L){ return '<tr><td>'+L.name+'</td><td>'+fmtDur(L.real)+'</td><td>'+(L.etaFirstDur!=null?fmtDur(L.etaFirstDur)+' <span class="muted">('+esc(L.etaFirstSrc)+')</span>':'—')+'</td><td>'+signedDur(L.errFirst)+'</td><td>'+signedDur(L.errLast)+'</td><td>'+L.nEta+'</td></tr>'; }).join('')+'</table><p class="muted">Error = hora real de llegada − hora estimada (positivo: llegó más tarde de lo estimado).</p></div>';
+    h+='<div class="glass flat"><h2>GPS</h2><div class="kv"><span>Puntos guardados</span><b>'+r.npts+'</b><span>Distancia recorrida</span><b>'+(r.dist?(r.dist/1000).toFixed(2)+' km':'—')+'</b><span>Velocidad en movimiento</span><b>'+kmh+'</b><span>Tiempo en movimiento</span><b>'+fmtDur(r.moving)+'</b><span>Tiempo detenido</span><b>'+fmtDur(r.stopped)+'</b><span>Huecos de señal (&gt;60 s)</span><b>'+r.gaps+(r.gaps?' ('+fmtDur(r.gapMs)+')':'')+'</b></div></div>';
+    if(r.missing.length||r.avisos.length) h+='<div class="glass flat"><h2>Datos que faltaron o avisos</h2><ul class="log">'+r.missing.map(function(m){ return '<li><span>'+esc(m)+'</span></li>'; }).join('')+r.avisos.map(function(a){ return '<li><span>'+esc(EV_NAMES[a.type]||a.type)+': '+esc(a.aviso.replace(/_/g,' '))+'</span><span class="muted">'+fmtTime(a.ts)+'</span></li>'; }).join('')+'</ul></div>';
+    var tt={places:d.places,stage:t.stage,status:t.status};
+    h+='<div class="glass flat"><h2>Ruta</h2>'+mapHtml(tt,r.pts.length?r.pts[r.pts.length-1]:null,r.pts.map(function(p){ return [p.lat,p.lng]; }))+'</div>';
+    h+='<div class="glass flat"><h2>Eventos</h2><table><tr><th>Hora</th><th>Quién</th><th>Qué</th><th>Detalle</th></tr>'+d.events.map(function(e){ return '<tr><td>'+fmtTimeS(e.client_ts||e.server_ts)+'</td><td>'+esc(e.role)+'</td><td>'+esc(EV_NAMES[e.type]||e.type)+'</td><td>'+esc(e.note||'')+(e.meta?' <span class="muted">'+esc(JSON.stringify(e.meta))+'</span>':'')+(e.lat!=null?' <span class="muted">('+e.lat.toFixed(4)+', '+e.lng.toFixed(4)+')</span>':'')+'</td></tr>'; }).join('')+'</table></div>';
     h+='<div class="grid"><button class="btn" onclick="exportCSV(\''+code+'\')">Descargar puntos (CSV)</button><button class="btn" onclick="exportJSON(\''+code+'\')">Descargar todo (JSON)</button></div>';
-    window._lastData=d;
-    $app.innerHTML=h; fitMaps();
-  },function(e){ $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">Error: '+esc(e.message)+'</div>'; });
+    adminShell(h); fitMaps();
+  },function(e){ adminShell('<div class="glass flat">Error: '+esc(e.message)+'</div>'); });
 }
 function dl(name,mime,text){ var a=document.createElement('a'); a.download=name; a.href=URL.createObjectURL(new Blob([text],{type:mime})); a.click(); }
 function exportJSON(code){ dl('recorrido-'+code+'.json','application/json',JSON.stringify(window._lastData,null,2)); }
-function exportCSV(code){
-  var rows=['timestamp,lat,lng,precision_m,velocidad_ms,rumbo'].concat((window._lastData.points||[]).map(function(p){ return [p.ts,p.lat,p.lng,p.acc==null?'':p.acc,p.spd==null?'':p.spd,p.hdg==null?'':p.hdg].join(','); }));
-  dl('recorrido-'+code+'-puntos.csv','text/csv',rows.join('\n'));
-}
+function exportCSV(code){ var rows=['timestamp,lat,lng,precision_m,velocidad_ms,rumbo'].concat((window._lastData.points||[]).map(function(p){ return [p.ts,p.lat,p.lng,p.acc==null?'':p.acc,p.spd==null?'':p.spd,p.hdg==null?'':p.hdg].join(','); })); dl('recorrido-'+code+'-puntos.csv','text/csv',rows.join('\n')); }
 
 /* ============ Router ============ */
 function route(){
   var h=(location.hash||'').replace(/^#\/?/,''), parts=h.split('/');
-  $app.className='';
-  if(Geo.watchId!=null && !(parts[0]==='c')){ /* nunca cortar el rastreo si navegan por error */ }
+  ctx.host=null; ctx.pollAdmin=false; $app.className='';
+  if(parts[0]!=='admin'&&parts[0]!=='datos'){ Alarm.stop(); }
   switch(parts[0]){
-    case 'v': return startShared(parts[1]);
-    case 'm': return startRole('mama',parts[1]);
-    case 'g': return startRole('gaby',parts[1]);
-    case 'c': return startRole('chofer',parts[1]);
-    case 'qr': return viewQR(parts[1]);
+    case 'admin': return viewAdmin(parts[1]);
     case 'datos': return viewDatos(parts[1]);
-    case 'vivo': return viewVivo(parts[1]);
-    case 'admin': return viewAdmin();
-    default:
-      if(parts[0]&&/^[a-z0-9]{4,16}$/.test(parts[0])) return startRole('mama',parts[0]);
-      if(!h) return errorView('Escanea el QR','Esta página se abre desde el código QR del viaje.');
-      return errorView('Enlace no válido','Pide que te envíen el QR o el enlace otra vez.');
+    case 'v': return home((parts[1]||'').toLowerCase());
+    case 'm': case 'g': case 'c': lsSet('rec_role',{m:'mama',g:'gaby',c:'chofer'}[parts[0]]); return home((parts[1]||'').toLowerCase());
+    default: return home();
   }
 }
 window.addEventListener('hashchange',route);
-window.addEventListener('beforeunload',function(e){ if(ctx.role==='chofer' && ctx.trip && ctx.trip.status==='en_curso'){ e.preventDefault(); e.returnValue=''; } });
 Q.flush();
 route();
+
 </script>
 </body>
 </html>
