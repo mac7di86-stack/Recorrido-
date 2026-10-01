@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d3e">
+<meta name="robots" content="noindex,nofollow">
+<title>Recorrido</title>
+<style>
+:root{
+  --bg:#f4f1ea; --card:#ffffff; --ink:#1b2a2b; --muted:#5c6b6c; --brand:#0f3d3e; --brand2:#1f6f6b;
+  --ok:#1e7b43; --warn:#b26a00; --bad:#b3261e; --line:#d9d4c7; --soft:#e8f1ef;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.35}
+#app{max-width:560px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom))}
+h1{font-size:1.5rem;margin:.2rem 0 .4rem}
+h2{font-size:1.15rem;margin:1.2rem 0 .5rem}
+p{margin:.4rem 0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.role{display:inline-block;background:var(--brand);color:#fff;border-radius:999px;padding:4px 12px;font-size:.85rem;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.muted{color:var(--muted);font-size:.9rem}
+.big{width:100%;border:0;border-radius:18px;padding:22px 16px;font-size:1.3rem;font-weight:700;color:#fff;background:var(--brand);cursor:pointer;min-height:68px}
+.big:active{transform:scale(.98)}
+.big.green{background:var(--ok)} .big.red{background:var(--bad)} .big.light{background:var(--soft);color:var(--brand)}
+.btn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;font-size:1rem;font-weight:600;color:var(--ink);cursor:pointer;min-height:56px}
+.btn:active{background:var(--soft)}
+.btn.sm{padding:8px 12px;min-height:40px;font-size:.9rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.status{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--soft);font-weight:600}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--ok);flex:none}
+.dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)} .dot.pulse{animation:p 1.4s infinite}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(30,123,67,.5)}100%{box-shadow:0 0 0 12px rgba(30,123,67,0)}}
+.check{font-size:3rem;text-align:center;margin:.2rem 0}
+.timer{font-size:2.6rem;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:.2rem 0}
+.log{margin:0;padding:0;list-style:none;font-size:.95rem}
+.log li{padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+.log li:last-child{border:0}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--brand);color:#fff;padding:12px 18px;border-radius:999px;font-weight:600;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.banner{border-radius:14px;padding:12px 14px;margin:10px 0;font-size:.95rem}
+.banner.warn{background:#fff3dc;color:#6b4300;border:1px solid #f0d49a}
+.banner.bad{background:#fde7e5;color:#7a1710;border:1px solid #f1b7b2}
+input,textarea{width:100%;font:inherit;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:.95rem}
+.kv b{font-variant-numeric:tabular-nums;text-align:right}
+a{color:var(--brand2)}
+.qrbox{background:#fff;padding:8px;border-radius:12px;display:inline-block;line-height:0}
+.qrbox svg{width:230px;height:230px}
+#app.wide{max-width:900px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast"></div>
+<script>/* Generador QR mínimo (modo byte, nivel L o M, versiones 1-10). Sin dependencias. */
+(function (root) {
+  var ECC = { L: 1, M: 0 };
+  var ECC_PER_BLOCK = {
+    L: [-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18],
+    M: [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26]
+  };
+  var NUM_BLOCKS = {
+    L: [-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4],
+    M: [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5]
+  };
+
+  function rawModules(ver) {
+    var r = (16 * ver + 128) * ver + 64;
+    if (ver >= 2) {
+      var n = Math.floor(ver / 7) + 2;
+      r -= (25 * n - 10) * n - 55;
+      if (ver >= 7) r -= 36;
+    }
+    return r;
+  }
+  function dataCodewords(ver, lvl) {
+    return Math.floor(rawModules(ver) / 8) - ECC_PER_BLOCK[lvl][ver] * NUM_BLOCKS[lvl][ver];
+  }
+  function mul(x, y) {
+    var z = 0;
+    for (var i = 7; i >= 0; i--) {
+      z = (z << 1) ^ ((z >>> 7) * 0x11d);
+      z ^= ((y >>> i) & 1) * x;
+    }
+    return z & 255;
+  }
+  function divisor(d) {
+    var r = [], i, j;
+    for (i = 0; i < d - 1; i++) r.push(0);
+    r.push(1);
+    var root = 1;
+    for (i = 0; i < d; i++) {
+      for (j = 0; j < d; j++) {
+        r[j] = mul(r[j], root);
+        if (j + 1 < d) r[j] ^= r[j + 1];
+      }
+      root = mul(root, 2);
+    }
+    return r;
+  }
+  function remainder(data, div) {
+    var r = div.map(function () { return 0; });
+    data.forEach(function (b) {
+      var f = b ^ r.shift();
+      r.push(0);
+      div.forEach(function (c, i) { r[i] ^= mul(c, f); });
+    });
+    return r;
+  }
+  function utf8(str) {
+    var s = unescape(encodeURIComponent(str)), out = [];
+    for (var i = 0; i < s.length; i++) out.push(s.charCodeAt(i));
+    return out;
+  }
+  function bit(x, i) { return ((x >>> i) & 1) !== 0; }
+
+  function make(text, lvl) {
+    lvl = lvl || 'M';
+    var bytes = utf8(text), ver, bits = [];
+    function push(val, len) { for (var i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); }
+    for (ver = 1; ver <= 10; ver++) {
+      var ccBits = ver <= 9 ? 8 : 16;
+      if (4 + ccBits + bytes.length * 8 <= dataCodewords(ver, lvl) * 8) break;
+    }
+    if (ver > 10) throw new Error('texto demasiado largo para el QR');
+    push(4, 4);
+    push(bytes.length, ver <= 9 ? 8 : 16);
+    bytes.forEach(function (b) { push(b, 8); });
+    var cap = dataCodewords(ver, lvl) * 8;
+    for (var t = 0; t < 4 && bits.length < cap; t++) bits.push(0);
+    while (bits.length % 8) bits.push(0);
+    var data = [];
+    for (var i = 0; i < bits.length; i += 8) {
+      var v = 0;
+      for (var j = 0; j < 8; j++) v = (v << 1) | bits[i + j];
+      data.push(v);
+    }
+    for (var pad = 0xec; data.length < cap / 8; pad ^= 0xec ^ 0x11) data.push(pad);
+
+    // ECC + interleave
+    var nb = NUM_BLOCKS[lvl][ver], eccLen = ECC_PER_BLOCK[lvl][ver];
+    var raw = Math.floor(rawModules(ver) / 8);
+    var nShort = nb - (raw % nb), shortLen = Math.floor(raw / nb);
+    var blocks = [], k = 0, div = divisor(eccLen);
+    for (i = 0; i < nb; i++) {
+      var dl = shortLen - eccLen + (i < nShort ? 0 : 1);
+      var dat = data.slice(k, k + dl);
+      k += dl;
+      var ecc = remainder(dat, div);
+      if (i < nShort) dat.push(0);
+      blocks.push(dat.concat(ecc));
+    }
+    var all = [];
+    for (i = 0; i < blocks[0].length; i++) {
+      blocks.forEach(function (blk, j) {
+        if (i !== shortLen - eccLen || j >= nShort) all.push(blk[i]);
+      });
+    }
+
+    var size = ver * 4 + 17, mod = [], fn = [];
+    for (i = 0; i < size; i++) {
+      mod.push(new Array(size).fill(false));
+      fn.push(new Array(size).fill(false));
+    }
+    function setF(x, y, v) { mod[y][x] = v; fn[y][x] = true; }
+
+    for (i = 0; i < size; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+    function finder(x, y) {
+      for (var dy = -4; dy <= 4; dy++) for (var dx = -4; dx <= 4; dx++) {
+        var d = Math.max(Math.abs(dx), Math.abs(dy)), xx = x + dx, yy = y + dy;
+        if (xx >= 0 && xx < size && yy >= 0 && yy < size) setF(xx, yy, d !== 2 && d !== 4);
+      }
+    }
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    var pos = [];
+    if (ver > 1) {
+      var na = Math.floor(ver / 7) + 2;
+      var step = ver === 32 ? 26 : Math.ceil((ver * 4 + 4) / (na * 2 - 2)) * 2;
+      pos = [6];
+      for (var p = size - 7; pos.length < na; p -= step) pos.splice(1, 0, p);
+    }
+    pos.forEach(function (a, ia) {
+      pos.forEach(function (b, ib) {
+        if ((ia === 0 && ib === 0) || (ia === 0 && ib === pos.length - 1) || (ia === pos.length - 1 && ib === 0)) return;
+        for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++)
+          setF(a + dx, b + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+      });
+    });
+    function drawFormat(mask) {
+      var d = (ECC[lvl] << 3) | mask, r = d;
+      for (var q = 0; q < 10; q++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      var b = ((d << 10) | r) ^ 0x5412, q2;
+      for (q2 = 0; q2 <= 5; q2++) setF(8, q2, bit(b, q2));
+      setF(8, 7, bit(b, 6)); setF(8, 8, bit(b, 7)); setF(7, 8, bit(b, 8));
+      for (q2 = 9; q2 < 15; q2++) setF(14 - q2, 8, bit(b, q2));
+      for (q2 = 0; q2 < 8; q2++) setF(size - 1 - q2, 8, bit(b, q2));
+      for (q2 = 8; q2 < 15; q2++) setF(8, size - 15 + q2, bit(b, q2));
+      setF(8, size - 8, true);
+    }
+    drawFormat(0);
+    if (ver >= 7) {
+      var rr = ver;
+      for (i = 0; i < 12; i++) rr = (rr << 1) ^ ((rr >>> 11) * 0x1f25);
+      var vb = (ver << 12) | rr;
+      for (i = 0; i < 18; i++) {
+        var c = bit(vb, i), a = size - 11 + (i % 3), b2 = Math.floor(i / 3);
+        setF(a, b2, c); setF(b2, a, c);
+      }
+    }
+    // colocar datos
+    var bi = 0;
+    for (var right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (var vert = 0; vert < size; vert++) {
+        for (var jj = 0; jj < 2; jj++) {
+          var x = right - jj, up = ((right + 1) & 2) === 0, y = up ? size - 1 - vert : vert;
+          if (!fn[y][x] && bi < all.length * 8) { mod[y][x] = bit(all[bi >>> 3], 7 - (bi & 7)); bi++; }
+        }
+      }
+    }
+    function applyMask(m) {
+      for (var y = 0; y < size; y++) for (var x = 0; x < size; x++) {
+        var inv;
+        switch (m) {
+          case 0: inv = (x + y) % 2 === 0; break;
+          case 1: inv = y % 2 === 0; break;
+          case 2: inv = x % 3 === 0; break;
+          case 3: inv = (x + y) % 3 === 0; break;
+          case 4: inv = (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0; break;
+          case 5: inv = (x * y) % 2 + (x * y) % 3 === 0; break;
+          case 6: inv = ((x * y) % 2 + (x * y) % 3) % 2 === 0; break;
+          default: inv = ((x + y) % 2 + (x * y) % 3) % 2 === 0;
+        }
+        if (!fn[y][x] && inv) mod[y][x] = !mod[y][x];
+      }
+    }
+    function penalty() {
+      var score = 0, x, y, run, line, dark = 0;
+      var pat1 = '10111010000', pat2 = '00001011101';
+      function lineScore(s) {
+        var sc = 0, r = 1, k2;
+        for (k2 = 1; k2 < s.length; k2++) {
+          if (s[k2] === s[k2 - 1]) { r++; if (r === 5) sc += 3; else if (r > 5) sc++; } else r = 1;
+        }
+        var idx = -1;
+        while ((idx = s.indexOf(pat1, idx + 1)) >= 0) sc += 40;
+        idx = -1;
+        while ((idx = s.indexOf(pat2, idx + 1)) >= 0) sc += 40;
+        return sc;
+      }
+      for (y = 0; y < size; y++) {
+        line = ''; for (x = 0; x < size; x++) { line += mod[y][x] ? '1' : '0'; if (mod[y][x]) dark++; }
+        score += lineScore(line);
+      }
+      for (x = 0; x < size; x++) {
+        line = ''; for (y = 0; y < size; y++) line += mod[y][x] ? '1' : '0';
+        score += lineScore(line);
+      }
+      for (y = 0; y < size - 1; y++) for (x = 0; x < size - 1; x++) {
+        var c0 = mod[y][x];
+        if (c0 === mod[y][x + 1] && c0 === mod[y + 1][x] && c0 === mod[y + 1][x + 1]) score += 3;
+      }
+      var total = size * size;
+      score += (Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1) * 10;
+      return score;
+    }
+    var best = 0, bestScore = Infinity;
+    for (var m = 0; m < 8; m++) {
+      applyMask(m); drawFormat(m);
+      var ps = penalty();
+      if (ps < bestScore) { bestScore = ps; best = m; }
+      applyMask(m);
+    }
+    applyMask(best); drawFormat(best);
+    return { size: size, version: ver, modules: mod, mask: best };
+  }
+
+  function svg(text, scale, lvl) {
+    var q = make(text, lvl), s = scale || 6, border = 4, n = q.size + border * 2, d = '';
+    for (var y = 0; y < q.size; y++) for (var x = 0; x < q.size; x++)
+      if (q.modules[y][x]) d += 'M' + (x + border) + ',' + (y + border) + 'h1v1h-1z';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" width="' + n * s + '" height="' + n * s +
+      '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+  }
+
+  root.QR = { make: make, svg: svg };
+  if (typeof module !== 'undefined') module.exports = root.QR;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+/* ============ Configuración ============ */
+var SUPABASE_URL = 'https://ogvrwwxwpdhtdqwtbuuv.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ndnJ3d3h3cGRodGRxd3RidXV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NzcxNDUsImV4cCI6MjEwNTM1MzE0NX0.TkMyNdEuJ7GOzMZ7bV7COSRZ-pp5UsvOF8IBQqSrwYg';
+var TZ = 'America/Mexico_City';
+var GPS_MIN_INTERVAL_MS = 5000;   // máximo un punto cada 5 s
+var FLUSH_INTERVAL_MS = 15000;    // envío de lotes cada 15 s
+var GPS_LOST_AFTER_MS = 30000;    // sin fix > 30 s = señal perdida
+
+/* ============ Utilidades ============ */
+var $app = document.getElementById('app');
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmtTime(ts){ if(!ts) return '—'; return new Date(ts).toLocaleTimeString('es-MX',{timeZone:TZ,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}); }
+function fmtDT(ts){ if(!ts) return '—'; return new Date(ts).toLocaleString('es-MX',{timeZone:TZ,day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}); }
+function fmtDur(ms){ if(ms==null||isNaN(ms)) return '—'; var s=Math.max(0,Math.round(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60; return (h?h+' h ':'')+(h||m?m+' min ':'')+r+' s'; }
+function clock(ms){ var s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60; return (h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(r).padStart(2,'0'); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'; clearTimeout(toast._t); toast._t=setTimeout(function(){ t.className='toast'; },2200); }
+function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function baseUrl(){ return location.origin + location.pathname; }
+function link(role, code){ return baseUrl() + '#/' + role + '/' + code; }
+
+/* ============ API + cola sin conexión ============ */
+function rpcRaw(fn, args){
+  return fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method:'POST',
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},
+    body: JSON.stringify(args)
+  }).then(function(r){
+    return r.text().then(function(t){
+      var j; try{ j = t ? JSON.parse(t) : null; }catch(e){ j = null; }
+      if(!r.ok){ var err = new Error((j && (j.message||j.hint)) || ('http_'+r.status)); err.status = r.status; throw err; }
+      return j;
+    });
+  });
+}
+var Q = {
+  key:'rec_queue', flushing:false,
+  items:function(){ return lsGet(this.key, []); },
+  add:function(fn,args){ var a=this.items(); a.push({fn:fn,args:args}); lsSet(this.key,a); this.flush(); },
+  flush:function(){
+    var self=this; if(self.flushing) return; self.flushing=true;
+    function step(){
+      var a=self.items();
+      if(!a.length){ self.flushing=false; Net.set(true); return; }
+      var it=a[0];
+      rpcRaw(it.fn,it.args).then(function(){ a=self.items(); a.shift(); lsSet(self.key,a); step(); },
+        function(err){
+          if(err && err.status && err.status<500 && err.status!==408 && err.status!==429){ a=self.items(); a.shift(); lsSet(self.key,a); step(); }
+          else { self.flushing=false; Net.set(false); }
+        });
+    }
+    step();
+  }
+};
+var Net = { ok:true, set:function(v){ if(this.ok!==v){ this.ok=v; var el=document.getElementById('netdot'); if(el){ el.className='dot'+(v?'':' warn'); } var tx=document.getElementById('nettxt'); if(tx) tx.textContent=v?'Conectado':'Sin conexión: se guarda y se envía después'; } } };
+window.addEventListener('online', function(){ Q.flush(); });
+setInterval(function(){ if(Q.items().length) Q.flush(); }, 10000);
+
+/* ============ Estado del viaje ============ */
+var ctx = { code:null, role:null, trip:null, poll:null, tick:null };
+function loadTrip(){
+  return rpcRaw('rec_get_trip',{p_code:ctx.code}).then(function(t){ ctx.trip=t; Net.set(true); return t; });
+}
+function doneHas(role,type){ var d=(ctx.trip&&ctx.trip.done)||[]; return d.indexOf(role+':'+type)>=0 || lsGet('rec_done_'+ctx.code+'_'+role+'_'+type,false); }
+function logEvent(role,type,note,extra){
+  var pos = Geo.last;
+  var args = {
+    p_code:ctx.code, p_client_id:uid(), p_role:role, p_type:type, p_note:note||null,
+    p_lat: pos?pos.lat:null, p_lng: pos?pos.lng:null, p_acc: pos?pos.acc:null,
+    p_ts:new Date().toISOString(), p_meta: extra||null
+  };
+  Q.add('rec_event',args);
+  return args.p_ts;
+}
+function logOnce(role,type,note,extra){ // registra una vez por navegador/viaje
+  var k='rec_done_'+ctx.code+'_'+role+'_'+type;
+  if(lsGet(k,false)) return;
+  lsSet(k,true); logEvent(role,type,note,extra);
+}
+function deviceMeta(){ return {ua:navigator.userAgent, lang:navigator.language, w:screen.width, h:screen.height, online:navigator.onLine}; }
+
+/* ============ Geolocalización ============ */
+var Geo = {
+  watchId:null, last:null, lastSaved:0, lastFix:0, buffer:[], state:'inactivo', lostLogged:false, wd:null, fl:null,
+  start:function(){
+    var self=this;
+    if(!navigator.geolocation){ self.state='no_soportado'; return false; }
+    if(self.watchId!=null) return true;
+    self.buffer = lsGet('rec_pts_'+ctx.code, []);
+    self.lastFix = Date.now(); self.state='buscando';
+    self.watchId = navigator.geolocation.watchPosition(function(p){
+      var now=Date.now(); self.lastFix=now;
+      var c=p.coords; self.last={lat:c.latitude,lng:c.longitude,acc:c.accuracy,spd:c.speed,hdg:c.heading};
+      if(self.state!=='ok'){ if(self.lostLogged){ logEvent('chofer','gps_recuperado'); self.lostLogged=false; } self.state='ok'; self.ui(); }
+      if(now-self.lastSaved<GPS_MIN_INTERVAL_MS) return;
+      self.lastSaved=now;
+      self.buffer.push({lat:c.latitude,lng:c.longitude,acc:c.accuracy,spd:c.speed,hdg:c.heading,ts:new Date(p.timestamp||now).toISOString()});
+      lsSet('rec_pts_'+ctx.code,self.buffer);
+    }, function(e){
+      if(e.code===1){ if(self.state!=='denegado'){ self.state='denegado'; logEvent('chofer','gps_permiso_denegado'); self.ui(); } }
+      else { if(self.state==='ok'){ self.state='perdida'; } self.ui(); }
+    }, {enableHighAccuracy:true,maximumAge:0,timeout:30000});
+    self.wd = setInterval(function(){
+      if(self.state==='ok' && Date.now()-self.lastFix>GPS_LOST_AFTER_MS){ self.state='perdida'; if(!self.lostLogged){ self.lostLogged=true; logEvent('chofer','gps_perdido'); } self.ui(); }
+    },5000);
+    self.fl = setInterval(function(){ self.flush(); }, FLUSH_INTERVAL_MS);
+    return true;
+  },
+  flush:function(){
+    if(!this.buffer.length) return;
+    var batch=this.buffer.splice(0,100);
+    lsSet('rec_pts_'+ctx.code,this.buffer);
+    Q.add('rec_points',{p_code:ctx.code,p_points:batch});
+  },
+  stop:function(){
+    if(this.watchId!=null){ navigator.geolocation.clearWatch(this.watchId); this.watchId=null; }
+    clearInterval(this.wd); clearInterval(this.fl);
+    while(this.buffer.length) this.flush();
+    this.state='inactivo';
+  },
+  ui:function(){
+    var el=document.getElementById('gpsbox'); if(!el) return;
+    var s=this.state, txt='', cls='dot';
+    if(s==='ok'){ txt='Ubicación activa'+(this.last?' (±'+Math.round(this.last.acc)+' m)':''); cls='dot pulse'; }
+    else if(s==='buscando'){ txt='Buscando ubicación…'; cls='dot warn'; }
+    else if(s==='perdida'){ txt='Ubicación perdida: se retoma sola'; cls='dot warn'; }
+    else if(s==='denegado'){ txt='Ubicación bloqueada'; cls='dot bad'; }
+    else if(s==='no_soportado'){ txt='Este teléfono no da ubicación'; cls='dot bad'; }
+    else { txt='Ubicación apagada'; cls='dot warn'; }
+    el.innerHTML='<span class="'+cls+'"></span><span>'+esc(txt)+'</span>';
+    var ban=document.getElementById('gpsban');
+    if(ban) ban.innerHTML = s==='denegado' ? '<div class="banner bad">Se bloqueó el permiso de ubicación. Actívalo en los ajustes del navegador para este sitio y recarga. El viaje sigue registrándose sin mapa.</div>' : '';
+  }
+};
+
+/* ============ Pantalla encendida y visibilidad ============ */
+var Wake = { lock:null,
+  on:function(){ var self=this; try{ if(navigator.wakeLock){ navigator.wakeLock.request('screen').then(function(l){ self.lock=l; }).catch(function(){}); } }catch(e){} },
+  off:function(){ try{ if(this.lock){ this.lock.release(); this.lock=null; } }catch(e){} }
+};
+document.addEventListener('visibilitychange', function(){
+  if(!ctx.code || ctx.role!=='chofer' || !Geo.watchId) return;
+  logEvent('chofer', document.hidden ? 'pantalla_oculta' : 'pantalla_visible');
+  if(!document.hidden){ Wake.on(); }
+});
+
+/* ============ Vistas comunes ============ */
+function shell(role, inner){
+  var label = {mama:'Gloria',gaby:'Gaby',chofer:'Barrón'}[role] || role;
+  $app.innerHTML = '<div class="top"><span class="role">'+esc(label)+'</span><span class="muted" style="display:flex;align-items:center;gap:6px"><span id="netdot" class="dot'+(Net.ok?'':' warn')+'"></span><span id="nettxt">'+(Net.ok?'Conectado':'Sin conexión: se guarda y se envía después')+'</span></span></div>'+inner+(ctx.shared?'<p class="muted" style="text-align:center;margin-top:18px"><a href="#" onclick="return changeRole()">No soy '+esc(label)+'</a></p>':'');
+}
+function errorView(title,msg){
+  clearTimers();
+  $app.innerHTML='<div class="card"><div class="check">⚠️</div><h1 style="text-align:center">'+esc(title)+'</h1><p style="text-align:center">'+esc(msg)+'</p></div>';
+}
+function clearTimers(){ clearInterval(ctx.poll); clearInterval(ctx.tick); ctx.poll=null; ctx.tick=null; }
+function statusLine(){
+  var t=ctx.trip; if(!t) return '';
+  var txt, cls='dot';
+  if(t.status==='creado'){ txt='Viaje listo, todavía no sale'; cls='dot warn'; }
+  else if(t.status==='en_curso'){ txt='Viaje en camino desde las '+fmtTime(t.started_at); cls='dot pulse'; }
+  else if(t.status==='llegado'){ txt='Llegó a las '+fmtTime(t.arrived_at); }
+  else { txt='Viaje cancelado'; cls='dot bad'; }
+  return '<div class="status"><span class="'+cls+'"></span><span>'+esc(txt)+'</span></div>';
+}
+function whatsappLink(role, next){
+  var msg = (next==='gaby'?'Hola Gaby, te paso el viaje':'Hola, te paso el viaje')+(ctx.trip&&ctx.trip.label?' ('+ctx.trip.label+')':'')+'. Ábrelo aquí y toca el botón: '+link(next==='gaby'?'g':'c',ctx.code);
+  return 'https://wa.me/?text='+encodeURIComponent(msg);
+}
+function shareBtn(next, text){
+  if(ctx.shared){ return '<div class="card"><p style="text-align:center">'+(next==='gaby'?'Gaby':'El chofer')+' lo verá solo en cuanto abra el mismo enlace. No tienes que mandar nada más.</p></div>'; }
+  var url=link(next==='gaby'?'g':'c',ctx.code);
+  return '<a class="big" style="display:block;text-align:center;text-decoration:none" href="'+esc(whatsappLink(ctx.role,next))+'" target="_blank" rel="noopener">'+esc(text)+'</a>'+
+    '<p class="muted" style="text-align:center"><a href="#" onclick="return copyLink(\''+url+'\')">o copiar el enlace</a></p>';
+}
+function copyLink(u){
+  if(navigator.clipboard){ navigator.clipboard.writeText(u).then(function(){ toast('Enlace copiado'); },function(){ prompt('Copia este enlace:',u); }); }
+  else prompt('Copia este enlace:',u);
+  return false;
+}
+function startPolling(render){
+  clearTimers();
+  ctx.poll=setInterval(function(){ loadTrip().then(render,function(){ Net.set(false); }); },6000);
+}
+
+/* ============ MAMÁ ============ */
+function viewMama(){
+  var t=ctx.trip, confirmed=doneHas('mama','mama_confirma');
+  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>'+statusLine();
+  if(!confirmed){
+    body+='<div class="card"><p>Para empezar, toca el botón.</p></div><button class="big green" onclick="mamaConfirm()">Todo listo, confirmo</button>';
+  } else {
+    body+='<div class="card"><div class="check">✅</div><p style="text-align:center;font-weight:700">Quedó registrado</p></div>';
+    if(!doneHas('gaby','gaby_confirma')) body+='<p class="muted">Siguiente paso: avisarle a Gaby.</p>'+shareBtn('gaby','Avisar a Gaby por WhatsApp');
+    else body+='<div class="card"><p style="text-align:center">Gaby ya lo recibió. No tienes que hacer nada más.</p></div>';
+  }
+  shell('mama',body); Net.set(Net.ok);
+}
+function mamaConfirm(){ logOnce('mama','mama_confirma'); lsSet('rec_done_'+ctx.code+'_mama_mama_confirma',true); viewMama(); toast('Registrado'); }
+
+/* ============ GABY ============ */
+function viewGaby(){
+  var t=ctx.trip, confirmed=doneHas('gaby','gaby_confirma');
+  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>'+statusLine();
+  if(!confirmed){
+    body+='<div class="card"><p>Doña Gloria ya '+(doneHas('mama','mama_confirma')?'confirmó el viaje.':'abrió el enlace.')+' Toca el botón cuando lo recibas.</p></div><button class="big green" onclick="gabyConfirm()">Recibí, confirmo</button>';
+  } else {
+    body+='<div class="card"><div class="check">✅</div><p style="text-align:center;font-weight:700">Quedó registrado</p></div>';
+    if(!doneHas('chofer','chofer_abre') && !doneHas('chofer','inicio')) body+='<p class="muted">Siguiente paso: pasarle el viaje al chofer.</p>'+shareBtn('chofer','Enviar al chofer por WhatsApp');
+    else if(t.status!=='llegado') body+='<div class="card"><p style="text-align:center">El chofer ya tiene el viaje.</p></div>';
+    if(t.status==='en_curso'||t.status==='llegado') body+='<h2>Recorrido</h2>'+eventList(t);
+    body+='<h2>¿Pasó algo?</h2><textarea id="gnote" rows="2" placeholder="Escribe aquí (opcional)"></textarea><div style="height:8px"></div><button class="btn" style="width:100%" onclick="gabyNote()">Guardar nota</button>';
+  }
+  shell('gaby',body);
+}
+function gabyConfirm(){ logOnce('gaby','gaby_confirma'); viewGaby(); toast('Registrado'); }
+function gabyNote(){ var v=(document.getElementById('gnote').value||'').trim(); if(!v){ return; } logEvent('gaby','nota',v); document.getElementById('gnote').value=''; toast('Nota guardada'); }
+var EV_NAMES={mama_confirma:'Mamá confirmó',gaby_confirma:'Gaby confirmó',chofer_abre:'Chofer abrió el viaje',inicio:'Salió',parada:'Se detuvo',reanudo:'Siguió',trafico:'Tráfico o retraso',sube:'Subió alguien',baja:'Bajó alguien',incidente:'Otro',llegada:'Llegó',nota:'Nota',abre:'Abrió el enlace',gps_perdido:'Se perdió la ubicación',gps_recuperado:'Volvió la ubicación',gps_permiso_denegado:'Ubicación bloqueada',pantalla_oculta:'Pantalla apagada o en segundo plano',pantalla_visible:'Pantalla de vuelta',viaje_creado:'Viaje creado'};
+function eventList(t,limit){
+  var ev=(t.events||[]).filter(function(e){ return ['abre','pantalla_oculta','pantalla_visible','gps_perdido','gps_recuperado'].indexOf(e.type)<0; });
+  if(limit) ev=ev.slice(-limit);
+  if(!ev.length) return '<p class="muted">Todavía no hay eventos.</p>';
+  return '<ul class="log">'+ev.slice().reverse().map(function(e){ return '<li><span>'+esc(EV_NAMES[e.type]||e.type)+(e.note?' — '+esc(e.note):'')+'</span><span class="muted">'+fmtTime(e.ts)+'</span></li>'; }).join('')+'</ul>';
+}
+
+/* ============ CHOFER ============ */
+function choferState(){ var t=ctx.trip; return t.status; }
+function viewChofer(){
+  var t=ctx.trip, st=choferState();
+  var body='<h1>'+(t.label?esc(t.label):'Viaje')+'</h1>';
+  if(st==='creado'){
+    body+=statusLine()+'<p class="muted">Gloria: '+(doneHas('mama','mama_confirma')?'✅ confirmó':'⏳ pendiente')+' · Gaby: '+(doneHas('gaby','gaby_confirma')?'✅ confirmó':'⏳ pendiente')+'</p>';
+    body+='<div class="card"><p>Pon el teléfono en un lugar fijo del carro y deja la pantalla encendida.</p><p class="muted">Al aceptar, el celular empieza a compartir la ubicación solo. Te va a pedir permiso: toca «Permitir».</p></div>';
+    body+='<button class="big green" onclick="choferStart()">Aceptar y compartir ubicación</button>';
+  } else if(st==='en_curso'){
+    var startMs=new Date(t.started_at).getTime();
+    body+='<div class="timer" id="clock">'+clock(Date.now()-startMs)+'</div>';
+    body+='<div class="status" id="gpsbox"></div><div id="gpsban"></div>';
+    body+='<h2>Registrar</h2><div class="grid">'+
+      '<button class="btn" onclick="choferEv(\'parada\')">🛑 Me detuve</button>'+
+      '<button class="btn" onclick="choferEv(\'reanudo\')">▶️ Seguí</button>'+
+      '<button class="btn" onclick="choferEv(\'trafico\')">🚗 Tráfico / retraso</button>'+
+      '<button class="btn" onclick="choferEv(\'incidente\',true)">✏️ Otro</button>'+
+      '<button class="btn" onclick="choferEv(\'sube\')">⬆️ Subió alguien</button>'+
+      '<button class="btn" onclick="choferEv(\'baja\')">⬇️ Bajó alguien</button></div>';
+    body+='<div style="height:14px"></div><button class="big red" onclick="choferArrive()">Llegué</button>';
+    body+='<h2>Últimos registros</h2>'+eventList(t,5);
+  } else if(st==='llegado'){
+    var dur=new Date(t.arrived_at)-new Date(t.started_at);
+    body+='<div class="card"><div class="check">🏁</div><p style="text-align:center;font-weight:700">Viaje terminado</p><div class="kv"><span>Salida</span><b>'+fmtTime(t.started_at)+'</b><span>Llegada</span><b>'+fmtTime(t.arrived_at)+'</b><span>Duración</span><b>'+fmtDur(dur)+'</b></div></div><p class="muted" style="text-align:center">Gracias. Ya puedes cerrar esta pantalla.</p>';
+  } else { body+='<div class="card"><p>Este viaje fue cancelado.</p></div>'; }
+  shell('chofer',body);
+  if(st==='en_curso'){
+    Geo.ui();
+    clearInterval(ctx.tick);
+    ctx.tick=setInterval(function(){ var c=document.getElementById('clock'); if(c&&ctx.trip&&ctx.trip.started_at) c.textContent=clock(Date.now()-new Date(ctx.trip.started_at).getTime()); },1000);
+  }
+}
+function choferStart(){
+  var ts=logEvent('chofer','inicio',null,deviceMeta());
+  ctx.trip.status='en_curso'; ctx.trip.started_at=ts;
+  Geo.start(); Wake.on(); viewChofer(); toast('Recorrido iniciado');
+}
+function choferEv(type,askNote){
+  var note=null;
+  if(askNote){ note=prompt('¿Qué pasó?',''); if(note===null) return; note=note.trim()||null; }
+  logEvent('chofer',type,note);
+  ctx.trip.events=(ctx.trip.events||[]).concat([{role:'chofer',type:type,note:note,ts:new Date().toISOString()}]);
+  viewChofer(); toast('Registrado '+fmtTime(Date.now()));
+}
+function choferArrive(){
+  if(!confirm('¿Ya llegaste?')) return;
+  var ts=logEvent('chofer','llegada');
+  Geo.flush(); Geo.stop(); Wake.off();
+  ctx.trip.status='llegado'; ctx.trip.arrived_at=ts; clearTimers(); viewChofer(); toast('Llegada registrada');
+}
+
+/* ============ Enlace único ============ */
+function roleKey(code){ return 'rec_role_'+code; }
+function changeRole(){ try{ localStorage.removeItem(roleKey(ctx.code)); }catch(e){} clearTimers(); startShared(ctx.code); return false; }
+function pickRole(role){ lsSet(roleKey(ctx.code),role); startRole(role,ctx.code,true); }
+function startShared(code){
+  code=(code||'').toLowerCase().trim(); ctx.code=code; ctx.role=null; ctx.shared=true; clearTimers();
+  if(!/^[a-z0-9]{4,16}$/.test(code)){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace otra vez.'); return; }
+  var saved=lsGet(roleKey(code),null);
+  if(saved==='mama'||saved==='gaby'||saved==='chofer'){ startRole(saved,code,true); return; }
+  $app.innerHTML='<div class="card" style="text-align:center;padding:26px 20px"><div style="font-size:2.4rem">👋</div><h1 style="margin:.4rem 0 .6rem">Hola</h1>'+
+    '<p style="font-size:1.08rem;line-height:1.5;margin:0 0 .7rem">Soy <b>Miguel</b>, hijo de Doña Gloria.</p>'+
+    '<p style="line-height:1.5;margin:0 0 .7rem">Estoy empezando a construir aplicaciones con inteligencia artificial. Esto es solamente una prueba para ver si funciona este proyecto.</p>'+
+    '<p class="muted" style="margin:0">Gracias por ayudarme. No tienes que instalar nada.</p></div>'+
+    '<p style="text-align:center;font-weight:700;font-size:1.1rem;margin:18px 0 10px">¿Quién eres?</p>'+
+    '<button class="big green" onclick="pickRole(\'mama\')">Soy Gloria</button><div style="height:10px"></div>'+
+    '<button class="big" onclick="pickRole(\'gaby\')">Soy Gaby</button><div style="height:10px"></div>'+
+    '<button class="big" onclick="pickRole(\'chofer\')">Soy Barrón</button>';
+}
+
+/* ============ Arranque de cada rol ============ */
+function startRole(role, code, shared){
+  ctx.shared=!!shared;
+  ctx.code=(code||'').toLowerCase().trim(); ctx.role=role; ctx.trip=null; clearTimers();
+  $app.innerHTML='<div class="card"><p style="text-align:center">Abriendo…</p></div>';
+  if(!/^[a-z0-9]{4,16}$/.test(ctx.code)){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace o el QR otra vez.'); return; }
+  loadTrip().then(function(t){
+    if(t.error){ errorView('Código no válido','Este código no existe. Pide que te envíen el enlace o el QR otra vez.'); return; }
+    if(t.expired){ errorView('Este código ya venció','Pide un código nuevo para este viaje.'); return; }
+    logOnce(role,'abre',null,deviceMeta());
+    if(role==='chofer'){ logOnce('chofer','chofer_abre'); }
+    var render = role==='mama'?viewMama:role==='gaby'?viewGaby:viewChofer;
+    render();
+    if(role==='chofer' && t.status==='en_curso'){ Geo.start(); Wake.on(); }
+    startPolling(function(){ if(!document.activeElement || document.activeElement.tagName!=='TEXTAREA') render(); });
+  }, function(){
+    errorView('Sin internet','No se pudo abrir el viaje. Revisa tu conexión y vuelve a escanear.');
+  });
+}
+
+/* ============ ADMIN ============ */
+function adminPin(){ return sessionStorage.getItem('rec_pin')||''; }
+function viewAdmin(){
+  clearTimers();
+  if(!adminPin()){
+    $app.innerHTML='<h1>Piloto de recorrido</h1><div class="card"><p>Ingresa el PIN para crear viajes y ver los datos.</p><input id="pin" type="password" inputmode="numeric" placeholder="PIN"><div style="height:10px"></div><button class="big" onclick="adminLogin()">Entrar</button><div id="aerr" class="muted"></div></div>';
+    return;
+  }
+  $app.innerHTML='<h1>Piloto de recorrido</h1><div class="card"><h2 style="margin-top:0">Nuevo viaje</h2><input id="lbl" placeholder="Nombre del viaje (ej. Casa → Cita médica)"><div style="height:8px"></div><label class="muted">Vigencia del QR (horas antes de salir)</label><input id="hrs" type="number" value="24" min="1"><div style="height:10px"></div><button class="big" onclick="adminCreate()">Crear viaje y QR</button><div id="aerr" class="muted"></div></div><div id="qrarea"></div><h2>Viajes</h2><div id="tripl" class="card">Cargando…</div>';
+  rpcRaw('rec_list_trips',{p_pin:adminPin()}).then(function(list){
+    var h=list.length?'<table><tr><th>Viaje</th><th>Estado</th><th>Salida</th><th></th></tr>'+list.map(function(t){
+      var st=t.expired?'vencido':t.status;
+      return '<tr><td>'+esc(t.label||t.code)+'<div class="muted">'+esc(t.code)+'</div></td><td>'+esc(st)+'</td><td>'+fmtDT(t.started_at||t.created_at)+'</td><td><a href="#/vivo/'+t.code+'">en vivo</a> · <a href="#/datos/'+t.code+'">datos</a> · <a href="#/qr/'+t.code+'">QR</a></td></tr>';
+    }).join('')+'</table>':'<p class="muted">Aún no hay viajes.</p>';
+    document.getElementById('tripl').innerHTML=h;
+  },function(e){ document.getElementById('tripl').innerHTML='<p class="muted">No se pudo cargar ('+esc(e.message)+')</p>'; });
+}
+function adminLogin(){
+  var p=document.getElementById('pin').value.trim();
+  rpcRaw('rec_list_trips',{p_pin:p}).then(function(){ sessionStorage.setItem('rec_pin',p); viewAdmin(); },function(){ document.getElementById('aerr').textContent='PIN incorrecto'; });
+}
+function adminCreate(){
+  var lbl=document.getElementById('lbl').value, hrs=parseInt(document.getElementById('hrs').value,10)||24;
+  rpcRaw('rec_create_trip',{p_pin:adminPin(),p_label:lbl,p_hours:hrs}).then(function(r){ location.hash='#/qr/'+r.code; },function(e){ document.getElementById('aerr').textContent='Error: '+e.message; });
+}
+function viewQR(code){
+  clearTimers();
+  if(!adminPin()){ location.hash='#/admin'; return; }
+  var u=link('v',code);
+  var svg=QR.svg(u,6,'M');
+  $app.innerHTML='<p><a href="#/admin">← Todos los viajes</a></p><h1>QR del viaje</h1><div class="card" style="text-align:center"><div class="qrbox">'+svg+'</div><p style="font-weight:700;margin:.6rem 0 0">Escanea con la cámara del teléfono</p><p class="muted" style="word-break:break-all">'+esc(u)+'</p><div class="grid"><button class="btn" onclick="downloadQR(\''+code+'\')">Descargar QR</button><button class="btn" onclick="window.print()">Imprimir</button></div></div>'+
+   '<div class="card"><h2 style="margin-top:0">Enlaces de cada paso</h2><p class="muted">Manda este mismo enlace (o el QR) a Mamá, Gaby y el chofer. Cada quien elige quién es, le da aceptar y todo avanza solo.</p><p><a class="big" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent('Viaje: abre este enlace, elige quién eres y toca aceptar: '+u)+'">Compartir por WhatsApp</a></p><p class="muted">Enlaces directos por si hacen falta:</p><p>Mamá: <a href="'+link('m',code)+'">'+link('m',code)+'</a></p><p>Gaby: <a href="'+link('g',code)+'">'+link('g',code)+'</a></p><p>Chofer: <a href="'+link('c',code)+'">'+link('c',code)+'</a></p><p><a href="#/vivo/'+code+'">Ver el viaje en vivo</a> · <a href="#/datos/'+code+'">Análisis</a></p></div>';
+}
+function downloadQR(code){
+  var q=QR.make(link('v',code),'M'), s=12, b=4, n=q.size+b*2, c=document.createElement('canvas'); c.width=c.height=n*s;
+  var g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.fillStyle='#000';
+  for(var y=0;y<q.size;y++) for(var x=0;x<q.size;x++) if(q.modules[y][x]) g.fillRect((x+b)*s,(y+b)*s,s,s);
+  var a=document.createElement('a'); a.download='qr-'+code+'.png'; a.href=c.toDataURL('image/png'); a.click();
+}
+
+/* ============ MAPA (mosaicos de OpenStreetMap, sin librerías) ============ */
+var MAPW=600, MAPH=400;
+function mapHtml(r, dest, opts){
+  opts=opts||{};
+  var pts=r.pts.slice(); if(!pts.length&&!dest) return '<p class="muted">Todavía no hay puntos de GPS para dibujar el mapa.</p>';
+  var all=pts.map(function(p){ return {lat:p.lat,lng:p.lng}; }); if(dest) all.push({lat:dest.lat,lng:dest.lng});
+  var merc=function(lat,lng,z){ var n=256*Math.pow(2,z), x=(lng+180)/360*n, sl=Math.sin(lat*Math.PI/180), y=(0.5-Math.log((1+sl)/(1-sl))/(4*Math.PI))*n; return {x:x,y:y}; };
+  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  all.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
+  var z=17, pad=50;
+  for(;z>2;z--){ var a=merc(maxLat,minLng,z), b=merc(minLat,maxLng,z); if((b.x-a.x)<=MAPW-2*pad && (b.y-a.y)<=MAPH-2*pad) break; }
+  var c=merc((minLat+maxLat)/2,(minLng+maxLng)/2,z), ox=c.x-MAPW/2, oy=c.y-MAPH/2;
+  var X=function(lat,lng){ var m=merc(lat,lng,z); return m.x-ox; }, Y=function(lat,lng){ var m=merc(lat,lng,z); return m.y-oy; };
+  var tx0=Math.floor(ox/256), tx1=Math.floor((ox+MAPW)/256), ty0=Math.floor(oy/256), ty1=Math.floor((oy+MAPH)/256), nT=Math.pow(2,z), tiles='';
+  for(var tx=tx0;tx<=tx1;tx++) for(var ty=ty0;ty<=ty1;ty++){
+    if(ty<0||ty>=nT) continue; var wx=((tx%nT)+nT)%nT;
+    tiles+='<img alt="" draggable="false" loading="eager" src="https://tile.openstreetmap.org/'+z+'/'+wx+'/'+ty+'.png" style="position:absolute;left:'+(tx*256-ox).toFixed(1)+'px;top:'+(ty*256-oy).toFixed(1)+'px;width:256px;height:256px">';
+  }
+  var svg='<svg width="'+MAPW+'" height="'+MAPH+'" style="position:absolute;left:0;top:0">';
+  if(pts.length>1){ svg+='<path d="'+pts.map(function(q,i){ return (i?'L':'M')+X(q.lat,q.lng).toFixed(1)+','+Y(q.lat,q.lng).toFixed(1); }).join('')+'" fill="none" stroke="#fff" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/><path d="'+pts.map(function(q,i){ return (i?'L':'M')+X(q.lat,q.lng).toFixed(1)+','+Y(q.lat,q.lng).toFixed(1); }).join('')+'" fill="none" stroke="#1f6f6b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>'; }
+  (r.ev||[]).filter(function(e){ return e.lat!=null&&['parada','trafico','sube','baja','incidente'].indexOf(e.type)>=0; }).forEach(function(e){
+    svg+='<circle cx="'+X(e.lat,e.lng).toFixed(1)+'" cy="'+Y(e.lat,e.lng).toFixed(1)+'" r="7" fill="#b26a00" stroke="#fff" stroke-width="2"><title>'+esc(EV_NAMES[e.type]||e.type)+'</title></circle>';
+  });
+  if(pts.length){ var f=pts[0]; svg+='<circle cx="'+X(f.lat,f.lng).toFixed(1)+'" cy="'+Y(f.lat,f.lng).toFixed(1)+'" r="8" fill="#1e7b43" stroke="#fff" stroke-width="3"/>'; }
+  if(dest){ var dx=X(dest.lat,dest.lng), dy=Y(dest.lat,dest.lng); svg+='<g transform="translate('+dx.toFixed(1)+','+dy.toFixed(1)+')"><path d="M0,0 C-14,-16 -14,-34 0,-34 C14,-34 14,-16 0,0Z" fill="#b3261e" stroke="#fff" stroke-width="2"/><circle cy="-23" r="5" fill="#fff"/></g>'; }
+  if(pts.length){ var l=pts[pts.length-1], lx=X(l.lat,l.lng).toFixed(1), ly=Y(l.lat,l.lng).toFixed(1); svg+='<circle cx="'+lx+'" cy="'+ly+'" r="16" fill="#1a73e8" opacity=".25"><animate attributeName="r" values="10;22;10" dur="2s" repeatCount="indefinite"/></circle><circle cx="'+lx+'" cy="'+ly+'" r="9" fill="#1a73e8" stroke="#fff" stroke-width="3"/>'; }
+  svg+='</svg>';
+  return '<div class="mapwrap" style="position:relative;width:100%;aspect-ratio:'+MAPW+'/'+MAPH+';overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#e8e4da"><div class="mapin" style="position:absolute;left:0;top:0;width:'+MAPW+'px;height:'+MAPH+'px;transform-origin:0 0">'+tiles+svg+'</div><div style="position:absolute;right:4px;bottom:2px;font-size:10px;background:rgba(255,255,255,.8);padding:0 4px;border-radius:3px">© OpenStreetMap</div></div>'+
+    '<p class="muted">🟢 Salida · 🔵 Dónde va ahorita · 🔴 Destino · 🟠 Eventos registrados</p>';
+}
+function fitMaps(){ var ws=document.querySelectorAll('.mapwrap'); for(var i=0;i<ws.length;i++){ var w=ws[i], inn=w.firstChild, k=w.clientWidth/MAPW; if(k>0) inn.style.transform='scale('+k+')'; } }
+window.addEventListener('resize',fitMaps);
+
+/* ============ EN VIVO (solo Miguel) ============ */
+var ALARM_STEPS=[30,15,5];
+var Alarm={
+  ac:null, ringTimer:null,
+  enable:function(){
+    try{ var AC=window.AudioContext||window.webkitAudioContext; if(!this.ac&&AC) this.ac=new AC(); if(this.ac&&this.ac.resume) this.ac.resume(); }catch(e){}
+    this.beep(1); try{ navigator.vibrate&&navigator.vibrate(150); }catch(e){}
+    Wake.on(); lsSet('rec_alarm_on',true);
+  },
+  isOn:function(){ return !!this.ac && this.ac.state!=='closed'; },
+  beep:function(n){
+    var ac=this.ac; if(!ac) return; n=n||3;
+    for(var i=0;i<n;i++){ (function(i){
+      var o=ac.createOscillator(), g=ac.createGain(), t0=ac.currentTime+i*0.45;
+      o.type='sine'; o.frequency.value=i%2?880:1175; g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.5,t0+0.03); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.4);
+      o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0+0.42);
+    })(i); }
+  },
+  ring:function(){
+    var self=this, n=0; clearInterval(this.ringTimer);
+    var go=function(){ self.beep(3); try{ navigator.vibrate&&navigator.vibrate([300,150,300,150,300]); }catch(e){} if(++n>=8) clearInterval(self.ringTimer); };
+    go(); this.ringTimer=setInterval(go,4000);
+  },
+  stop:function(){ clearInterval(this.ringTimer); this.ringTimer=null; }
+};
+function parseDest(txt){
+  txt=(txt||'').trim(); var m;
+  try{ txt=decodeURIComponent(txt); }catch(e){}
+  if((m=txt.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/))||(m=txt.match(/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/))||(m=txt.match(/[?&](?:q|ll|query|destination)=(-?\d+\.\d+)[, +]+(-?\d+\.\d+)/))||(m=txt.match(/^\s*(-?\d{1,2}\.\d+)\s*[, ]\s*(-?\d{1,3}\.\d+)\s*$/))) return {lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+  return null;
+}
+function saveDest(code,lat,lng,name){
+  return rpcRaw('rec_set_dest',{p_pin:adminPin(),p_code:code,p_lat:lat,p_lng:lng,p_name:name||null}).then(function(){ ctx.editDest=false; ctx.formShown=false; toast('Destino guardado'); return ctx.drawVivo(); },function(e){ toast('Error: '+e.message); });
+}
+function destFromText(code){
+  var v=document.getElementById('destTxt').value, p=parseDest(v), nm=(document.getElementById('destName').value||'').trim();
+  if(!p){ document.getElementById('destErr').textContent=/goo\.gl|maps\.app/i.test(v)?'Ese es un link corto y no trae las coordenadas. Ábrelo, copia el link largo de la barra o usa «Usar mi ubicación actual».':'No pude leer coordenadas. Pega un link largo de Google Maps o algo como 20.5888, -100.3899.'; return; }
+  saveDest(code,p.lat,p.lng,nm);
+}
+function destFromHere(code){
+  var nm=(document.getElementById('destName').value||'').trim();
+  if(!navigator.geolocation){ document.getElementById('destErr').textContent='Este navegador no da ubicación.'; return; }
+  document.getElementById('destErr').textContent='Obteniendo ubicación…';
+  navigator.geolocation.getCurrentPosition(function(p){ saveDest(code,p.coords.latitude,p.coords.longitude,nm); },function(){ document.getElementById('destErr').textContent='No se pudo obtener tu ubicación. Revisa el permiso.'; },{enableHighAccuracy:true,timeout:15000});
+}
+function destEdit(on){ ctx.editDest=on; ctx.formShown=false; ctx.drawVivo(); }
+function destClear(code){ saveDest(code,null,null,null); }
+/* Calcula el tiempo que falta. Distancia en línea recta × 1.3 (aprox. de calles) entre la velocidad reciente. */
+function etaCalc(d,r){
+  var t=d.trip; if(t.dest_lat==null||!r.pts.length) return null;
+  var pts=r.pts, last=pts[pts.length-1], D={lat:t.dest_lat,lng:t.dest_lng};
+  var straight=hav(last,D), road=straight*1.3;
+  var seg=function(from){ var m=0,dist=0; for(var i=1;i<pts.length;i++){ if(pts[i].t<from) continue; var dt=(pts[i].t-pts[i-1].t)/1000; if(dt<=0||dt>60) continue; var dd=hav(pts[i-1],pts[i]), v=dd/dt; if(v<0.8||v>70) continue; m+=dt; dist+=dd; } return {sec:m,dist:dist}; };
+  var rec=seg(last.t-5*60000), all=seg(0), v, basis;
+  if(rec.sec>=60){ v=rec.dist/rec.sec; basis='últimos 5 min'; }
+  else if(all.sec>=60){ v=all.dist/all.sec; basis='todo el recorrido'; }
+  else { v=8; basis='estimación inicial 30 km/h'; }
+  v=Math.min(Math.max(v,4),30);
+  var ageMs=Date.now()-last.t;
+  var stopped=(pts.length>1&&(function(){ var p=pts[pts.length-2],dt=(last.t-p.t)/1000; return dt>0&&dt<=60&&hav(p,last)/dt<0.8; })());
+  return {straight:straight,road:road,v:v,basis:basis,min:road/v/60,age:ageMs,stopped:stopped,near:straight<250};
+}
+function checkAlarms(code,eta){
+  if(!eta||eta.age>5*60000) return null;
+  var key='rec_alarmfired_'+code, fired=lsGet(key,[]), hit=null;
+  for(var i=ALARM_STEPS.length-1;i>=0;i--){ var th=ALARM_STEPS[i]; if((eta.min<=th||(th===5&&eta.near))&&fired.indexOf(th)<0){ hit=th; break; } }
+  if(hit==null) return null;
+  ALARM_STEPS.forEach(function(th){ if(th>=hit&&fired.indexOf(th)<0) fired.push(th); }); lsSet(key,fired);
+  return hit;
+}
+function viewVivo(code){
+  clearTimers(); Alarm.stop();
+  if(!adminPin()){ location.hash='#/admin'; return; }
+  ctx.code=code; ctx.role=null; ctx.shared=false; ctx.editDest=false; ctx.lastD=null;
+  $app.className='wide'; $app.innerHTML='<div class="card">Cargando…</div>';
+  ctx.drawVivo=function(){
+    return rpcRaw('rec_data',{p_pin:adminPin(),p_code:code}).then(function(d){
+      if(d.error){ clearTimers(); $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">No existe ese viaje.</div>'; return; }
+      ctx.lastD=d;
+      var t=d.trip, r=analyze(d), ev=d.events, now=Date.now();
+      var eta=(t.status==='en_curso')?etaCalc(d,r):null;
+      var hit=checkAlarms(code,eta);
+      if(hit!=null){ ctx.alarmMsg=hit<=5&&eta.near?'Ya casi llega':'Faltan aprox. '+hit+' minutos'; ctx.alarmAt=now; if(Alarm.isOn()) Alarm.ring(); else { try{ navigator.vibrate&&navigator.vibrate([300,150,300]); }catch(e){} } }
+      if(ctx.formShown){ var ae=document.activeElement, tx=document.getElementById('destTxt'), nm=document.getElementById('destName'); if((ae&&(ae===tx||ae===nm))||(tx&&tx.value)||(nm&&nm.value)) return; }
+      var first=function(type,role){ var e=ev.filter(function(x){ return x.type===type&&(!role||x.role===role); })[0]; return e?new Date(e.client_ts||e.server_ts).getTime():null; };
+      var person=function(name,role,okType){
+        var ok=first(okType,role), seen=first('abre',role)||(role==='chofer'?first('chofer_abre'):null);
+        var st=ok?'<b style="color:#1e7b43">✅ Aceptó '+fmtTime(ok)+'</b>':seen?'<b style="color:#b26a00">👀 Abrió '+fmtTime(seen)+', falta que acepte</b>':'<b class="muted">⏳ Aún no abre el enlace</b>';
+        return '<span>'+name+'</span>'+st;
+      };
+      var h='';
+      if(ctx.alarmMsg){ h+='<div class="card" style="background:#fff3cd;border-color:#e0b100;text-align:center"><div style="font-size:1.4rem;font-weight:800">🔔 '+esc(ctx.alarmMsg)+'</div><p class="muted" style="margin:.3rem 0">Aviso de las '+fmtTime(ctx.alarmAt)+'</p><button class="btn" onclick="Alarm.stop();ctx.alarmMsg=null;ctx.drawVivo()">Entendido</button></div>'; }
+      h+='<p><a href="#/admin">← Todos los viajes</a> · <a href="#/datos/'+esc(code)+'">Análisis completo</a></p><h1>'+esc(t.label||t.code)+'</h1>';
+      if(!Alarm.isOn()) h+='<div class="card" style="border-color:#b3261e"><p style="margin-top:0"><b>Las alarmas están apagadas.</b> Toca el botón para que suene y vibre cuando se acerquen. Deja esta pantalla abierta y el volumen arriba.</p><button class="big green" onclick="Alarm.enable();ctx.drawVivo()">🔔 Activar alarmas</button></div>';
+      else h+='<p class="muted" style="margin:0 0 8px">🔔 Alarmas activas (30, 15 y 5 min) · <a href="#" onclick="Alarm.beep(2);return false">probar sonido</a></p>';
+      var estado={creado:'Esperando que salga',en_curso:'🚗 En camino',llegado:'🏁 Llegó',cancelado:'Cancelado'}[t.status]||t.status;
+      h+='<div class="card"><div class="kv"><span>Estado</span><b>'+esc(estado)+'</b>';
+      if(t.started_at) h+='<span>Salió</span><b>'+fmtTime(t.started_at)+'</b>';
+      if(t.status==='en_curso') h+='<span>Lleva</span><b>'+clock(now-new Date(t.started_at).getTime())+'</b>';
+      if(t.arrived_at) h+='<span>Llegó</span><b>'+fmtTime(t.arrived_at)+'</b><span>Duración</span><b>'+fmtDur(new Date(t.arrived_at)-new Date(t.started_at))+'</b>';
+      h+='</div></div>';
+      // Destino y tiempo estimado
+      h+='<div class="card"><h2 style="margin-top:0">Destino y llegada</h2>';
+      ctx.formShown=(t.dest_lat==null||!!ctx.editDest);
+      if(ctx.formShown){
+        h+='<p class="muted">Pon el destino para que la app calcule cuánto falta y avise.</p>'+destForm(code);
+      } else {
+        h+='<div class="kv"><span>Destino</span><b>'+esc(t.dest_name||(t.dest_lat.toFixed(4)+', '+t.dest_lng.toFixed(4)))+'</b>';
+        if(eta&&t.status==='en_curso'){
+          var arr=new Date(now+eta.min*60000);
+          h+='<span>Falta aprox.</span><b style="font-size:1.2rem">'+(eta.near?'ya casi llega':Math.max(1,Math.round(eta.min))+' min')+'</b><span>Llegada estimada</span><b>'+fmtTime(arr)+'</b><span>Distancia en línea recta</span><b>'+(eta.straight/1000).toFixed(1)+' km</b><span>Velocidad usada</span><b>'+(eta.v*3.6).toFixed(0)+' km/h</b>';
+        }
+        h+='</div>';
+        if(eta&&t.status==='en_curso') h+='<p class="muted">Cálculo aproximado: distancia en línea recta ×1.3 entre la velocidad de '+esc(eta.basis)+'.'+(eta.stopped?' Ahorita va detenido.':'')+(eta.age>90000?' <b style="color:#b3261e">Último punto hace '+fmtDur(eta.age)+', el dato puede estar desfasado.</b>':'')+'</p>';
+        else if(t.status==='creado') h+='<p class="muted">El cálculo empieza cuando el chofer inicie el recorrido.</p>';
+        h+='<p><a href="#" onclick="destEdit(true);return false">Cambiar destino</a> · <a href="#" onclick="destClear(\''+esc(code)+'\');return false">Quitar</a></p>';
+      }
+      h+='</div>';
+      h+='<div class="card"><h2 style="margin-top:0">Quién ya aceptó</h2><div class="kv">'+person('Mamá','mama','mama_confirma')+person('Gaby','gaby','gaby_confirma')+person('Chofer','chofer','inicio')+'</div></div>';
+      var last=d.points.length?d.points[d.points.length-1]:null;
+      h+='<div class="card"><h2 style="margin-top:0">Ubicación</h2>';
+      if(last){ var ago=now-new Date(last.ts).getTime();
+        h+='<p>Último punto hace <b>'+fmtDur(ago)+'</b>'+(ago>60000&&t.status==='en_curso'?' <span style="color:#b3261e">(sin señal reciente)</span>':'')+' · <a target="_blank" rel="noopener" href="https://www.google.com/maps?q='+last.lat+','+last.lng+'">abrir en Google Maps</a></p>'+mapHtml(r,(t.dest_lat!=null?{lat:t.dest_lat,lng:t.dest_lng}:null)); }
+      else h+=(t.dest_lat!=null?mapHtml(r,{lat:t.dest_lat,lng:t.dest_lng}):'<p class="muted">Todavía no hay puntos de GPS.</p>');
+      h+='</div>';
+      h+='<div class="card"><h2 style="margin-top:0">Últimos eventos</h2><ul class="log">'+ev.filter(function(e){ return ['abre','pantalla_oculta','pantalla_visible'].indexOf(e.type)<0; }).slice(-12).reverse().map(function(e){ return '<li><span>'+esc(e.role)+': '+esc(EV_NAMES[e.type]||e.type)+(e.note?' — '+esc(e.note):'')+'</span><span class="muted">'+fmtTime(e.client_ts||e.server_ts)+'</span></li>'; }).join('')+'</ul></div>';
+      h+='<p class="muted" style="text-align:center">Se actualiza solo cada 5 segundos</p>';
+      $app.innerHTML=h; fitMaps();
+    },function(e){ if(!$app.querySelector('h1')) $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">Error: '+esc(e.message)+'</div>'; });
+  };
+  ctx.drawVivo(); ctx.poll=setInterval(ctx.drawVivo,5000);
+}
+function destForm(code){
+  return '<input id="destName" placeholder="Nombre del lugar (ej. Hospital)"><div style="height:8px"></div><input id="destTxt" placeholder="Link largo de Google Maps o coordenadas"><div style="height:8px"></div><button class="btn" style="width:100%" onclick="destFromText(\''+esc(code)+'\')">Guardar destino</button><div style="height:8px"></div><button class="btn" style="width:100%" onclick="destFromHere(\''+esc(code)+'\')">📍 Usar mi ubicación actual como destino</button><p id="destErr" class="muted"></p>'+(ctx.editDest?'<p><a href="#" onclick="destEdit(false);return false">Cancelar</a></p>':'');
+}
+
+/* ============ DATOS ============ */
+function hav(a,b){ var R=6371000,d2r=Math.PI/180,dLat=(b.lat-a.lat)*d2r,dLng=(b.lng-a.lng)*d2r,x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*d2r)*Math.cos(b.lat*d2r)*Math.sin(dLng/2)*Math.sin(dLng/2); return 2*R*Math.asin(Math.sqrt(x)); }
+function analyze(d){
+  var t=d.trip, ev=d.events, pts=d.points.filter(function(p){ return p.acc==null||p.acc<=100; }).map(function(p){ return {lat:p.lat,lng:p.lng,t:new Date(p.ts).getTime()}; });
+  var tsOf=function(type,role){ var e=ev.filter(function(x){ return x.type===type&&(!role||x.role===role); })[0]; return e?new Date(e.client_ts||e.server_ts).getTime():null; };
+  var r={};
+  r.start=t.started_at?new Date(t.started_at).getTime():null; r.end=t.arrived_at?new Date(t.arrived_at).getTime():null;
+  r.duration=(r.start&&r.end)?r.end-r.start:null;
+  r.chain={abreMama:tsOf('abre','mama'),mama:tsOf('mama_confirma'),abreGaby:tsOf('abre','gaby'),gaby:tsOf('gaby_confirma'),abreChofer:tsOf('chofer_abre'),inicio:r.start,llegada:r.end};
+  var dist=0,moving=0,stopped=0,gaps=0,gapMs=0,vmax=0;
+  for(var i=1;i<pts.length;i++){
+    var dt=(pts[i].t-pts[i-1].t)/1000; if(dt<=0) continue;
+    var dd=hav(pts[i-1],pts[i]);
+    if(dt>60){ gaps++; gapMs+=dt*1000; continue; }
+    var v=dd/dt; if(v>70) continue; // descarta saltos imposibles (>250 km/h)
+    if(v<0.8){ stopped+=dt*1000; } else { moving+=dt*1000; dist+=dd; if(v>vmax) vmax=v; }
+    if(v<0.8) dist+=0;
+  }
+  r.dist=dist; r.moving=moving; r.stopped=stopped; r.gaps=gaps; r.gapMs=gapMs; r.points=d.points.length;
+  r.avgAll=(r.duration&&dist)?dist/(r.duration/1000):null; r.avgMoving=moving?dist/(moving/1000):null; r.vmax=vmax;
+  r.pts=pts; r.ev=ev;
+  return r;
+}
+function routeSvg(r){
+  var pts=r.pts; if(pts.length<2) return '<p class="muted">Sin puntos suficientes para dibujar la ruta.</p>';
+  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  pts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
+  var midLat=(minLat+maxLat)/2, kx=Math.cos(midLat*Math.PI/180), W=520, H=380, pad=24;
+  var spanX=Math.max((maxLng-minLng)*kx,1e-5), spanY=Math.max(maxLat-minLat,1e-5), sc=Math.min((W-2*pad)/spanX,(H-2*pad)/spanY);
+  var ox=(W-spanX*sc)/2, oy=(H-spanY*sc)/2;
+  var X=function(lng){ return ox+(lng-minLng)*kx*sc; }, Y=function(lat){ return H-(oy+(lat-minLat)*sc); };
+  var path=pts.map(function(p,i){ return (i?'L':'M')+X(p.lng).toFixed(1)+','+Y(p.lat).toFixed(1); }).join('');
+  var out='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;background:#f7f5ef;border-radius:12px;border:1px solid var(--line)"><path d="'+path+'" fill="none" stroke="#1f6f6b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
+  out+='<circle cx="'+X(pts[0].lng)+'" cy="'+Y(pts[0].lat)+'" r="7" fill="#1e7b43"/><circle cx="'+X(pts[pts.length-1].lng)+'" cy="'+Y(pts[pts.length-1].lat)+'" r="7" fill="#b3261e"/>';
+  r.ev.filter(function(e){ return e.lat!=null&&['parada','trafico','sube','baja','incidente'].indexOf(e.type)>=0; }).forEach(function(e){
+    out+='<circle cx="'+X(e.lng)+'" cy="'+Y(e.lat)+'" r="5" fill="#b26a00" stroke="#fff" stroke-width="1.5"><title>'+esc(EV_NAMES[e.type]||e.type)+'</title></circle>';
+  });
+  return out+'</svg><p class="muted">Verde: salida · Rojo: llegada · Naranja: eventos registrados</p>';
+}
+function viewDatos(code){
+  clearTimers();
+  if(!adminPin()){ location.hash='#/admin'; return; }
+  $app.className='wide'; $app.innerHTML='<div class="card">Cargando datos…</div>';
+  rpcRaw('rec_data',{p_pin:adminPin(),p_code:code}).then(function(d){
+    if(d.error){ $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">No existe ese viaje.</div>'; return; }
+    var r=analyze(d), t=d.trip;
+    var kmh=function(v){ return v==null?'—':(v*3.6).toFixed(1)+' km/h'; };
+    var step=function(n,a,b){ return '<span>'+n+'</span><b>'+(a&&b?fmtDur(b-a):'—')+'</b>'; };
+    var h='<p><a href="#/admin">← Todos los viajes</a></p><h1>'+esc(t.label||t.code)+'</h1><p class="muted">Estado: '+esc(t.status)+' · código '+esc(t.code)+'</p>';
+    h+='<div class="card"><h2 style="margin-top:0">Resumen</h2><div class="kv"><span>Salida real</span><b>'+fmtDT(t.started_at)+'</b><span>Llegada real</span><b>'+fmtDT(t.arrived_at)+'</b><span>Duración total</span><b>'+fmtDur(r.duration)+'</b><span>Distancia recorrida</span><b>'+(r.dist?(r.dist/1000).toFixed(2)+' km':'—')+'</b><span>Velocidad promedio (total)</span><b>'+kmh(r.avgAll)+'</b><span>Velocidad promedio (en movimiento)</span><b>'+kmh(r.avgMoving)+'</b><span>Velocidad máxima</span><b>'+kmh(r.vmax)+'</b><span>Tiempo en movimiento</span><b>'+fmtDur(r.moving)+'</b><span>Tiempo detenido</span><b>'+fmtDur(r.stopped)+'</b><span>Puntos de ubicación</span><b>'+r.points+'</b><span>Huecos de señal (&gt;60 s)</span><b>'+r.gaps+(r.gaps?' ('+fmtDur(r.gapMs)+')':'')+'</b></div></div>';
+    h+='<div class="card"><h2 style="margin-top:0">Cadena de entrega</h2><div class="kv">'+step('Mamá abre → Mamá confirma',r.chain.abreMama,r.chain.mama)+step('Mamá confirma → Gaby confirma',r.chain.mama,r.chain.gaby)+step('Gaby confirma → Chofer abre',r.chain.gaby,r.chain.abreChofer)+step('Chofer abre → Salida',r.chain.abreChofer,r.chain.inicio)+step('Mamá abre → Salida (todo)',r.chain.abreMama,r.chain.inicio)+'</div></div>';
+    h+='<div class="card"><h2 style="margin-top:0">Ruta</h2>'+mapHtml(r,(t.dest_lat!=null?{lat:t.dest_lat,lng:t.dest_lng}:null))+'</div>';
+    h+='<div class="card"><h2 style="margin-top:0">Eventos</h2><table><tr><th>Hora</th><th>Quién</th><th>Qué</th><th>Detalle</th></tr>'+d.events.map(function(e){ return '<tr><td>'+fmtTime(e.client_ts||e.server_ts)+'</td><td>'+esc(e.role)+'</td><td>'+esc(EV_NAMES[e.type]||e.type)+'</td><td>'+esc(e.note||'')+(e.lat!=null?' <span class="muted">('+e.lat.toFixed(4)+', '+e.lng.toFixed(4)+')</span>':'')+'</td></tr>'; }).join('')+'</table></div>';
+    h+='<div class="grid"><button class="btn" onclick="exportCSV(\''+code+'\')">Descargar puntos (CSV)</button><button class="btn" onclick="exportJSON(\''+code+'\')">Descargar todo (JSON)</button></div>';
+    window._lastData=d;
+    $app.innerHTML=h; fitMaps();
+  },function(e){ $app.innerHTML='<p><a href="#/admin">←</a></p><div class="card">Error: '+esc(e.message)+'</div>'; });
+}
+function dl(name,mime,text){ var a=document.createElement('a'); a.download=name; a.href=URL.createObjectURL(new Blob([text],{type:mime})); a.click(); }
+function exportJSON(code){ dl('recorrido-'+code+'.json','application/json',JSON.stringify(window._lastData,null,2)); }
+function exportCSV(code){
+  var rows=['timestamp,lat,lng,precision_m,velocidad_ms,rumbo'].concat((window._lastData.points||[]).map(function(p){ return [p.ts,p.lat,p.lng,p.acc==null?'':p.acc,p.spd==null?'':p.spd,p.hdg==null?'':p.hdg].join(','); }));
+  dl('recorrido-'+code+'-puntos.csv','text/csv',rows.join('\n'));
+}
+
+/* ============ Router ============ */
+function route(){
+  var h=(location.hash||'').replace(/^#\/?/,''), parts=h.split('/');
+  $app.className='';
+  if(Geo.watchId!=null && !(parts[0]==='c')){ /* nunca cortar el rastreo si navegan por error */ }
+  switch(parts[0]){
+    case 'v': return startShared(parts[1]);
+    case 'm': return startRole('mama',parts[1]);
+    case 'g': return startRole('gaby',parts[1]);
+    case 'c': return startRole('chofer',parts[1]);
+    case 'qr': return viewQR(parts[1]);
+    case 'datos': return viewDatos(parts[1]);
+    case 'vivo': return viewVivo(parts[1]);
+    case 'admin': return viewAdmin();
+    default:
+      if(parts[0]&&/^[a-z0-9]{4,16}$/.test(parts[0])) return startRole('mama',parts[0]);
+      if(!h) return errorView('Escanea el QR','Esta página se abre desde el código QR del viaje.');
+      return errorView('Enlace no válido','Pide que te envíen el QR o el enlace otra vez.');
+  }
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('beforeunload',function(e){ if(ctx.role==='chofer' && ctx.trip && ctx.trip.status==='en_curso'){ e.preventDefault(); e.returnValue=''; } });
+Q.flush();
+route();
+</script>
+</body>
+</html>
