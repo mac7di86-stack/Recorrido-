@@ -268,15 +268,17 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
     <h1>Gara7o Studio</h1>
     <p class="lead">Mensajes, voz y fotos cifrados. Lo que recibas llega traducido a tu idioma.</p>
   </div>
-  <div class="campo"><label>Tu nombre</label><input id="in-nombre" placeholder="Miguel" autocomplete="off"></div>
+  <div id="invite-note" style="display:none;background:rgba(168,85,247,.16);border:1px solid rgba(168,85,247,.4);color:#e9d5ff;border-radius:16px;padding:12px 16px;font-size:.9rem;text-align:center"></div>
+  <div class="campo"><label>Tu nombre</label><input id="in-nombre" placeholder="Tu nombre" autocomplete="off"></div>
   <div class="fila">
-    <div class="campo"><label>Código de sala</label><input id="in-sala" placeholder="che-papusa" autocomplete="off" autocapitalize="none"></div>
+    <div class="campo" id="campo-sala"><label>Código de sala</label><input id="in-sala" placeholder="che-papusa" autocomplete="off" autocapitalize="none"></div>
     <div class="campo" style="max-width:42%"><label>Tu idioma</label><select id="in-idioma"></select></div>
   </div>
-  <div class="campo"><label>Clave secreta de la sala</label><input id="in-clave" type="password" placeholder="Solo tú y tus invitados la saben" autocomplete="off"></div>
+  <div class="campo" id="campo-clave"><label>Clave secreta de la sala</label><input id="in-clave" type="password" placeholder="Solo tú y tus invitados la saben" autocomplete="off"></div>
   <button class="primario" id="btn-entrar">Entrar al chat</button>
+  <button class="btn2" id="btn-invitar-ini" style="background:radial-gradient(circle at 50% 25%,#2a2140,#160f26 85%);border:0;color:#e9d5ff;border-radius:999px;padding:14px;font-size:1rem;font-weight:700;width:100%;margin-top:4px">🔗 Invitar (crear enlace)</button>
   <div class="candado">🔒 Nadie sin la clave puede leer los mensajes</div>
-  <p class="nota">Comparte el mismo <b>código de sala</b> y la misma <b>clave</b> con quien quieras hablar.</p>
+  <p class="nota">Pon un <b>código de sala</b> y una <b>clave</b>, toca <b>Invitar</b> y mándale el enlace a quien quieras. Esa persona solo lo abre y pone su nombre.</p>
 </section>
 
 <header id="barra" class="oculto">
@@ -308,6 +310,7 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
     <input type="checkbox" id="set-autoimp" style="width:20px;height:20px"> Imprimir lo que me llega
   </label>
   <button class="btn2" id="btn-probar-imp">🖨️ Probar impresión</button>
+  <button class="btn2" id="btn-invitar">🔗 Invitar (compartir enlace de esta sala)</button>
   <button class="btn2" id="btn-marcador">📞 Abrir marcador del teléfono</button>
   <button class="btn2" id="btn-mensajes">💬 Abrir mensajes del teléfono</button>
   <p class="nota" style="text-align:left;margin:10px 0 16px">Sala: <b id="set-sala"></b> · Tú: <b id="set-nombre"></b><br>🔒 Cifrado activo · 🎤 voz · 📷 fotos</p>
@@ -322,6 +325,17 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
 const SUPABASE_URL = "https://jzzhqbxivlybabairhyf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ncLyzga39TgTOZH8ZKS0vA_vTNcNl7a";
 const FN_TRADUCIR  = SUPABASE_URL + "/functions/v1/traducir";
+const INVITE_BASE  = "https://raw.githack.com/mac7di86-stack/Recorrido-/main/gara7o/index.html";
+let claveTexto = "";
+function invitar(){
+  const s=(sala||$("in-sala").value).trim().toLowerCase().replace(/\s+/g,"-");
+  const k=claveTexto||$("in-clave").value;
+  if(!s||!k){ toast("Primero pon código de sala y clave"); return; }
+  const link=INVITE_BASE+"#s="+encodeURIComponent(s)+"&k="+encodeURIComponent(k);
+  const txt="Entra a mi chat Gara7o Studio (sala "+s+"). Abre este enlace y pon tu nombre:";
+  if(navigator.share){ navigator.share({title:"Gara7o Studio", text:txt, url:link}).catch(()=>{}); }
+  else { try{ navigator.clipboard.writeText(link); toast("Enlace copiado ✓"); }catch(e){ prompt("Copia y comparte este enlace:", link); } }
+}
 const IDIOMAS = [["es","Español"],["en","Inglés"],["pt","Portugués"],["fr","Francés"],["it","Italiano"],["de","Alemán"],["zh-CN","Chino"],["ja","Japonés"],["ko","Coreano"],["ar","Árabe"],["ru","Ruso"],["hi","Hindi"]];
 
 const LETRAS=[["sys","Normal"],["Nunito","Redondita"],["Poppins","Moderna"],["Comfortaa","Redonda"],["Georgia","Serif"],["Caveat","Manuscrita"],["mono","Máquina"]];
@@ -462,6 +476,7 @@ async function entrar(){
   if(!sala) return toast("Escribe el código de sala");
   if(!clave) return toast("Escribe la clave de la sala");
 
+  claveTexto=clave;
   claveCripto=await derivarClave(clave,sala);
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   localStorage.setItem("sesion",JSON.stringify({nombre,sala,miIdioma}));
@@ -511,6 +526,22 @@ aplicarLetra(miLetra);
 $("set-letra").onchange=e=>{ miLetra=e.target.value; localStorage.setItem("letra",miLetra); aplicarLetra(miLetra); toast("Letra cambiada"); };
 (function(){ const s=localStorage.getItem("sesion"); if(s){ try{ const o=JSON.parse(s); $("in-nombre").value=o.nombre||""; $("in-sala").value=o.sala||""; llenarSelect($("in-idioma"),o.miIdioma||"es"); }catch(e){} } })();
 
+/* Si llega por un enlace de invitación (#s=...&k=...): autollenar y simplificar */
+(function(){
+  const h=new URLSearchParams(location.hash.slice(1));
+  const s=h.get("s"), k=h.get("k");
+  if(s){ $("in-sala").value=s; }
+  if(k){ $("in-clave").value=k; }
+  if(s&&k){
+    $("campo-sala").style.display="none";
+    $("campo-clave").style.display="none";
+    $("btn-invitar-ini").style.display="none";
+    const n=$("invite-note"); n.style.display="block";
+    n.textContent="Te invitaron a la sala “"+s+"”. Solo pon tu nombre y entra.";
+    setTimeout(()=>$("in-nombre").focus(),300);
+  }
+})();
+
 $("btn-entrar").onclick=entrar;
 $("btn-enviar").onclick=enviar;
 $("btn-mic").onclick=grabar;
@@ -545,6 +576,8 @@ $("btn-marcador").onclick=()=>{ location.href="tel:"; };
 $("btn-mensajes").onclick=()=>{ location.href="sms:"; };
 $("set-idioma").onchange=e=>{ miIdioma=e.target.value; const o=JSON.parse(localStorage.getItem("sesion")||"{}"); o.miIdioma=miIdioma; localStorage.setItem("sesion",JSON.stringify(o)); estado(); toast("Ahora traduzco a "+nombreIdioma(miIdioma)); cerrarHoja(); };
 $("btn-salir").onclick=()=>{ localStorage.removeItem("sesion"); if(canal)sb.removeChannel(canal); try{ if(window.Android && Android.desactivar) Android.desactivar(); }catch(e){} location.reload(); };
+$("btn-invitar").onclick=invitar;
+$("btn-invitar-ini").onclick=invitar;
 </script>
 </body>
 </html>
