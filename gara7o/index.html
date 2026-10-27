@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Gara7o Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Comfortaa:wght@400;700&family=Caveat:wght@600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b141a; --panel:#111b21; --panel2:#182229; --line:#222d34;
+  --txt:#e9edef; --muted:#8696a0; --accent:#00a884;
+  --in:#202c33; --out:#005c4b;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);display:flex;flex-direction:column;overflow:hidden}
+button{font-family:inherit;cursor:pointer}
+.oculto{display:none!important}
+
+header{background:var(--panel);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{width:34px;height:34px;border-radius:50%;background:#14234A;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{width:24px;height:24px}
+header .tit{font-size:1rem;font-weight:600;line-height:1.1}
+header .sub{font-size:.72rem;color:var(--muted)}
+header .sp{flex:1}
+.icono{background:transparent;border:0;color:var(--muted);font-size:1.3rem;padding:6px;border-radius:8px}
+.icono:active{background:var(--panel2)}
+
+#entrada{flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 22px;gap:16px;overflow-y:auto}
+#entrada .marca{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:6px}
+#entrada .marca .logo{width:76px;height:76px}
+#entrada .marca .logo svg{width:52px;height:52px}
+#entrada h1{font-size:1.4rem;font-weight:700;text-align:center}
+#entrada p.lead{color:var(--muted);text-align:center;font-size:.9rem;margin-top:-6px}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo label{font-size:.8rem;color:var(--muted)}
+.campo input,.campo select{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--txt);font-size:1rem;outline:none}
+.campo input:focus{border-color:var(--accent)}
+.fila{display:flex;gap:10px}
+.fila .campo{flex:1}
+.primario{background:var(--accent);color:#06241d;border:0;border-radius:11px;padding:14px;font-size:1rem;font-weight:700}
+.primario:active{background:#009774}
+.nota{font-size:.75rem;color:var(--muted);text-align:center;line-height:1.5}
+.candado{display:inline-flex;align-items:center;gap:5px;justify-content:center;color:var(--accent);font-size:.78rem;font-weight:600}
+
+#chat{flex:1;display:flex;flex-direction:column;min-height:0}
+.mensajes{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(180deg,#0b141a,#0d171e)}
+.burbuja{max-width:82%;padding:8px 11px 6px;border-radius:12px;font-size:.95rem;line-height:1.35;word-wrap:break-word}
+.burbuja.mio{align-self:flex-end;background:var(--out);border-bottom-right-radius:4px}
+.burbuja.suyo{align-self:flex-start;background:var(--in);border-bottom-left-radius:4px}
+.burbuja .quien{font-size:.72rem;font-weight:700;color:#8ad4c1;margin-bottom:2px}
+.burbuja .orig{opacity:.62;font-size:.82rem;font-style:italic;margin-top:4px;padding-top:4px;border-top:1px dashed rgba(255,255,255,.14)}
+.burbuja .meta{display:flex;gap:6px;align-items:center;justify-content:flex-end;margin-top:3px}
+.burbuja .hora{font-size:.64rem;color:rgba(233,237,239,.5)}
+.burbuja .trad-badge{font-size:.6rem;background:rgba(0,168,132,.22);color:#6fe3c6;padding:1px 6px;border-radius:999px}
+.burbuja audio{width:220px;max-width:62vw;margin-top:2px}
+.burbuja img{max-width:220px;max-width:62vw;border-radius:10px;margin-top:2px;display:block}
+.sistema{align-self:center;background:var(--panel2);color:var(--muted);font-size:.74rem;padding:5px 12px;border-radius:999px;margin:4px 0;text-align:center}
+
+.composer{border-top:1px solid var(--line);background:var(--panel);padding:9px 8px;display:flex;gap:6px;align-items:flex-end;flex-shrink:0}
+.composer textarea{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:11px 15px;color:var(--txt);font-size:1rem;resize:none;max-height:120px;outline:none;line-height:1.3}
+.composer textarea:focus{border-color:var(--accent)}
+.adj{width:44px;height:44px;border-radius:50%;background:var(--panel2);border:0;color:var(--txt);font-size:1.25rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.adj:active{background:#243642}
+.adj.grabando{background:#c0392b;animation:late 1s infinite}
+@keyframes late{0%,100%{opacity:1}50%{opacity:.5}}
+.enviar{width:46px;height:46px;border-radius:50%;background:var(--accent);border:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.enviar:active{background:#009774}
+.enviar svg{width:22px;height:22px;fill:#06241d}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none}
+.overlay.abierto{display:block}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--panel);border-radius:18px 18px 0 0;padding:18px 20px 28px;transform:translateY(100%);transition:transform .25s;max-height:82vh;overflow-y:auto}
+.hoja.abierto{transform:translateY(0)}
+.hoja h3{font-size:1.05rem;margin-bottom:14px}
+.hoja .campo{margin-bottom:14px}
+.hoja .btn2{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:11px;padding:13px;width:100%;font-size:.95rem;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:10px;justify-content:center}
+.hoja .salir{background:transparent;border:1px solid #b23b3b;color:#ff6b6b;border-radius:11px;padding:12px;width:100%;font-size:.95rem;font-weight:600;margin-top:4px}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#2a3942;color:var(--txt);padding:9px 16px;border-radius:999px;font-size:.82rem;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90%;text-align:center}
+.toast.ver{opacity:1}
+/* ====== Estilo "botones iluminados" (glow / relieve en la oscuridad) ====== */
+body{ background:#0a0c0f; }
+.mensajes{ background:radial-gradient(130% 80% at 50% 0%, #11151a 0%, #0a0c0f 70%); }
+header,.composer{ background:#0c0f13; border-color:#171b20; }
+
+/* Botones redondos: círculo oscuro con brillo arriba y halo suave */
+.adj,.enviar{
+  border:0;
+  background:radial-gradient(circle at 50% 30%, #333b45 0%, #1b2026 62%, #13171b 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.16),
+    inset 0 -7px 12px rgba(0,0,0,.6),
+    0 8px 18px rgba(0,0,0,.6),
+    0 0 20px rgba(140,170,210,.08);
+}
+.adj:active{ background:radial-gradient(circle at 50% 30%, #3f4954 0%, #20262d 62%, #15191e 100%); box-shadow:inset 0 2px 4px rgba(255,255,255,.22),0 0 24px rgba(160,190,230,.18); }
+.adj.grabando{ background:radial-gradient(circle at 50% 30%, #ff6a5a, #b0271a 70%); box-shadow:inset 0 2px 3px rgba(255,255,255,.3),0 0 26px rgba(255,80,60,.5); animation:late 1s infinite; }
+
+/* Enviar y botón principal: verde encendido */
+.enviar{ background:radial-gradient(circle at 50% 28%, #16d9a6 0%, #03a179 60%, #017857 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.35), inset 0 -6px 10px rgba(0,0,0,.4), 0 8px 18px rgba(0,0,0,.55), 0 0 24px rgba(0,210,150,.4); }
+.enviar:active{ box-shadow:inset 0 2px 4px rgba(255,255,255,.45), 0 0 30px rgba(0,230,165,.6); }
+.enviar svg{ fill:#04281f; }
+
+.primario{ background:radial-gradient(circle at 50% 25%, #16d9a6 0%, #03a179 60%, #017857 100%); color:#042a20;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.4), inset 0 -8px 14px rgba(0,0,0,.35), 0 10px 22px rgba(0,0,0,.5), 0 0 26px rgba(0,210,150,.4); }
+.primario:active{ box-shadow:inset 0 2px 4px rgba(255,255,255,.5), 0 0 34px rgba(0,230,165,.6); }
+
+/* Íconos del encabezado e inputs con relieve */
+.icono{ background:radial-gradient(circle at 50% 30%, #262c33, #14181c 80%); border-radius:50%; width:40px;height:40px;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.12), inset 0 -4px 7px rgba(0,0,0,.5), 0 0 14px rgba(140,170,210,.06); }
+.icono:active{ box-shadow:inset 0 1px 3px rgba(255,255,255,.2),0 0 18px rgba(160,190,230,.18); }
+.logo{ box-shadow:inset 0 1px 2px rgba(255,255,255,.18), 0 0 16px rgba(120,150,255,.18); }
+
+.campo input,.campo select,.composer textarea{
+  background:#12161b; border:1px solid #1c2127;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.6), inset 0 -1px 1px rgba(255,255,255,.04); }
+.campo input:focus,.composer textarea:focus{ border-color:#0bbf90; box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 0 16px rgba(0,200,150,.3); }
+
+.hoja .btn2{ background:radial-gradient(circle at 50% 25%, #262c33, #14181c 85%); border:0;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.12), inset 0 -5px 9px rgba(0,0,0,.5), 0 0 16px rgba(140,170,210,.06); }
+
+/* Burbujas con leve relieve para que combinen */
+.burbuja.suyo{ background:linear-gradient(180deg,#232e37,#1a242c); box-shadow:inset 0 1px 1px rgba(255,255,255,.06), 0 4px 10px rgba(0,0,0,.45); }
+.burbuja.mio{ background:linear-gradient(180deg,#07916f,#045c47); box-shadow:inset 0 1px 1px rgba(255,255,255,.12), 0 4px 10px rgba(0,0,0,.45), 0 0 18px rgba(0,190,140,.18); }
+.marca .logo{ box-shadow:inset 0 2px 4px rgba(255,255,255,.2), 0 0 34px rgba(120,150,255,.28); }
+
+/* ====== Fondo abstracto (luces difuminadas en movimiento) ====== */
+body{ background:#06080b; }
+.ambiente{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.ambiente b{ position:absolute; border-radius:50%; filter:blur(70px); opacity:.30; mix-blend-mode:screen; will-change:transform; }
+.ambiente .b1{ width:48vw;height:48vw; left:-12vw; top:-10vh; background:#2b3fb0; animation:flota 22s ease-in-out infinite; }
+.ambiente .b2{ width:42vw;height:42vw; right:-10vw; top:4vh; background:#F29A2E; opacity:.22; animation:flota 26s ease-in-out infinite reverse; }
+.ambiente .b3{ width:52vw;height:52vw; right:-14vw; bottom:-12vh; background:#00a884; animation:flota 28s ease-in-out infinite; }
+.ambiente .b4{ width:38vw;height:38vw; left:-8vw; bottom:4vh; background:#F0645A; opacity:.20; animation:flota 24s ease-in-out infinite reverse; }
+.ambiente .b5{ width:30vw;height:30vw; left:34vw; top:36vh; background:#6a4bd1; opacity:.18; animation:flota 30s ease-in-out infinite; }
+/* malla de puntos muy sutil encima de las luces */
+.ambiente .malla{ position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px); background-size:22px 22px; opacity:.5; }
+@keyframes flota{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  33%{ transform:translate(6vw,4vh) scale(1.12); }
+  66%{ transform:translate(-5vw,-3vh) scale(.94); }
+}
+@media (prefers-reduced-motion: reduce){ .ambiente b{ animation:none; } }
+
+/* Dejar ver el fondo: capas translúcidas y contenido por encima */
+#entrada,#chat,#chat .mensajes{ position:relative; z-index:1; background:transparent; }
+header{ position:relative; z-index:2; background:rgba(10,13,17,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.composer{ position:relative; z-index:2; background:rgba(10,13,17,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.hoja{ background:rgba(12,15,19,.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.sistema{ background:rgba(24,34,41,.75); backdrop-filter:blur(6px); }
+
+/* ====== Todo redondo + tamaños que se adaptan (fluido) ====== */
+#entrada{ gap:clamp(12px,3.2vh,20px); padding:clamp(20px,6vw,34px); }
+#entrada h1{ font-size:clamp(1.5rem,7vw,2.3rem); letter-spacing:-.02em; }
+#entrada p.lead{ font-size:clamp(.85rem,3.8vw,1.08rem); }
+.campo label{ font-size:clamp(.74rem,3.4vw,.95rem); padding-left:14px; }
+.candado{ font-size:clamp(.76rem,3.5vw,.98rem); }
+#entrada .nota{ font-size:clamp(.72rem,3.2vw,.9rem); }
+
+/* Campos y botones en forma de píldora (sin esquinas) */
+.campo input,.campo select,.composer textarea,.hoja select{
+  border-radius:999px; padding:clamp(13px,3.6vw,17px) clamp(18px,5vw,24px);
+  font-size:clamp(.95rem,4vw,1.12rem); }
+.composer textarea{ border-radius:26px; }
+.primario,.hoja .btn2,.hoja .salir{
+  border-radius:999px; font-size:clamp(1rem,4.6vw,1.22rem);
+  padding:clamp(14px,4vw,18px); }
+
+/* La marca: círculo grande que respira */
+#entrada .marca .logo{ width:clamp(70px,22vw,104px); height:clamp(70px,22vw,104px); }
+#entrada .marca .logo svg{ width:60%; height:60%; }
+
+/* Burbujas más redondas y fluidas */
+.burbuja{ border-radius:22px; font-size:clamp(.9rem,4vw,1.06rem); max-width:84%; }
+.burbuja.mio{ border-bottom-right-radius:8px; }
+.burbuja.suyo{ border-bottom-left-radius:8px; }
+
+/* Botones de la barra: círculos que escalan */
+.adj,.enviar{ width:clamp(44px,12vw,52px); height:clamp(44px,12vw,52px); }
+.icono,.logo{ border-radius:50%; }
+
+/* Encabezado y hoja con bordes redondeados */
+.hoja{ border-radius:28px 28px 0 0; }
+header{ border-radius:0 0 22px 22px; }
+.sistema{ border-radius:999px; }
+
+/* Ilustración del desarrollador en el inicio */
+.ilus{ margin:0 auto clamp(4px,2vh,10px); filter:drop-shadow(0 8px 26px rgba(0,0,0,.55)); max-width:170px; }
+#entrada .marca .logo{ display:flex; }
+#entrada .marca{ gap:8px; margin-bottom:2px; }
+
+/* ===== Tema morado / guinda / violeta ===== */
+:root{ --accent:#a855f7; }
+body{ background:#0c0714; }
+.mensajes{ background:radial-gradient(130% 80% at 50% 0%, #1a0f29 0%, #0c0714 70%); }
+header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72); }
+.logo{ background:#2a1150; }
+.adj{ background:radial-gradient(circle at 50% 30%, #3a2b52 0%, #1d1430 62%, #150e22 100%); }
+.enviar{ background:radial-gradient(circle at 50% 28%, #c27bff 0%, #9333ea 60%, #6b21a8 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.4), inset 0 -6px 10px rgba(0,0,0,.4), 0 8px 18px rgba(0,0,0,.55), 0 0 26px rgba(168,85,247,.5); }
+.enviar svg{ fill:#1b0533; }
+.primario{ background:radial-gradient(circle at 50% 25%, #c27bff 0%, #9333ea 60%, #6b21a8 100%); color:#1b0533;
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.45), inset 0 -8px 14px rgba(0,0,0,.35), 0 10px 22px rgba(0,0,0,.5), 0 0 28px rgba(168,85,247,.5); }
+.candado{ color:#c89bff; }
+.icono{ background:radial-gradient(circle at 50% 30%, #2a2140, #160f26 80%); }
+.campo input:focus,.composer textarea:focus,.hoja select:focus{ border-color:#a855f7; box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 0 16px rgba(168,85,247,.4); }
+.hoja .btn2{ background:radial-gradient(circle at 50% 25%, #2a2140, #160f26 85%); }
+.marca .logo{ box-shadow:inset 0 2px 4px rgba(255,255,255,.2), 0 0 36px rgba(150,70,230,.45); }
+.ambiente .b1{ background:#7a2bd0; } .ambiente .b2{ background:#c026d3; opacity:.2; }
+.ambiente .b3{ background:#9333ea; } .ambiente .b4{ background:#9d1b6e; opacity:.2; }
+.ambiente .b5{ background:#5b21b6; }
+
+/* ===== Contraste tipo ticket ===== */
+.burbuja.suyo{ background:#f4f5f7; color:#101418; font-family:ui-monospace,'Menlo',monospace;
+  border-bottom-left-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,.5); border-top:2px dotted #c7ccd2; }
+.burbuja.suyo .quien{ color:#7a1fb0; }
+.burbuja.suyo .orig{ color:#555c64; border-top-color:rgba(0,0,0,.18); }
+.burbuja.suyo .hora{ color:rgba(0,0,0,.45); }
+.burbuja.suyo .trad-badge{ background:rgba(122,31,176,.14); color:#7a1fb0; }
+.burbuja.mio{ background:linear-gradient(180deg,#9333ea,#6b21a8);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.14), 0 4px 10px rgba(0,0,0,.45), 0 0 18px rgba(168,85,247,.25); }
+.burbuja.mio .quien{ color:#e9d5ff; }
+</style>
+</head>
+<body>
+
+<div class="ambiente" aria-hidden="true">
+  <b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b><b class="b5"></b>
+  <i class="malla"></i>
+</div>
+
+<section id="entrada">
+  <div class="ilus" aria-hidden="true">
+    <svg viewBox="0 0 240 182" width="100%" style="max-width:230px;display:block;margin:0 auto">
+      <circle cx="72" cy="72" r="60" fill="#14234A" opacity=".45"/>
+      <circle cx="176" cy="58" r="46" fill="#F29A2E" opacity=".14"/>
+      <circle cx="170" cy="150" r="54" fill="#00a884" opacity=".12"/>
+      <!-- herramientas cruzadas detrás -->
+      <g transform="translate(120,70)">
+        <g transform="rotate(34)">
+          <rect x="-50" y="-4" width="48" height="8" rx="4" fill="#b9793f"/>
+          <rect x="-6" y="-9" width="26" height="18" rx="4" fill="#9fb3c4"/>
+          <rect x="18" y="-6" width="10" height="12" rx="3" fill="#9fb3c4"/>
+        </g>
+        <g transform="rotate(-34)">
+          <rect x="-52" y="-4" width="60" height="8" rx="4" fill="#8fa3b5"/>
+          <circle cx="12" cy="0" r="12" fill="#8fa3b5"/>
+          <circle cx="16" cy="-2" r="6" fill="#14234A"/>
+        </g>
+      </g>
+      <!-- cabeza y hombros (dev) -->
+      <path d="M88,122 q0,-38 32,-38 q32,0 32,38 Z" fill="#7c3aed"/>
+      <circle cx="120" cy="56" r="18" fill="#F29A2E"/>
+      <circle cx="120" cy="56" r="18" fill="none" stroke="#FFD9A0" stroke-width="1.5" opacity=".6"/>
+      <!-- laptop con el 7 -->
+      <rect x="76" y="110" width="88" height="40" rx="8" fill="#1b2530"/>
+      <rect x="85" y="117" width="70" height="27" rx="5" fill="#14234A"/>
+      <text x="120" y="138" font-family="Comfortaa,sans-serif" font-size="20" font-weight="700" fill="#c27bff" text-anchor="middle">7</text>
+      <rect x="66" y="149" width="108" height="9" rx="4.5" fill="#243044"/>
+    </svg>
+  </div>
+  <div class="marca">
+    <div class="logo"><svg viewBox="0 0 108 108"><g transform="matrix(1,0,0,-1,0,108)"><path fill="#F29A2E" d="M30,32 H80 V46 H64 L82,86 H62 L46,46 H30 Z"/></g></svg></div>
+    <h1>Gara7o Studio</h1>
+    <p class="lead">Mensajes, voz y fotos cifrados. Lo que recibas llega traducido a tu idioma.</p>
+  </div>
+  <div class="campo"><label>Tu nombre</label><input id="in-nombre" placeholder="Miguel" autocomplete="off"></div>
+  <div class="fila">
+    <div class="campo"><label>Código de sala</label><input id="in-sala" placeholder="che-papusa" autocomplete="off" autocapitalize="none"></div>
+    <div class="campo" style="max-width:42%"><label>Tu idioma</label><select id="in-idioma"></select></div>
+  </div>
+  <div class="campo"><label>Clave secreta de la sala</label><input id="in-clave" type="password" placeholder="Solo tú y tus invitados la saben" autocomplete="off"></div>
+  <button class="primario" id="btn-entrar">Entrar al chat</button>
+  <div class="candado">🔒 Nadie sin la clave puede leer los mensajes</div>
+  <p class="nota">Comparte el mismo <b>código de sala</b> y la misma <b>clave</b> con quien quieras hablar.</p>
+</section>
+
+<header id="barra" class="oculto">
+  <div class="logo"><svg viewBox="0 0 108 108"><g transform="matrix(1,0,0,-1,0,108)"><path fill="#F29A2E" d="M30,32 H80 V46 H64 L82,86 H62 L46,46 H30 Z"/></g></svg></div>
+  <div><div class="tit" id="h-sala">Sala</div><div class="sub" id="h-estado">conectando…</div></div>
+  <div class="sp"></div>
+  <button class="icono" id="btn-tel" title="Marcador">📞</button>
+  <button class="icono" id="btn-ajustes">⚙️</button>
+</header>
+
+<section id="chat" class="oculto">
+  <div class="mensajes" id="lista"></div>
+  <div class="composer">
+    <button class="adj" id="btn-foto" title="Foto">📷</button>
+    <textarea id="in-msg" rows="1" placeholder="Escribe un mensaje…"></textarea>
+    <button class="adj" id="btn-mic" title="Nota de voz">🎤</button>
+    <button class="enviar" id="btn-enviar" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
+    <input type="file" id="in-foto" accept="image/*" capture="environment" class="oculto">
+  </div>
+</section>
+
+<div class="overlay" id="overlay"></div>
+<div class="hoja" id="hoja">
+  <h3>Ajustes</h3>
+  <div class="campo"><label style="font-size:.8rem;color:var(--muted)">Traducir lo que recibo a:</label><select id="set-idioma"></select></div>
+  <div class="campo"><label style="font-size:.8rem;color:var(--muted)">Tipo de letra:</label><select id="set-letra"></select></div>
+  <div class="campo"><label style="font-size:.8rem;color:var(--muted)">Impresora térmica (Bluetooth):</label><select id="set-impresora"></select></div>
+  <label style="display:flex;align-items:center;gap:10px;font-size:.92rem;margin-bottom:12px;color:var(--txt)">
+    <input type="checkbox" id="set-autoimp" style="width:20px;height:20px"> Imprimir lo que me llega
+  </label>
+  <button class="btn2" id="btn-probar-imp">🖨️ Probar impresión</button>
+  <button class="btn2" id="btn-marcador">📞 Abrir marcador del teléfono</button>
+  <button class="btn2" id="btn-mensajes">💬 Abrir mensajes del teléfono</button>
+  <p class="nota" style="text-align:left;margin:10px 0 16px">Sala: <b id="set-sala"></b> · Tú: <b id="set-nombre"></b><br>🔒 Cifrado activo · 🎤 voz · 📷 fotos</p>
+  <button class="salir" id="btn-salir">Salir de la sala</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ===== Configuración ===== */
+const SUPABASE_URL = "https://jzzhqbxivlybabairhyf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ncLyzga39TgTOZH8ZKS0vA_vTNcNl7a";
+const FN_TRADUCIR  = SUPABASE_URL + "/functions/v1/traducir";
+const IDIOMAS = [["es","Español"],["en","Inglés"],["pt","Portugués"],["fr","Francés"],["it","Italiano"],["de","Alemán"],["zh-CN","Chino"],["ja","Japonés"],["ko","Coreano"],["ar","Árabe"],["ru","Ruso"],["hi","Hindi"]];
+
+const LETRAS=[["sys","Normal"],["Nunito","Redondita"],["Poppins","Moderna"],["Comfortaa","Redonda"],["Georgia","Serif"],["Caveat","Manuscrita"],["mono","Máquina"]];
+function stackLetra(v){ return ({sys:"system-ui,-apple-system,Roboto,sans-serif", Nunito:"'Nunito',sans-serif", Poppins:"'Poppins',sans-serif", Comfortaa:"'Comfortaa',sans-serif", Georgia:"Georgia,serif", Caveat:"'Caveat',cursive", mono:"ui-monospace,monospace"})[v]||"system-ui,sans-serif"; }
+function aplicarLetra(v){ document.body.style.fontFamily=stackLetra(v); }
+function llenarLetras(sel,val){ sel.innerHTML=LETRAS.map(([c,n])=>`<option value="${c}" ${c===val?"selected":""}>${n}</option>`).join(""); }
+let miLetra = (localStorage.getItem("letra")||"sys");
+
+/* Impresora térmica */
+let miImpresora = localStorage.getItem("impresora")||"";
+let autoImp = localStorage.getItem("autoimp")==="1";
+function hayImpresora(){ return !!(window.Android && Android.imprimir); }
+function ticket(autor, principal, original, hhmm){
+  const L="--------------------------------";
+  let t="";
+  t+="      GARA7O STUDIO\n";
+  t+="   Sala: "+sala+"\n";
+  t+=L+"\n";
+  t+="De: "+autor+"    "+hhmm+"\n";
+  t+=L+"\n";
+  t+=principal+"\n";
+  if(original && original!==principal) t+="\n(orig) "+original+"\n";
+  t+=L+"\n";
+  return t;
+}
+function imprimirSiToca(vivo, mio, autor, principal, original, hhmm){
+  if(!vivo || mio || !hayImpresora() || !autoImp || !miImpresora) return;
+  try{ Android.imprimir(miImpresora, ticket(autor, principal, original||"", hhmm)); }catch(e){}
+}
+
+let sb, canal, sala, nombre, miIdioma, claveCripto;
+let rec=null, chunks=[];
+const vistos = new Set();
+
+const $ = id => document.getElementById(id);
+function toast(t){ const e=$("toast"); e.textContent=t; e.classList.add("ver"); setTimeout(()=>e.classList.remove("ver"),2400); }
+function hora(iso){ return new Date(iso).toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"}); }
+function esc(s){ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function nombreIdioma(c){ const f=IDIOMAS.find(x=>x[0]===c); return f?f[1]:c; }
+function llenarSelect(sel,val){ sel.innerHTML = IDIOMAS.map(([c,n])=>`<option value="${c}" ${c===val?"selected":""}>${n}</option>`).join(""); }
+
+/* ===== Cifrado ===== */
+const tenc=new TextEncoder(), tdec=new TextDecoder();
+function b64(buf){ let b=new Uint8Array(buf),s=""; for(let i=0;i<b.length;i++)s+=String.fromCharCode(b[i]); return btoa(s); }
+function debuf(s){ return Uint8Array.from(atob(s),c=>c.charCodeAt(0)); }
+async function derivarClave(clave,salaId){
+  const base=await crypto.subtle.importKey("raw",tenc.encode(clave),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:tenc.encode("gara7o:"+salaId),iterations:120000,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+async function cifrarTexto(t){ const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},claveCripto,tenc.encode(t)); return {cuerpo:b64(ct),iv:b64(iv)}; }
+async function descifrarTexto(c,iv){ try{ const pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:debuf(iv)},claveCripto,debuf(c)); return tdec.decode(pt);}catch(e){return null;} }
+async function cifrarBuf(buf){ const iv=crypto.getRandomValues(new Uint8Array(12)); const ct=await crypto.subtle.encrypt({name:"AES-GCM",iv},claveCripto,buf); return {blob:new Blob([ct]),iv:b64(iv)}; }
+async function descifrarBuf(url,iv){ try{ const r=await fetch(url); const buf=await r.arrayBuffer(); return await crypto.subtle.decrypt({name:"AES-GCM",iv:debuf(iv)},claveCripto,buf);}catch(e){return null;} }
+
+/* ===== Almacenamiento de media ===== */
+async function subir(blob){
+  const path = sala+"/"+crypto.randomUUID()+".bin";
+  const { error } = await sb.storage.from("media").upload(path,blob,{contentType:"application/octet-stream"});
+  if(error) return null;
+  return sb.storage.from("media").getPublicUrl(path).data.publicUrl;
+}
+async function enviarMedia(blob,tipo,mime){
+  toast(tipo==="audio"?"Enviando voz…":"Enviando foto…");
+  const buf=await blob.arrayBuffer();
+  const {blob:cblob,iv}=await cifrarBuf(buf);
+  const url=await subir(cblob);
+  if(!url){ toast("No se pudo subir"); return; }
+  await sb.from("mensajes").insert({ sala, autor:nombre, tipo, url, iv, cuerpo:mime });
+}
+
+/* ===== Traducción ===== */
+async function traducir(texto,destino){
+  try{
+    const r=await fetch(FN_TRADUCIR,{method:"POST",headers:{"content-type":"application/json","Authorization":"Bearer "+SUPABASE_KEY,"apikey":SUPABASE_KEY},body:JSON.stringify({texto,destino})});
+    if(!r.ok) return null; const d=await r.json(); return d.error?null:d;
+  }catch(e){ return null; }
+}
+
+/* ===== Render ===== */
+async function pintar(m, vivo){
+  if(vistos.has(m.id)) return; vistos.add(m.id);
+  const lista=$("lista"), mio=m.autor===nombre;
+  const div=document.createElement("div"); div.className="burbuja "+(mio?"mio":"suyo");
+
+  if(m.tipo==="audio"||m.tipo==="imagen"){
+    div.innerHTML=`${mio?"":`<div class="quien">${esc(m.autor)}</div>`}<div class="cuerpo">⏳…</div><div class="meta"><span class="hora">${hora(m.creada)}</span></div>`;
+    lista.appendChild(div); scroll();
+    const buf=await descifrarBuf(m.url,m.iv);
+    const cuerpo=div.querySelector(".cuerpo");
+    if(!buf){ cuerpo.innerHTML="🔒 <span style='opacity:.7'>Archivo de otra clave</span>"; return; }
+    const mime=m.cuerpo||(m.tipo==="audio"?"audio/webm":"image/jpeg");
+    const blobUrl=URL.createObjectURL(new Blob([buf],{type:mime}));
+    cuerpo.innerHTML = m.tipo==="audio" ? `<audio controls src="${blobUrl}"></audio>` : `<img src="${blobUrl}">`;
+    scroll(); avisar(mio, m.autor, m.tipo==="audio"?"🎤 Nota de voz":"📷 Foto");
+    imprimirSiToca(vivo, mio, m.autor, m.tipo==="audio"?"[Nota de voz]":"[Foto]", "", hora(m.creada));
+    return;
+  }
+
+  const texto=await descifrarTexto(m.cuerpo,m.iv);
+  if(texto===null){
+    div.innerHTML=`<div class="quien">${esc(m.autor)}</div>🔒 <span style="opacity:.7">Mensaje de otra clave</span><div class="meta"><span class="hora">${hora(m.creada)}</span></div>`;
+    lista.appendChild(div); scroll(); return;
+  }
+  div.innerHTML=`${mio?"":`<div class="quien">${esc(m.autor)}</div>`}<div class="cuerpo">${esc(texto)}</div><div class="meta"><span class="hora">${hora(m.creada)}</span></div>`;
+  lista.appendChild(div); scroll();
+
+  if(!mio){
+    const cache=localStorage.getItem("tr:"+m.id);
+    let tr=cache?JSON.parse(cache):await traducir(texto,miIdioma);
+    let principal=texto, original="";
+    if(tr&&tr.traduccion&&tr.origen&&tr.origen.slice(0,2)!==miIdioma.slice(0,2)){
+      localStorage.setItem("tr:"+m.id,JSON.stringify(tr));
+      div.querySelector(".cuerpo").innerHTML=`${esc(tr.traduccion)}<div class="orig">${esc(texto)}</div>`;
+      div.querySelector(".meta").insertAdjacentHTML("afterbegin",`<span class="trad-badge">traducido</span>`);
+      scroll();
+      principal=tr.traduccion; original=texto;
+    }
+    avisar(mio,m.autor,texto);
+    imprimirSiToca(vivo, mio, m.autor, principal, original, hora(m.creada));
+  }
+}
+function avisar(mio,autor,txt){
+  if(mio) return;
+  if("Notification" in window && Notification.permission==="granted" && document.hidden){
+    try{ new Notification(autor+" · Gara7o Studio",{body:txt.slice(0,80)}); }catch(e){}
+  }
+}
+function sistema(t){ const d=document.createElement("div"); d.className="sistema"; d.textContent=t; $("lista").appendChild(d); scroll(); }
+function scroll(){ const l=$("lista"); l.scrollTop=l.scrollHeight; }
+
+/* ===== Conexión ===== */
+async function entrar(){
+  nombre=$("in-nombre").value.trim();
+  sala=$("in-sala").value.trim().toLowerCase().replace(/\s+/g,"-");
+  miIdioma=$("in-idioma").value;
+  const clave=$("in-clave").value;
+  if(!nombre) return toast("Escribe tu nombre");
+  if(!sala) return toast("Escribe el código de sala");
+  if(!clave) return toast("Escribe la clave de la sala");
+
+  claveCripto=await derivarClave(clave,sala);
+  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  localStorage.setItem("sesion",JSON.stringify({nombre,sala,miIdioma}));
+  if("Notification" in window && Notification.permission==="default"){ try{Notification.requestPermission();}catch(e){} }
+
+  await sb.from("salas").upsert({id:sala,nombre:sala},{onConflict:"id"});
+  $("entrada").classList.add("oculto"); $("barra").classList.remove("oculto"); $("chat").classList.remove("oculto");
+  $("h-sala").textContent=sala; estado();
+
+  const {data}=await sb.from("mensajes").select("*").eq("sala",sala).order("creada",{ascending:true}).limit(200);
+  if(data) for(const m of data) await pintar(m);
+  if(!data||!data.length) sistema("Sala creada. Comparte el código y la clave para empezar.");
+
+  canal=sb.channel("sala:"+sala)
+    .on("postgres_changes",{event:"INSERT",schema:"public",table:"mensajes",filter:"sala=eq."+sala},p=>pintar(p.new,true))
+    .subscribe(st=>estado(st));
+
+  // Avisos con la app cerrada (servicio nativo Android)
+  try{ if(window.Android && Android.activar) Android.activar(sala,nombre); }catch(e){}
+}
+function estado(st){ $("h-estado").textContent=(st&&st!=="SUBSCRIBED")?"conectando…":("🔒 cifrado · traduce a "+nombreIdioma(miIdioma)); }
+
+async function enviar(){
+  const ta=$("in-msg"), texto=ta.value.trim(); if(!texto) return;
+  ta.value=""; ta.style.height="auto";
+  const {cuerpo,iv}=await cifrarTexto(texto);
+  const {error}=await sb.from("mensajes").insert({sala,autor:nombre,cuerpo,iv});
+  if(error) toast("No se envió, reintenta");
+}
+
+/* ===== Voz ===== */
+async function grabar(){
+  if(rec && rec.state==="recording"){ rec.stop(); return; }
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks=[]; rec=new MediaRecorder(stream);
+    rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+    rec.onstop=async()=>{ stream.getTracks().forEach(t=>t.stop()); $("btn-mic").classList.remove("grabando");
+      const blob=new Blob(chunks,{type:rec.mimeType||"audio/webm"}); await enviarMedia(blob,"audio",rec.mimeType||"audio/webm"); };
+    rec.start(); $("btn-mic").classList.add("grabando"); toast("Grabando… toca 🎤 otra vez para enviar");
+  }catch(e){ toast("No se pudo usar el micrófono"); }
+}
+
+/* ===== Arranque ===== */
+llenarSelect($("in-idioma"),"es"); llenarSelect($("set-idioma"),"es");
+aplicarLetra(miLetra);
+$("set-letra").onchange=e=>{ miLetra=e.target.value; localStorage.setItem("letra",miLetra); aplicarLetra(miLetra); toast("Letra cambiada"); };
+(function(){ const s=localStorage.getItem("sesion"); if(s){ try{ const o=JSON.parse(s); $("in-nombre").value=o.nombre||""; $("in-sala").value=o.sala||""; llenarSelect($("in-idioma"),o.miIdioma||"es"); }catch(e){} } })();
+
+$("btn-entrar").onclick=entrar;
+$("btn-enviar").onclick=enviar;
+$("btn-mic").onclick=grabar;
+$("btn-foto").onclick=()=>$("in-foto").click();
+$("in-foto").onchange=async e=>{ const f=e.target.files[0]; if(f) await enviarMedia(f,"imagen",f.type||"image/jpeg"); e.target.value=""; };
+$("in-msg").addEventListener("input",e=>{ e.target.style.height="auto"; e.target.style.height=Math.min(e.target.scrollHeight,120)+"px"; });
+$("in-msg").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); enviar(); } });
+
+$("btn-tel").onclick=()=>{ location.href="tel:"; };
+function llenarImpresoras(){
+  const sel=$("set-impresora");
+  let lista=[];
+  if(hayImpresora()){ try{ lista=JSON.parse(Android.impresoras()||"[]"); }catch(e){} }
+  let html=`<option value="">(ninguna)</option>`;
+  for(const n of lista) html+=`<option value="${n}" ${n===miImpresora?"selected":""}>${n}</option>`;
+  if(!hayImpresora()) html=`<option value="">Solo en la app del teléfono</option>`;
+  sel.innerHTML=html;
+  $("set-autoimp").checked=autoImp;
+}
+$("btn-ajustes").onclick=()=>{ $("set-sala").textContent=sala; $("set-nombre").textContent=nombre; llenarSelect($("set-idioma"),miIdioma); llenarLetras($("set-letra"),miLetra); llenarImpresoras(); $("overlay").classList.add("abierto"); $("hoja").classList.add("abierto"); };
+$("set-impresora").onchange=e=>{ miImpresora=e.target.value; localStorage.setItem("impresora",miImpresora); toast(miImpresora?("Impresora: "+miImpresora):"Sin impresora"); };
+$("set-autoimp").onchange=e=>{ autoImp=e.target.checked; localStorage.setItem("autoimp",autoImp?"1":"0"); toast(autoImp?"Imprimiré lo que llegue":"Impresión automática apagada"); };
+$("btn-probar-imp").onclick=()=>{
+  if(!hayImpresora()){ toast("La impresión solo funciona en la app del teléfono"); return; }
+  if(!miImpresora){ toast("Elige primero tu impresora"); return; }
+  const ok=Android.imprimir(miImpresora, ticket(nombre||"Yo","Prueba de impresion Gara7o Studio","", new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})));
+  toast(ok?"Enviado a la impresora":"No se pudo imprimir (revisa que esté encendida y emparejada)");
+};
+function cerrarHoja(){ $("overlay").classList.remove("abierto"); $("hoja").classList.remove("abierto"); }
+$("overlay").onclick=cerrarHoja;
+$("btn-marcador").onclick=()=>{ location.href="tel:"; };
+$("btn-mensajes").onclick=()=>{ location.href="sms:"; };
+$("set-idioma").onchange=e=>{ miIdioma=e.target.value; const o=JSON.parse(localStorage.getItem("sesion")||"{}"); o.miIdioma=miIdioma; localStorage.setItem("sesion",JSON.stringify(o)); estado(); toast("Ahora traduzco a "+nombreIdioma(miIdioma)); cerrarHoja(); };
+$("btn-salir").onclick=()=>{ localStorage.removeItem("sesion"); if(canal)sb.removeChannel(canal); try{ if(window.Android && Android.desactivar) Android.desactivar(); }catch(e){} location.reload(); };
+</script>
+</body>
+</html>
