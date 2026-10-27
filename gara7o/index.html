@@ -224,6 +224,18 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
 .burbuja.mio{ background:linear-gradient(180deg,#9333ea,#6b21a8);
   box-shadow:inset 0 1px 1px rgba(255,255,255,.14), 0 4px 10px rgba(0,0,0,.45), 0 0 18px rgba(168,85,247,.25); }
 .burbuja.mio .quien{ color:#e9d5ff; }
+
+/* ===== Minimalista: pictogramas de línea, botones planos ===== */
+.icono svg,.adj svg{ width:22px;height:22px;fill:none;stroke:#d8c8f0;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.enviar svg{ width:22px;height:22px;fill:none;stroke:#1b0533;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round; }
+.hoja .btn2 svg{ width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+.candado svg{ width:15px;height:15px;fill:none;stroke:#c89bff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:3px; }
+.icono,.adj{ background:rgba(168,85,247,.07)!important; box-shadow:none!important; border:1px solid rgba(168,85,247,.22); }
+.icono:active,.adj:active{ background:rgba(168,85,247,.2)!important; box-shadow:none!important; }
+.adj.grabando{ background:#c0392b!important; border-color:#c0392b; }
+.adj.grabando svg{ stroke:#fff; }
+.hoja .btn2{ box-shadow:none!important; border:1px solid rgba(168,85,247,.2); display:flex; align-items:center; justify-content:center; gap:7px; }
+.candado{ display:flex; align-items:center; justify-content:center; gap:4px; }
 </style>
 </head>
 <body>
@@ -276,8 +288,8 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
   </div>
   <div class="campo" id="campo-clave"><label>Clave secreta de la sala</label><input id="in-clave" type="password" placeholder="Solo tú y tus invitados la saben" autocomplete="off"></div>
   <button class="primario" id="btn-entrar">Entrar al chat</button>
-  <button class="btn2" id="btn-invitar-ini" style="background:radial-gradient(circle at 50% 25%,#2a2140,#160f26 85%);border:0;color:#e9d5ff;border-radius:999px;padding:14px;font-size:1rem;font-weight:700;width:100%;margin-top:4px">🔗 Invitar (crear enlace)</button>
-  <div class="candado">🔒 Nadie sin la clave puede leer los mensajes</div>
+  <button class="btn2" id="btn-invitar-ini" style="background:radial-gradient(circle at 50% 25%,#2a2140,#160f26 85%);border:0;color:#e9d5ff;border-radius:999px;padding:14px;font-size:1rem;font-weight:700;width:100%;margin-top:4px"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Invitar (crear enlace)</button>
+  <div class="candado"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Nadie sin la clave puede leer los mensajes</div>
   <p class="nota">Pon un <b>código de sala</b> y una <b>clave</b>, toca <b>Invitar</b> y mándale el enlace a quien quieras. Esa persona solo lo abre y pone su nombre.</p>
 </section>
 
@@ -285,17 +297,17 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
   <div class="logo"><svg viewBox="0 0 108 108"><g transform="matrix(1,0,0,-1,0,108)"><path fill="#F29A2E" d="M30,32 H80 V46 H64 L82,86 H62 L46,46 H30 Z"/></g></svg></div>
   <div><div class="tit" id="h-sala">Sala</div><div class="sub" id="h-estado">conectando…</div></div>
   <div class="sp"></div>
-  <button class="icono" id="btn-tel" title="Marcador">📞</button>
-  <button class="icono" id="btn-ajustes">⚙️</button>
+  <button class="icono" id="btn-tel" title="Marcador"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+  <button class="icono" id="btn-ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 </header>
 
 <section id="chat" class="oculto">
   <div class="mensajes" id="lista"></div>
   <div class="composer">
-    <button class="adj" id="btn-foto" title="Foto">📷</button>
+    <button class="adj" id="btn-foto" title="Foto"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
     <textarea id="in-msg" rows="1" placeholder="Escribe un mensaje…"></textarea>
-    <button class="adj" id="btn-mic" title="Nota de voz">🎤</button>
-    <button class="enviar" id="btn-enviar" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
+    <button class="adj" id="btn-mic" title="Nota de voz"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></button>
+    <button class="enviar" id="btn-enviar" aria-label="Enviar"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
     <input type="file" id="in-foto" accept="image/*" capture="environment" class="oculto">
   </div>
 </section>
@@ -309,10 +321,10 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
   <label style="display:flex;align-items:center;gap:10px;font-size:.92rem;margin-bottom:12px;color:var(--txt)">
     <input type="checkbox" id="set-autoimp" style="width:20px;height:20px"> Imprimir lo que me llega
   </label>
-  <button class="btn2" id="btn-probar-imp">🖨️ Probar impresión</button>
-  <button class="btn2" id="btn-invitar">🔗 Invitar (compartir enlace de esta sala)</button>
-  <button class="btn2" id="btn-marcador">📞 Abrir marcador del teléfono</button>
-  <button class="btn2" id="btn-mensajes">💬 Abrir mensajes del teléfono</button>
+  <button class="btn2" id="btn-probar-imp"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Probar impresión</button>
+  <button class="btn2" id="btn-invitar"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Invitar (compartir enlace)</button>
+  <button class="btn2" id="btn-marcador"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Abrir marcador</button>
+  <button class="btn2" id="btn-mensajes"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Abrir mensajes</button>
   <p class="nota" style="text-align:left;margin:10px 0 16px">Sala: <b id="set-sala"></b> · Tú: <b id="set-nombre"></b><br>🔒 Cifrado activo · 🎤 voz · 📷 fotos</p>
   <button class="salir" id="btn-salir">Salir de la sala</button>
 </div>
@@ -497,7 +509,7 @@ async function entrar(){
   // Avisos con la app cerrada (servicio nativo Android)
   try{ if(window.Android && Android.activar) Android.activar(sala,nombre); }catch(e){}
 }
-function estado(st){ $("h-estado").textContent=(st&&st!=="SUBSCRIBED")?"conectando…":("🔒 cifrado · traduce a "+nombreIdioma(miIdioma)); }
+function estado(st){ $("h-estado").textContent=(st&&st!=="SUBSCRIBED")?"conectando…":("Cifrado · traduce a "+nombreIdioma(miIdioma)); }
 
 async function enviar(){
   const ta=$("in-msg"), texto=ta.value.trim(); if(!texto) return;
