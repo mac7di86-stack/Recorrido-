@@ -236,6 +236,35 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
 .adj.grabando svg{ stroke:#fff; }
 .hoja .btn2{ box-shadow:none!important; border:1px solid rgba(168,85,247,.2); display:flex; align-items:center; justify-content:center; gap:7px; }
 .candado{ display:flex; align-items:center; justify-content:center; gap:4px; }
+
+/* ===== Al presionar, se iluminan ===== */
+.icono,.adj,.enviar,.primario,.hoja .btn2,#btn-invitar-ini,.cc{ transition:box-shadow .12s, filter .12s, background .12s, transform .12s; }
+.icono:active,.adj:active{ background:rgba(168,85,247,.3)!important; box-shadow:0 0 20px rgba(185,120,255,.75)!important; transform:scale(.94); }
+.icono:active svg,.adj:active svg{ stroke:#fff; filter:drop-shadow(0 0 7px rgba(205,160,255,.95)); }
+.enviar:active{ filter:brightness(1.3); box-shadow:inset 0 2px 4px rgba(255,255,255,.55), 0 0 40px rgba(205,130,255,.95)!important; transform:scale(.94); }
+.enviar:active svg{ stroke:#2a0a4a; filter:drop-shadow(0 0 5px rgba(255,255,255,.8)); }
+.primario:active{ filter:brightness(1.2); box-shadow:inset 0 2px 4px rgba(255,255,255,.5), 0 0 46px rgba(205,130,255,.95)!important; transform:scale(.99); }
+.hoja .btn2:active,#btn-invitar-ini:active{ box-shadow:0 0 26px rgba(185,120,255,.7)!important; border-color:#b978ff; filter:brightness(1.15); }
+.cc:active{ box-shadow:0 0 22px rgba(185,120,255,.8); filter:brightness(1.25); transform:scale(.93); }
+/* las teclas de idioma/letra/impresora (selects) también */
+.campo input:active,.campo select:active,.composer textarea:active{ box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 0 18px rgba(168,85,247,.5); }
+
+/* ===== Teclado propio dentro de la app ===== */
+body.teclado-abierto{ padding-bottom:258px; }
+.teclado{ position:fixed; left:0; right:0; bottom:0; z-index:80; display:none; flex-direction:column; gap:7px;
+  background:rgba(12,7,20,.97); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  border-top:1px solid rgba(168,85,247,.28); padding:6px 6px 12px; box-shadow:0 -8px 30px rgba(0,0,0,.5); }
+.teclado.on{ display:flex; }
+.kbar{ display:flex; justify-content:center; padding:2px 0 4px; }
+.kgrip{ color:#c89bff; font-size:.78rem; font-weight:700; padding:4px 16px; border-radius:999px; background:rgba(168,85,247,.1); }
+.krow{ display:flex; gap:6px; justify-content:center; }
+.key{ flex:1; min-width:0; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  background:rgba(168,85,247,.08); border:1px solid rgba(168,85,247,.22); color:#e9edef; font-size:19px; font-weight:600;
+  user-select:none; -webkit-user-select:none; transition:box-shadow .1s,background .1s,transform .1s; }
+.key.wide{ flex:1.5; } .key.space{ flex:5; font-size:14px; color:#9b86c0; } .key.accent{ background:radial-gradient(circle at 50% 25%,#c27bff,#9333ea 60%,#6b21a8); }
+.key:active{ background:rgba(168,85,247,.34); box-shadow:0 0 18px rgba(185,120,255,.85); transform:scale(.94); }
+.key svg{ width:24px; height:24px; fill:none; stroke:#d8c8f0; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.key.accent svg{ stroke:#2a0a4a; }
 </style>
 </head>
 <body>
@@ -331,6 +360,9 @@ header{ background:rgba(16,8,26,.72); } .composer{ background:rgba(16,8,26,.72);
 
 <div class="toast" id="toast"></div>
 
+<!-- Teclado propio (no usa el del teléfono) -->
+<div class="teclado" id="teclado"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 /* ===== Configuración ===== */
@@ -387,6 +419,106 @@ function toast(t){ const e=$("toast"); e.textContent=t; e.classList.add("ver"); 
 function hora(iso){ return new Date(iso).toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"}); }
 function esc(s){ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function nombreIdioma(c){ const f=IDIOMAS.find(x=>x[0]===c); return f?f[1]:c; }
+
+/* ===== Sonido (volumen) ===== */
+let actx=null;
+function tono(freq,dur,vol,tipo){
+  try{
+    if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==="suspended") actx.resume();
+    const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime;
+    o.type=tipo||"sine"; o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||0.06,t);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+(dur||0.07));
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+(dur||0.07));
+  }catch(e){}
+}
+function tap(){ tono(520,0.045,0.05,"triangle"); try{navigator.vibrate&&navigator.vibrate(8);}catch(e){} }
+function ding(){ tono(880,0.12,0.09); setTimeout(()=>tono(1320,0.13,0.07),95); try{navigator.vibrate&&navigator.vibrate(40);}catch(e){} }
+function swoosh(){ tono(660,0.09,0.05,"sine"); }
+document.addEventListener("pointerdown",e=>{ if(e.target.closest(".adj,.icono,.enviar,.primario,.btn2,.cc,#btn-invitar-ini,button")) tap(); },{passive:true});
+
+/* ===== Teclado propio (no usa el del teléfono) ===== */
+let campoActivo=null, mayus=true, modo="letras";
+const KB={
+  letras:[["q","w","e","r","t","y","u","i","o","p"],
+          ["a","s","d","f","g","h","j","k","l","ñ"],
+          ["⇧","z","x","c","v","b","n","m","⌫"],
+          ["?123",",","espacio",".","↵"]],
+  nums:[["1","2","3","4","5","6","7","8","9","0"],
+        ["@","#","$","&","*","-","+","(",")","/"],
+        ["ABC","_","\"","'",":",";","!","?","⌫"],
+        ["ABC",",","espacio",".","↵"]]
+};
+const SVG_DEL='<svg viewBox="0 0 24 24"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>';
+const SVG_RET='<svg viewBox="0 0 24 24"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a5 5 0 0 1-5 5H4"/></svg>';
+const SVG_SHIFT='<svg viewBox="0 0 24 24"><path d="M12 3l9 9h-5v8H8v-8H3z"/></svg>';
+
+function construirTeclado(){
+  const c=$("teclado"); c.innerHTML="";
+  const bar=document.createElement("div"); bar.className="kbar";
+  const grip=document.createElement("div"); grip.className="kgrip"; grip.id="kb-hide"; grip.textContent="⌄  ocultar teclado";
+  grip.addEventListener("pointerdown",e=>{ e.preventDefault(); ocultarTeclado(); });
+  bar.appendChild(grip); c.appendChild(bar);
+  KB[modo].forEach(fila=>{
+    const r=document.createElement("div"); r.className="krow";
+    fila.forEach(k=>{
+      const b=document.createElement("div"); b.className="key";
+      if(k==="espacio") b.className="key space";
+      if(["⇧","⌫","?123","ABC","↵"].includes(k)) b.className="key wide";
+      if(k==="↵") b.className="key wide accent";
+      if(k==="⌫") b.innerHTML=SVG_DEL;
+      else if(k==="↵") b.innerHTML=SVG_RET;
+      else if(k==="⇧"){ b.innerHTML=SVG_SHIFT; if(mayus) b.style.background="rgba(168,85,247,.3)"; }
+      else if(k==="espacio") b.textContent="espacio";
+      else b.textContent=(modo==="letras"&&mayus&&k.length===1)?k.toUpperCase():k;
+      b.addEventListener("pointerdown",e=>{ e.preventDefault(); tap(); pulsar(k); });
+      r.appendChild(b);
+    });
+    c.appendChild(r);
+  });
+}
+function insertar(ch){
+  const el=campoActivo; if(!el) return;
+  const s=el.selectionStart??el.value.length, e=el.selectionEnd??el.value.length;
+  el.value=el.value.slice(0,s)+ch+el.value.slice(e);
+  const p=s+ch.length; try{el.setSelectionRange(p,p);}catch(_){}
+  el.dispatchEvent(new Event("input",{bubbles:true}));
+}
+function borrar(){
+  const el=campoActivo; if(!el) return;
+  let s=el.selectionStart??el.value.length, e=el.selectionEnd??el.value.length;
+  if(s===e && s>0){ el.value=el.value.slice(0,s-1)+el.value.slice(e); s--; }
+  else if(s!==e){ el.value=el.value.slice(0,s)+el.value.slice(e); }
+  try{el.setSelectionRange(s,s);}catch(_){}
+  el.dispatchEvent(new Event("input",{bubbles:true}));
+}
+function siguienteCampo(){
+  const orden=["in-nombre","in-sala","in-clave"];
+  const i=orden.indexOf(campoActivo&&campoActivo.id);
+  if(i>=0 && i<orden.length-1) $(orden[i+1]).focus();
+  else if(campoActivo&&campoActivo.id==="in-clave") entrar();
+}
+function pulsar(k){
+  if(!campoActivo) return;
+  if(k==="espacio") insertar(" ");
+  else if(k==="⌫") borrar();
+  else if(k==="⇧"){ mayus=!mayus; construirTeclado(); }
+  else if(k==="?123"){ modo="nums"; construirTeclado(); }
+  else if(k==="ABC"){ modo="letras"; construirTeclado(); }
+  else if(k==="↵"){ if(campoActivo.id==="in-msg"){ enviar(); } else siguienteCampo(); }
+  else { insertar((modo==="letras"&&mayus)?k.toUpperCase():k); if(mayus&&modo==="letras"){ mayus=false; construirTeclado(); } }
+}
+function mostrarTeclado(el){ campoActivo=el; document.body.classList.add("teclado-abierto"); $("teclado").classList.add("on");
+  setTimeout(()=>{ try{ el.scrollIntoView({block:"center",behavior:"smooth"}); }catch(_){} },60); }
+function ocultarTeclado(){ document.body.classList.remove("teclado-abierto"); $("teclado").classList.remove("on"); if(campoActivo){ try{campoActivo.blur();}catch(_){} } campoActivo=null; }
+
+["in-nombre","in-sala","in-clave","in-msg"].forEach(id=>{
+  const el=$(id); if(!el) return;
+  el.setAttribute("inputmode","none");
+  el.addEventListener("focus",()=>{ if(el.id!=="in-msg"){ mayus=true; modo="letras"; } construirTeclado(); mostrarTeclado(el); });
+});
+construirTeclado();
 function llenarSelect(sel,val){ sel.innerHTML = IDIOMAS.map(([c,n])=>`<option value="${c}" ${c===val?"selected":""}>${n}</option>`).join(""); }
 
 /* ===== Cifrado ===== */
