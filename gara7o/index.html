@@ -265,6 +265,54 @@ body.teclado-abierto{ padding-bottom:258px; }
 .key:active{ background:rgba(168,85,247,.34); box-shadow:0 0 18px rgba(185,120,255,.85); transform:scale(.94); }
 .key svg{ width:24px; height:24px; fill:none; stroke:#d8c8f0; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .key.accent svg{ stroke:#2a0a4a; }
+
+/* ===== V5 · Llamadas de voz y video ===== */
+.toast{ z-index:130 !important; }
+#banner-llamada{ position:relative; z-index:2; margin:8px 12px 0; padding:10px 14px; border-radius:999px; display:flex; align-items:center; gap:10px;
+  background:rgba(22,163,74,.16); border:1px solid rgba(34,197,94,.45); color:#d1fae5; font-size:.88rem; }
+#banner-llamada .sp{ flex:1; }
+#banner-llamada button{ border:0; border-radius:999px; padding:8px 16px; font-weight:700; background:#16a34a; color:#fff; font-size:.88rem; }
+.pantalla-llamada{ position:fixed; inset:0; z-index:90; background:#07040d; display:flex; flex-direction:column; }
+.pantalla-llamada .arriba{ padding:16px 18px 8px; text-align:center; }
+.pantalla-llamada .arriba .quien{ font-size:1.12rem; font-weight:700; }
+.pantalla-llamada .arriba .estado{ font-size:.82rem; color:#b9a6d6; margin-top:2px; }
+#rejilla{ flex:1; display:grid; gap:8px; padding:8px; grid-template-columns:1fr; grid-auto-rows:1fr; min-height:0; }
+#rejilla.varios{ grid-template-columns:1fr 1fr; }
+.tile{ position:relative; border-radius:22px; overflow:hidden; background:radial-gradient(120% 90% at 50% 20%, #241238, #0e0818 75%); min-height:0; }
+.tile video{ width:100%; height:100%; object-fit:cover; display:block; background:transparent; }
+.tile .avatar{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.tile .avatar b{ width:clamp(84px,26vw,128px); height:clamp(84px,26vw,128px); border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:clamp(2rem,10vw,3.2rem); color:#1b0533; background:radial-gradient(circle at 50% 28%, #c27bff 0%, #9333ea 60%, #6b21a8 100%); box-shadow:0 0 40px rgba(168,85,247,.45); }
+.tile.con-video .avatar{ display:none; }
+.tile .etq{ position:absolute; left:10px; bottom:10px; padding:5px 12px; border-radius:999px; background:rgba(0,0,0,.5); font-size:.8rem; }
+#yo{ position:absolute; right:14px; bottom:118px; width:clamp(92px,27vw,130px); aspect-ratio:3/4; border-radius:18px; overflow:hidden; background:#140b22;
+  box-shadow:0 8px 24px rgba(0,0,0,.6); border:1px solid rgba(168,85,247,.35); z-index:3; }
+#yo video{ width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+#yo.trasera video{ transform:none; }
+.controles{ display:flex; justify-content:center; gap:clamp(10px,3.5vw,18px); padding:14px 12px calc(22px + env(safe-area-inset-bottom)); }
+.cbtn{ width:clamp(54px,15vw,62px); height:clamp(54px,15vw,62px); border-radius:50%; border:1px solid rgba(168,85,247,.3); background:rgba(168,85,247,.12);
+  display:flex; align-items:center; justify-content:center; }
+.cbtn svg{ width:26px; height:26px; fill:none; stroke:#ece3fb; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.cbtn.apagado{ background:#ece3fb; } .cbtn.apagado svg{ stroke:#2a0a4a; }
+.cbtn.colgar{ background:#dc2626; border-color:#dc2626; } .cbtn.colgar svg{ stroke:#fff; transform:rotate(135deg); }
+.cbtn.contestar{ background:#16a34a; border-color:#16a34a; } .cbtn.contestar svg{ stroke:#fff; }
+.cbtn:active{ transform:scale(.93); filter:brightness(1.2); }
+.cbtn.grande{ width:72px; height:72px; }
+.entrante{ position:fixed; inset:0; z-index:100; background:rgba(7,4,13,.94); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:24px; text-align:center; }
+.entrante .avatar b{ width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:#1b0533;
+  background:radial-gradient(circle at 50% 28%, #c27bff 0%, #9333ea 60%, #6b21a8 100%); animation:sonar 1.4s ease-out infinite; }
+@keyframes sonar{ 0%{ box-shadow:0 0 0 0 rgba(168,85,247,.6);} 100%{ box-shadow:0 0 0 34px rgba(168,85,247,0);} }
+.entrante .quien{ font-size:1.4rem; font-weight:700; }
+.entrante .tipo{ color:#b9a6d6; font-size:.95rem; }
+.entrante .fila-btn{ display:flex; gap:56px; margin-top:28px; }
+.entrante .fila-btn div{ display:flex; flex-direction:column; align-items:center; gap:8px; font-size:.85rem; color:#d8c8f0; }
+.elegir{ position:fixed; left:0; right:0; bottom:0; z-index:95; background:rgba(12,7,20,.97); border-radius:28px 28px 0 0; padding:18px 20px calc(26px + env(safe-area-inset-bottom));
+  display:flex; flex-direction:column; gap:10px; box-shadow:0 -10px 30px rgba(0,0,0,.6); border-top:1px solid rgba(168,85,247,.25); }
+.elegir h3{ font-size:1rem; margin-bottom:4px; }
+.elegir button{ border:1px solid rgba(168,85,247,.25); background:rgba(168,85,247,.1); color:#ece3fb; border-radius:999px; padding:15px; font-size:1.02rem; font-weight:700;
+  display:flex; align-items:center; justify-content:center; gap:10px; }
+.elegir button svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.elegir button.cancelar{ background:transparent; border-color:transparent; color:#9b86c0; font-weight:600; }
 </style>
 </head>
 <body>
@@ -326,11 +374,13 @@ body.teclado-abierto{ padding-bottom:258px; }
   <div class="logo"><svg viewBox="0 0 108 108"><g transform="matrix(1,0,0,-1,0,108)"><path fill="#F29A2E" d="M30,32 H80 V46 H64 L82,86 H62 L46,46 H30 Z"/></g></svg></div>
   <div><div class="tit" id="h-sala">Sala</div><div class="sub" id="h-estado">conectando…</div></div>
   <div class="sp"></div>
+  <button class="icono" id="btn-llamar" title="Llamar"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
   <button class="icono" id="btn-tel" title="Marcador"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
   <button class="icono" id="btn-ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 </header>
 
 <section id="chat" class="oculto">
+  <div id="banner-llamada" class="oculto"><span id="banner-txt">Llamada en curso</span><span class="sp"></span><button id="btn-unirme">Unirme</button></div>
   <div class="mensajes" id="lista"></div>
   <div class="composer">
     <button class="adj" id="btn-foto" title="Foto"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
@@ -354,8 +404,41 @@ body.teclado-abierto{ padding-bottom:258px; }
   <button class="btn2" id="btn-invitar"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Invitar (compartir enlace)</button>
   <button class="btn2" id="btn-marcador"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Abrir marcador</button>
   <button class="btn2" id="btn-mensajes"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Abrir mensajes</button>
-  <p class="nota" style="text-align:left;margin:10px 0 16px">Sala: <b id="set-sala"></b> · Tú: <b id="set-nombre"></b><br>El contenido va cifrado; la traducción usa un traductor externo.</p>
+  <p class="nota" style="text-align:left;margin:10px 0 16px">Sala: <b id="set-sala"></b> · Tú: <b id="set-nombre"></b><br>El contenido va cifrado; la traducción usa un traductor externo.<br>Versión 5 · llamadas de voz y video.</p>
   <button class="salir" id="btn-salir">Salir de la sala</button>
+</div>
+
+<!-- ===== V5 · Llamadas ===== -->
+
+
+<div class="elegir oculto" id="elegir">
+  <h3>Llamar a la sala</h3>
+  <button id="btn-voz"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Llamada de voz</button>
+  <button id="btn-video"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Videollamada</button>
+  <button class="cancelar" id="btn-elegir-no">Cancelar</button>
+</div>
+
+<div class="entrante oculto" id="entrante">
+  <div class="avatar"><b id="ent-ini">?</b></div>
+  <div class="quien" id="ent-quien">Alguien</div>
+  <div class="tipo" id="ent-tipo">te está llamando</div>
+  <div class="fila-btn">
+    <div><button class="cbtn colgar grande" id="btn-rechazar" aria-label="Rechazar"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>Rechazar</div>
+    <div><button class="cbtn contestar grande" id="btn-contestar" aria-label="Contestar"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>Contestar</div>
+  </div>
+</div>
+
+<div class="pantalla-llamada oculto" id="llamada">
+  <div class="arriba"><div class="quien" id="ll-titulo">Llamada</div><div class="estado" id="ll-estado">Llamando…</div></div>
+  <div id="rejilla"></div>
+  <div id="yo" class="oculto"><video id="yo-video" playsinline autoplay muted></video></div>
+  <div class="controles">
+    <button class="cbtn" id="c-mic" aria-label="Micrófono"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
+    <button class="cbtn" id="c-cam" aria-label="Cámara"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+    <button class="cbtn" id="c-voltear" aria-label="Voltear cámara"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+    <button class="cbtn" id="c-altavoz" aria-label="Altavoz"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+    <button class="cbtn colgar" id="c-colgar" aria-label="Colgar"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -369,7 +452,7 @@ body.teclado-abierto{ padding-bottom:258px; }
 const SUPABASE_URL = "https://jzzhqbxivlybabairhyf.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ncLyzga39TgTOZH8ZKS0vA_vTNcNl7a";
 const FN_TRADUCIR  = SUPABASE_URL + "/functions/v1/traducir";
-const INVITE_BASE  = "https://raw.githack.com/mac7di86-stack/Recorrido-/main/gara7o/index.html";
+const INVITE_BASE  = "https://raw.githack.com/mac7di86-stack/Recorrido-/gara7o-v5/gara7o/index.html";   // V5: copia web con llamadas
 let claveTexto = "";
 function invitar(){
   const s=(sala||$("in-sala").value).trim().toLowerCase().replace(/\s+/g,"-");
@@ -406,6 +489,7 @@ function ticket(autor, principal, original, hhmm){
   return t;
 }
 function imprimirSiToca(vivo, mio, autor, principal, original, hhmm){
+  if(String(principal||"").includes("📞")||String(original||"").includes("📞")) return;   // V5: avisos de llamada no se imprimen
   if(!vivo || mio || !hayImpresora() || !autoImp || !miImpresora) return;
   try{ Android.imprimir(miImpresora, ticket(autor, principal, original||"", hhmm)); }catch(e){}
 }
@@ -637,6 +721,7 @@ async function entrar(){
   canal=sb.channel("sala:"+sala)
     .on("postgres_changes",{event:"INSERT",schema:"public",table:"mensajes",filter:"sala=eq."+sala},p=>pintar(p.new,true))
     .subscribe(st=>estado(st));
+  conectarSenal();   // V5: llamadas
 
   // Avisos con la app cerrada (servicio nativo Android)
   try{ if(window.Android && Android.activar) Android.activar(sala,nombre); }catch(e){}
@@ -663,6 +748,258 @@ async function grabar(){
     rec.start(); $("btn-mic").classList.add("grabando"); toast("Grabando… toca 🎤 otra vez para enviar");
   }catch(e){ toast("No se pudo usar el micrófono"); }
 }
+
+/* ===== V5 · Llamadas de voz y video en tiempo real (WebRTC) =====
+   Señalización cifrada con la clave de la sala por Supabase Realtime (broadcast).
+   El audio y el video viajan directo entre teléfonos (WebRTC, cifrado DTLS-SRTP). */
+const ICE={iceServers:[{urls:["stun:stun.l.google.com:19302","stun:stun1.l.google.com:19302","stun:stun.cloudflare.com:3478"]}]};
+const miId=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+let sig=null, enLlamada=false, tipoLlamada="voz", localStream=null, camaraFrente=true, altavozOn=false, micOn=true, camOn=true;
+let entrante=null, timbreInt=null, entranteTimer=null, esperaTimer=null, relojInt=null, inicioLlamada=0, huboAlguien=false, colaSig=Promise.resolve();
+const pares=new Map();          // id -> {pc, nombre, cola, tile, caida}
+const otrosEnLlamada=new Map(); // presencia: id -> {nombre, tipo}
+let otrosEnSala=0, rechazos=0;
+
+function nativo(f,...a){ try{ if(window.Android && typeof Android[f]==="function") return Android[f](...a); }catch(e){} }
+function inicial(n){ return ((n||"?").trim()[0]||"?").toUpperCase(); }
+function mmss(ms){ const s=Math.floor(ms/1000); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+
+/* --- canal de señalización --- */
+function conectarSenal(){
+  if(sig) try{ sb.removeChannel(sig); }catch(e){}
+  sig=sb.channel("llamada:"+sala,{config:{broadcast:{self:false},presence:{key:miId}}});
+  sig.on("broadcast",{event:"s"},({payload})=>{ colaSig=colaSig.then(()=>alRecibir(payload)).catch(()=>{}); });
+  sig.on("presence",{event:"sync"},leerPresencia);
+  sig.subscribe(st=>{ if(st==="SUBSCRIBED") sig.track({nombre,enLlamada,tipo:tipoLlamada}); });
+}
+function leerPresencia(){
+  otrosEnLlamada.clear();
+  const st=sig.presenceState();
+  otrosEnSala=Object.keys(st).filter(k=>k!==miId).length;
+  for(const k in st){ if(k===miId) continue; const x=st[k]&&st[k][0]; if(x&&x.enLlamada) otrosEnLlamada.set(k,{nombre:x.nombre,tipo:x.tipo}); }
+  pintarBanner();
+}
+function pintarBanner(){
+  const b=$("banner-llamada");
+  if(enLlamada||!otrosEnLlamada.size){ b.classList.add("oculto"); return; }
+  const v=[...otrosEnLlamada.values()];
+  $("banner-txt").textContent=(v[0].tipo==="video"?"Videollamada":"Llamada")+" en curso con "+v.map(x=>x.nombre).join(", ");
+  b.classList.remove("oculto");
+}
+async function senal(t,datos){
+  if(!sig) return;
+  const {cuerpo,iv}=await cifrarTexto(JSON.stringify(Object.assign({},datos||{},{t,de:miId,nombre})));
+  try{ await sig.send({type:"broadcast",event:"s",payload:{c:cuerpo,iv}}); }catch(e){}
+}
+async function alRecibir(p){
+  if(!p||!p.c) return;
+  const txt=await descifrarTexto(p.c,p.iv); if(!txt) return;      // otra clave: se ignora
+  let m; try{ m=JSON.parse(txt); }catch(e){ return; }
+  if(m.de===miId || (m.a && m.a!==miId)) return;
+  switch(m.t){
+    case "llamar":    if(enLlamada) unirPar(m); else mostrarEntrante(m); break;
+    case "unir":      if(enLlamada) unirPar(m); break;
+    case "presente":  if(enLlamada && !pares.has(m.de)) await ofrecer(m.de,m.nombre); break;
+    case "oferta":    if(enLlamada) await recibirOferta(m); break;
+    case "respuesta": { const q=pares.get(m.de); if(q){ try{ await q.pc.setRemoteDescription(m.sdp); await vaciarCola(q); }catch(e){} } break; }
+    case "ice":       { const q=pares.get(m.de); if(q){ if(q.pc.remoteDescription){ try{ await q.pc.addIceCandidate(m.cand); }catch(e){} } else q.cola.push(m.cand); } break; }
+    case "colgar":    if(entrante&&entrante.de===m.de){ cerrarEntrante(); toast("Llamada perdida de "+m.nombre); } quitarPar(m.de,m.nombre+" colgó"); break;
+    case "rechazar":  rechazos++; if(enLlamada && pares.size===0 && rechazos>=otrosEnSala) terminarLlamada(true,m.nombre+" no puede contestar"); else toast(m.nombre+" no puede contestar"); break;
+  }
+}
+
+/* --- conexiones entre teléfonos --- */
+function unirPar(m){
+  if(pares.has(m.de)) return;
+  if(miId<m.de) ofrecer(m.de,m.nombre);        // el id menor siempre ofrece: evita choques
+  else senal("presente",{a:m.de});
+}
+function crearPar(id,nom){
+  const pc=new RTCPeerConnection(ICE);
+  const q={pc,nombre:nom||"Invitado",cola:[],tile:crearTile(id,nom),caida:null};
+  pares.set(id,q); huboAlguien=true; clearTimeout(esperaTimer);
+  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  pc.onicecandidate=e=>{ if(e.candidate) senal("ice",{a:id,cand:e.candidate.toJSON()}); };
+  pc.ontrack=e=>{
+    const v=q.tile.querySelector("video"), s=e.streams[0]||new MediaStream([e.track]);
+    if(v.srcObject!==s){ v.srcObject=s; }
+    v.play().catch(()=>{});
+    const hayVideo=()=>s.getVideoTracks().some(t=>t.readyState==="live"&&!t.muted);
+    const ver=()=>q.tile.classList.toggle("con-video",hayVideo());
+    s.getVideoTracks().forEach(t=>{ t.onunmute=ver; t.onmute=ver; t.onended=ver; }); ver();
+  };
+  pc.onconnectionstatechange=()=>{
+    const s=pc.connectionState;
+    etiqueta(q, s==="connected"?"":s==="failed"?"sin conexión":s==="disconnected"?"reconectando…":"conectando…");
+    if(s==="connected"){ clearTimeout(q.caida); if(!inicioLlamada){ inicioLlamada=Date.now(); arrancarReloj(); } paroTimbre(); }
+    if(s==="disconnected"){ clearTimeout(q.caida); q.caida=setTimeout(()=>{ if(pc.connectionState!=="connected") quitarPar(id,"Se cortó con "+q.nombre); },12000); }
+    if(s==="failed") quitarPar(id,"No se pudo conectar con "+q.nombre+" (red)");
+    tituloLlamada();
+  };
+  tituloLlamada();
+  return q;
+}
+async function ofrecer(id,nom){
+  const q=crearPar(id,nom);
+  const d=await q.pc.createOffer(); await q.pc.setLocalDescription(d);
+  await senal("oferta",{a:id,sdp:{type:q.pc.localDescription.type,sdp:q.pc.localDescription.sdp}});
+}
+async function recibirOferta(m){
+  let q=pares.get(m.de); if(!q) q=crearPar(m.de,m.nombre);
+  await q.pc.setRemoteDescription(m.sdp); await vaciarCola(q);
+  const d=await q.pc.createAnswer(); await q.pc.setLocalDescription(d);
+  await senal("respuesta",{a:m.de,sdp:{type:q.pc.localDescription.type,sdp:q.pc.localDescription.sdp}});
+}
+async function vaciarCola(q){ const c=q.cola; q.cola=[]; for(const x of c){ try{ await q.pc.addIceCandidate(x); }catch(e){} } }
+function quitarPar(id,msg){
+  const q=pares.get(id); if(!q) return;
+  clearTimeout(q.caida); try{ q.pc.close(); }catch(e){} q.tile.remove(); pares.delete(id);
+  if(msg) toast(msg);
+  ajustarRejilla(); tituloLlamada();
+  if(enLlamada && huboAlguien && pares.size===0) terminarLlamada(true,"La llamada terminó");
+}
+
+/* --- pantalla --- */
+function crearTile(id,nom){
+  const t=document.createElement("div"); t.className="tile"; t.dataset.id=id;
+  t.innerHTML=`<video playsinline autoplay></video><div class="avatar"><b>${esc(inicial(nom))}</b></div><div class="etq">${esc(nom||"Invitado")} <span class="st">· conectando…</span></div>`;
+  $("rejilla").appendChild(t); ajustarRejilla(); return t;
+}
+function etiqueta(q,txt){ const s=q.tile.querySelector(".st"); if(s) s.textContent=txt?("· "+txt):""; }
+function ajustarRejilla(){ $("rejilla").classList.toggle("varios",pares.size>1); }
+function tituloLlamada(){
+  const n=[...pares.values()].map(q=>q.nombre);
+  $("ll-titulo").textContent=n.length?n.join(", "):("Sala "+sala);
+  const conectados=[...pares.values()].some(q=>q.pc.connectionState==="connected");
+  if(!conectados) $("ll-estado").textContent=n.length?"Conectando…":"Llamando a la sala…";
+}
+function arrancarReloj(){ clearInterval(relojInt); relojInt=setInterval(()=>{ $("ll-estado").textContent=(tipoLlamada==="video"?"Videollamada":"Llamada de voz")+" · "+mmss(Date.now()-inicioLlamada); },1000); }
+function botones(){
+  $("c-mic").classList.toggle("apagado",!micOn);
+  $("c-cam").classList.toggle("apagado",!camOn);
+  $("c-altavoz").classList.toggle("apagado",altavozOn);
+  const v=tipoLlamada==="video";
+  $("c-cam").style.display=v?"":"none"; $("c-voltear").style.display=v?"":"none";
+  $("c-altavoz").style.display=(window.Android&&Android.altavoz)?"":"none";
+  $("yo").classList.toggle("oculto",!v||!camOn); $("yo").classList.toggle("trasera",!camaraFrente);
+}
+
+/* --- timbre --- */
+function sonarTimbre(fuerte){
+  paroTimbre();
+  const uno=()=>{ if(fuerte){ tono(880,0.25,0.12); setTimeout(()=>tono(660,0.3,0.12),300); try{navigator.vibrate&&navigator.vibrate([400,200,400]);}catch(e){} } else tono(440,0.35,0.05); };
+  uno(); timbreInt=setInterval(uno,fuerte?2200:3000);
+}
+function paroTimbre(){ clearInterval(timbreInt); timbreInt=null; try{navigator.vibrate&&navigator.vibrate(0);}catch(e){} }
+
+/* --- medios --- */
+async function obtenerMedios(tipo){
+  const audio={echoCancellation:true,noiseSuppression:true,autoGainControl:true};
+  if(tipo!=="video") return navigator.mediaDevices.getUserMedia({audio,video:false});
+  try{ return await navigator.mediaDevices.getUserMedia({audio,video:{facingMode:camaraFrente?"user":"environment",width:{ideal:640},height:{ideal:480},frameRate:{ideal:24}}}); }
+  catch(e){ toast("Sin cámara: sigue como llamada de voz"); tipoLlamada="voz"; return navigator.mediaDevices.getUserMedia({audio,video:false}); }
+}
+async function entrarALlamada(tipo){
+  if(enLlamada) return true;
+  tipoLlamada=tipo; micOn=true; camOn=true; camaraFrente=true; huboAlguien=false; inicioLlamada=0; rechazos=0;
+  try{ localStream=await obtenerMedios(tipo); }
+  catch(e){ toast("No se pudo usar el micrófono"); return false; }
+  enLlamada=true;
+  try{ ocultarTeclado(); }catch(e){}
+  $("rejilla").innerHTML=""; $("yo-video").srcObject=localStream; $("yo-video").play().catch(()=>{});
+  $("llamada").classList.remove("oculto"); pintarBanner();
+  nativo("modoLlamada",true);
+  altavozOn=(tipoLlamada==="video"); nativo("altavoz",altavozOn);
+  botones(); tituloLlamada();
+  try{ sig.track({nombre,enLlamada:true,tipo:tipoLlamada}); }catch(e){}
+  return true;
+}
+async function iniciarLlamada(tipo){
+  cerrarElegir();
+  if(enLlamada) return;
+  if(otrosEnLlamada.size){ return unirmeALaLlamada(); }
+  if(!(await entrarALlamada(tipo))) return;
+  await senal("llamar",{tipo:tipoLlamada});
+  sonarTimbre(false);
+  // aviso en el chat (llega como notificación aunque tengan la app cerrada)
+  try{ const {cuerpo,iv}=await cifrarTexto("📞 "+(tipoLlamada==="video"?"Videollamada":"Llamada de voz")+" de "+nombre+" — abre la sala y toca Unirme"); await sb.from("mensajes").insert({sala,autor:nombre,cuerpo,iv}); }catch(e){}
+  clearTimeout(esperaTimer);
+  esperaTimer=setTimeout(()=>{ if(enLlamada && pares.size===0){ terminarLlamada(true,"Nadie contestó"); } },60000);
+}
+async function unirmeALaLlamada(){
+  const v=[...otrosEnLlamada.values()][0]; if(!v) return;
+  if(!(await entrarALlamada(v.tipo==="video"?"video":"voz"))) return;
+  await senal("unir",{});
+}
+function terminarLlamada(avisar,msg){
+  if(!enLlamada) return;
+  enLlamada=false;
+  if(avisar) senal("colgar",{});
+  for(const [id,q] of pares){ clearTimeout(q.caida); try{ q.pc.close(); }catch(e){} }
+  pares.clear();
+  if(localStream) localStream.getTracks().forEach(t=>t.stop()); localStream=null;
+  clearTimeout(esperaTimer); clearInterval(relojInt); paroTimbre();
+  $("llamada").classList.add("oculto"); $("rejilla").innerHTML=""; $("yo-video").srcObject=null;
+  nativo("altavoz",false); nativo("modoLlamada",false);
+  try{ sig.track({nombre,enLlamada:false,tipo:tipoLlamada}); }catch(e){}
+  if(inicioLlamada) sistema((tipoLlamada==="video"?"Videollamada":"Llamada")+" terminada · "+mmss(Date.now()-inicioLlamada));
+  inicioLlamada=0;
+  if(msg) toast(msg);
+  pintarBanner();
+}
+
+/* --- llamada entrante --- */
+function mostrarEntrante(m){
+  if(entrante) return;
+  entrante=m;
+  $("ent-ini").textContent=inicial(m.nombre); $("ent-quien").textContent=m.nombre;
+  $("ent-tipo").textContent=(m.tipo==="video"?"Videollamada":"Llamada de voz")+" · te está llamando";
+  $("entrante").classList.remove("oculto"); sonarTimbre(true);
+  if("Notification" in window && Notification.permission==="granted" && document.hidden){ try{ new Notification(m.nombre+" te está llamando",{body:"Gara7o Studio · sala "+sala}); }catch(e){} }
+  clearTimeout(entranteTimer);
+  entranteTimer=setTimeout(()=>{ if(entrante){ cerrarEntrante(); toast("Llamada perdida de "+m.nombre); } },45000);
+}
+function cerrarEntrante(){ entrante=null; clearTimeout(entranteTimer); paroTimbre(); $("entrante").classList.add("oculto"); }
+async function contestar(){
+  const m=entrante; if(!m) return; cerrarEntrante();
+  if(!(await entrarALlamada(m.tipo==="video"?"video":"voz"))) return;
+  await senal("unir",{});
+}
+function rechazar(){ const m=entrante; cerrarEntrante(); if(m) senal("rechazar",{a:m.de}); }
+
+/* --- controles --- */
+function abrirElegir(){
+  if(enLlamada){ $("llamada").classList.remove("oculto"); return; }
+  if(otrosEnLlamada.size){ unirmeALaLlamada(); return; }
+  $("elegir").classList.remove("oculto");
+}
+function cerrarElegir(){ $("elegir").classList.add("oculto"); }
+async function voltearCamara(){
+  if(tipoLlamada!=="video"||!localStream) return;
+  camaraFrente=!camaraFrente;
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:camaraFrente?"user":"environment",width:{ideal:640},height:{ideal:480}}});
+    const nueva=s.getVideoTracks()[0], vieja=localStream.getVideoTracks()[0];
+    nueva.enabled=camOn;
+    for(const q of pares.values()){ const sn=q.pc.getSenders().find(x=>x.track&&x.track.kind==="video"); if(sn) await sn.replaceTrack(nueva); }
+    if(vieja){ localStream.removeTrack(vieja); vieja.stop(); }
+    localStream.addTrack(nueva); $("yo-video").srcObject=localStream;
+  }catch(e){ camaraFrente=!camaraFrente; toast("No se pudo cambiar de cámara"); }
+  botones();
+}
+$("btn-llamar").onclick=abrirElegir;
+$("btn-voz").onclick=()=>iniciarLlamada("voz");
+$("btn-video").onclick=()=>iniciarLlamada("video");
+$("btn-elegir-no").onclick=cerrarElegir;
+$("btn-unirme").onclick=unirmeALaLlamada;
+$("btn-contestar").onclick=contestar;
+$("btn-rechazar").onclick=rechazar;
+$("c-colgar").onclick=()=>terminarLlamada(true);
+$("c-mic").onclick=()=>{ micOn=!micOn; if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=micOn); botones(); toast(micOn?"Micrófono encendido":"Micrófono apagado"); };
+$("c-cam").onclick=()=>{ camOn=!camOn; if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=camOn); botones(); };
+$("c-voltear").onclick=voltearCamara;
+$("c-altavoz").onclick=()=>{ altavozOn=!altavozOn; nativo("altavoz",altavozOn); botones(); toast(altavozOn?"Altavoz":"Auricular"); };
+window.addEventListener("pagehide",()=>{ if(enLlamada) senal("colgar",{}); });
 
 /* ===== Arranque ===== */
 llenarSelect($("in-idioma"),"es"); llenarSelect($("set-idioma"),"es");
@@ -719,7 +1056,7 @@ $("overlay").onclick=cerrarHoja;
 $("btn-marcador").onclick=()=>{ location.href="tel:"; };
 $("btn-mensajes").onclick=()=>{ location.href="sms:"; };
 $("set-idioma").onchange=e=>{ miIdioma=e.target.value; const o=JSON.parse(localStorage.getItem("sesion")||"{}"); o.miIdioma=miIdioma; localStorage.setItem("sesion",JSON.stringify(o)); estado(); toast("Ahora traduzco a "+nombreIdioma(miIdioma)); cerrarHoja(); };
-$("btn-salir").onclick=()=>{ localStorage.removeItem("sesion"); if(canal)sb.removeChannel(canal); try{ if(window.Android && Android.desactivar) Android.desactivar(); }catch(e){} location.reload(); };
+$("btn-salir").onclick=()=>{ try{ terminarLlamada(true); }catch(e){} localStorage.removeItem("sesion"); if(canal)sb.removeChannel(canal); try{ if(window.Android && Android.desactivar) Android.desactivar(); }catch(e){} location.reload(); };
 $("btn-invitar").onclick=invitar;
 $("btn-invitar-ini").onclick=invitar;
 </script>
